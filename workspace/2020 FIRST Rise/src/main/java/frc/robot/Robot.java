@@ -53,95 +53,95 @@ public class Robot extends TimedRobot {
     private final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
     private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
     private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+    private static final String kDefaultAuto = "Default";
+    private static final String kCustomAuto = "My Auto";
+    private String m_autoSelected;
+    private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  private Joystick controller;
-  private Climber m_climber;
-  private Wheel m_wheel;
-  private BallSystem m_ball;
+    private Joystick controller;
+    private Climber m_climber;
+    private Wheel m_wheel;
+    private BallSystem m_ball;
 
-  @Override
-  public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    @Override
+    public void robotInit() {
+        m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+        m_chooser.addOption("My Auto", kCustomAuto);
+        SmartDashboard.putData("Auto choices", m_chooser);
 
-    controller = new Joystick(0);
-    m_climber = new Climber(); //basically wash, rinse, repeat
-    m_climber.ClimberInit();
-    m_colorMatcher.addColorMatch(kBlueTarget);
-    m_colorMatcher.addColorMatch(kGreenTarget);
-    m_colorMatcher.addColorMatch(kRedTarget);
-    m_colorMatcher.addColorMatch(kYellowTarget);
-  }
-
-  @Override
-  public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
-  }
-
-  @Override
-  public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
-  }
-
-  @Override
-  public void teleopPeriodic() {
-      /**
-     * The method GetColor() returns a normalized color value from the sensor and can be
-     * useful if outputting the color to an RGB LED or similar. To
-     * read the raw color, use GetRawColor().
-     * 
-     * The color sensor works best when within a few inches from an object in
-     * well lit conditions (the built in LED is a big help here!). The farther
-     * an object is the more light from the surroundings will bleed into the 
-     * measurements and make it difficult to accurately determine its color.
-     */
-    Color detectedColor = m_colorSensor.getColor();
-
-    /**
-     * Run the color match algorithm on our detected color
-     */
-    String colorString;
-    ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
-
-    if (match.color == kBlueTarget) {
-      colorString = "Blue";
-    } else if (match.color == kRedTarget) {
-      colorString = "Red";
-    } else if (match.color == kGreenTarget) {
-      colorString = "Green";
-    } else if (match.color == kYellowTarget) {
-      colorString = "Yellow";
-    } else {
-      colorString = "Unknown";
+        controller = new Joystick(0);
+        m_climber = new Climber(); //basically wash, rinse, repeat
+        m_climber.ClimberInit();
+        m_colorMatcher.addColorMatch(kBlueTarget);
+        m_colorMatcher.addColorMatch(kGreenTarget);
+        m_colorMatcher.addColorMatch(kRedTarget);
+        m_colorMatcher.addColorMatch(kYellowTarget);
     }
 
-    /**
-     * Open Smart Dashboard or Shuffleboard to see the color detected by the 
-     * sensor.
-     */
-    SmartDashboard.putNumber("Red", detectedColor.red);
-    SmartDashboard.putNumber("Green", detectedColor.green);
-    SmartDashboard.putNumber("Blue", detectedColor.blue);
-    SmartDashboard.putNumber("Confidence", match.confidence);
-    SmartDashboard.putString("Detected Color", colorString);
-  }
+    @Override
+    public void autonomousInit() {
+        m_autoSelected = m_chooser.getSelected();
+        // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+        System.out.println("Auto selected: " + m_autoSelected);
+    }
 
-  @Override
-  public void testPeriodic() {
-  }
-}
+    @Override
+    public void autonomousPeriodic() {
+        switch (m_autoSelected) {
+        case kCustomAuto:
+            // Put custom auto code here
+            break;
+        case kDefaultAuto:
+        default:
+            // Put default auto code here
+            break;
+        }
+    }
+
+    @Override
+    public void teleopPeriodic() {
+        /**
+         * The method GetColor() returns a normalized color value from the sensor and can be
+         * useful if outputting the color to an RGB LED or similar. To
+         * read the raw color, use GetRawColor().
+         * 
+         * The color sensor works best when within a few inches from an object in
+         * well lit conditions (the built in LED is a big help here!). The farther
+         * an object is the more light from the surroundings will bleed into the 
+         * measurements and make it difficult to accurately determine its color.
+         */
+        Color detectedColor = m_colorSensor.getColor();
+
+        /**
+         * Run the color match algorithm on our detected color
+         */
+        String colorString;
+        ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
+
+        if (match.color == kBlueTarget) {
+        colorString = "Blue";
+        } else if (match.color == kRedTarget) {
+        colorString = "Red";
+        } else if (match.color == kGreenTarget) {
+        colorString = "Green";
+        } else if (match.color == kYellowTarget) {
+        colorString = "Yellow";
+        } else {
+        colorString = "Unknown";
+        }
+
+        /**
+         * Open Smart Dashboard or Shuffleboard to see the color detected by the 
+         * sensor.
+         */
+        SmartDashboard.putNumber("Red", detectedColor.red);
+        SmartDashboard.putNumber("Green", detectedColor.green);
+        SmartDashboard.putNumber("Blue", detectedColor.blue);
+        SmartDashboard.putNumber("Confidence", match.confidence);
+        SmartDashboard.putString("Detected Color", colorString);
+    }
+
+    @Override
+    public void testPeriodic() {
+    }
+    }
