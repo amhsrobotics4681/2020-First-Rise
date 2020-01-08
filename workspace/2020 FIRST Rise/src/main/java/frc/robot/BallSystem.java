@@ -10,4 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Victor;
 
 public class BallSystem {
+    Victor m_intake;
+    public void ballSystemInit() {
+        
+    }
 }
