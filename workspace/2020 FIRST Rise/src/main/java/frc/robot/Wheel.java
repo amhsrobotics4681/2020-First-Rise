@@ -18,10 +18,11 @@ public class Wheel {
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
     private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
     private final ColorMatch m_colorMatcher = new ColorMatch();
-    private final Color kBlue = ColorMatch.makeColor(0.143, 0.427, 0.429);
-    private final Color kGreen = ColorMatch.makeColor(0.197, 0.561, 0.240);
-    private final Color kRed = ColorMatch.makeColor(0.561, 0.232, 0.114);
-    private final Color kYellow = ColorMatch.makeColor(0.361, 0.524, 0.113);
+    // below kColors have been tested in portables, proximity = 33.0
+    private final Color kBlue = ColorMatch.makeColor(0.16, 0.44, 0.38);
+    private final Color kGreen = ColorMatch.makeColor(0.21, 0.52, 0.26);
+    private final Color kRed = ColorMatch.makeColor(0.43, 0.39, 0.17);
+    private final Color kYellow = ColorMatch.makeColor(0.30, 0.54, 0.14);
 
     public void wheelInit() {
         m_colorMatcher.addColorMatch(kBlue);
@@ -61,5 +62,8 @@ public class Wheel {
     }
     public double getConfidence() {
         return m_colorMatcher.matchClosestColor(m_colorSensor.getColor()).confidence;
+    }
+    public double getProximity() {
+        return m_colorSensor.getProximity();
     }
 }

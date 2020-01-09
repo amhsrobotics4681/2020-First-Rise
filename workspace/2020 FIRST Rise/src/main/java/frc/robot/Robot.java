@@ -66,9 +66,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Green", m_wheel.getGreen());
     SmartDashboard.putNumber("Blue", m_wheel.getBlue());
     SmartDashboard.putNumber("Confidence", m_wheel.getConfidence());
+    SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
   }
 
     @Override
     public void testPeriodic() {
     }
-    }
+}
