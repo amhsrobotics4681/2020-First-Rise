@@ -32,12 +32,12 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("My Auto", kCustomAuto);
         SmartDashboard.putData("Auto choices", m_chooser);
 
-    controller = new Joystick(0);
-    m_climber = new Climber(); //basically wash, rinse, repeat
-    m_climber.climberInit();
-    m_wheel = new Wheel();
-    m_wheel.wheelInit();
-  }
+        controller = new Joystick(0);
+        m_climber = new Climber(); //basically wash, rinse, repeat
+        m_climber.climberInit();
+        m_wheel = new Wheel();
+        m_wheel.wheelInit();
+    }
 
     @Override
     public void autonomousInit() {
@@ -67,6 +67,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Blue", m_wheel.getBlue());
     SmartDashboard.putNumber("Confidence", m_wheel.getConfidence());
     SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
+    if (controller.getRawButtonPressed(6)) {
+        m_wheel.rotate(4);
+    }
   }
 
     @Override

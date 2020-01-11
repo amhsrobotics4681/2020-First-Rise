@@ -8,7 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Victor;
-
+//Ball intake
 public class BallSystem {
     Victor m_intake;
     public void ballSystemInit() {

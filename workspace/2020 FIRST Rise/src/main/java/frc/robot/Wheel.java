@@ -18,6 +18,7 @@ public class Wheel {
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
     private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
     private final ColorMatch m_colorMatcher = new ColorMatch();
+    private Victor m_motor;
     // below kColors have been tested in portables, proximity = 33.0
     private final Color kBlue = ColorMatch.makeColor(0.16, 0.44, 0.38);
     private final Color kGreen = ColorMatch.makeColor(0.21, 0.52, 0.26);
@@ -29,8 +30,27 @@ public class Wheel {
         m_colorMatcher.addColorMatch(kGreen);
         m_colorMatcher.addColorMatch(kRed);
         m_colorMatcher.addColorMatch(kYellow);
+        m_motor = new Victor(1);
     }
-
+    /**Rotates the wheel a set number of times until color is matched. */
+    public void rotate(int revs) {
+        boolean colorMatch = true;
+        String original = getColor();
+        int currentRevs = 0;
+        while (currentRevs <= 2*revs) {
+            m_motor.set(1.0);
+            if (getColor().equals(original)) {
+                if (!colorMatch)
+                    currentRevs++;
+                colorMatch = true;
+            } else {
+                colorMatch = false;
+            }
+        }
+        m_motor.set(0);
+    }
+    
+    /**Gets the color that is currently being detected*/
     public String getColor() {
         Color detectedColor = m_colorSensor.getColor();
         String colorString;
