@@ -9,12 +9,21 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Victor;
 
 public class Climber {
-    private Victor m_lifter;
+    private Victor m_pulley;
+    private Victor m_winch;
 
     public void climberInit() {
-        m_lifter = new Victor(0); //fill in PWM port
+        m_pulley = new Victor(2); //fill in PWM port
+        m_winch = new Victor(3);
     }
-    public void set(double speed) {
-        m_lifter.set(speed);
+    public void extending() {
+        m_pulley.set(1);
+    }
+    public void contracting() {
+        m_winch.set(1);
+    }
+    public void stop() {
+        m_pulley.set(0);
+        m_winch.set(0);
     }
 }
