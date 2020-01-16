@@ -19,7 +19,7 @@ public class Wheel {
     private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
     private final ColorMatch m_colorMatcher = new ColorMatch();
     private Victor m_motor;
-    // below kColors have been tested in portables, proximity = 33.0
+    // below kColors have been tested in portables, proximity = 33
     private final Color kBlue = ColorMatch.makeColor(0.16, 0.44, 0.38);
     private final Color kGreen = ColorMatch.makeColor(0.21, 0.52, 0.26);
     private final Color kRed = ColorMatch.makeColor(0.43, 0.39, 0.17);
@@ -30,7 +30,7 @@ public class Wheel {
         m_colorMatcher.addColorMatch(kGreen);
         m_colorMatcher.addColorMatch(kRed);
         m_colorMatcher.addColorMatch(kYellow);
-        m_motor = new Victor(1);
+        m_motor = new Victor(5);
     }
     /**Rotates the wheel a set number of times until color is matched. */
     public void rotate(int revs) {

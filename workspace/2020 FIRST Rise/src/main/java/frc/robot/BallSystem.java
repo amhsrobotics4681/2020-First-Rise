@@ -11,7 +11,12 @@ import edu.wpi.first.wpilibj.Victor;
 //Ball intake
 public class BallSystem {
     Victor m_intake;
+    Victor m_hopper;
+    Victor m_shooter;
+
     public void ballSystemInit() {
-        
+        m_intake = new Victor(2);
+        m_hopper = new Victor(3);
+        m_shooter = new Victor(4);
     }
 }
