@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
-    /** Victor PWM definitions:
+    /**  Victor PWM definitions:
      * 0: left wheel motor
      * 1: right wheel motor
      * 2: ball intake motor
@@ -84,8 +84,8 @@ public class Robot extends TimedRobot {
             // Put default auto code here
             break;
         }
-    }
-
+    } 
+    
     @Override
     public void teleopPeriodic() {
         m_wheel.rotate();
