@@ -32,7 +32,7 @@ public class Wheel {
         m_colorMatcher.addColorMatch(kYellow);
         m_motor = new Victor(5);
     }
-    /**Rotates the wheel a set number of times until color is matched. */
+    /**Rotates the wheel set number of times until color is correctly matched. */
     public void rotate(int revs) {
         boolean colorMatch = true;
         String original = getColor();
@@ -58,10 +58,10 @@ public class Wheel {
 
         if (match.color == kBlue) {
             colorString = "Blue";
-        } else if (match.color == kRed) {
-            colorString = "Red";
         } else if (match.color == kGreen) {
             colorString = "Green";
+        } else if (match.color == kRed) {
+            colorString = "Red";
         } else if (match.color == kYellow) {
             colorString = "Yellow";
         } else {
@@ -74,11 +74,11 @@ public class Wheel {
     public double getRed() {
         return m_colorSensor.getColor().red;
     }
-    public double getGreen() {
-        return m_colorSensor.getColor().green;
-    }
     public double getBlue() {
         return m_colorSensor.getColor().blue;
+    }
+    public double getGreen() {
+        return m_colorSensor.getColor().green;
     }
     public double getConfidence() {
         return m_colorMatcher.matchClosestColor(m_colorSensor.getColor()).confidence;
