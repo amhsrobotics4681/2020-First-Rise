@@ -24,30 +24,43 @@ public class Wheel {
     private final Color kGreen = ColorMatch.makeColor(0.21, 0.52, 0.26);
     private final Color kRed = ColorMatch.makeColor(0.43, 0.39, 0.17);
     private final Color kYellow = ColorMatch.makeColor(0.30, 0.54, 0.14);
+    private boolean active = false;
+    private final int kTargetRevolutions = 4;
+    private String previousColor;
+    private String currentColor;
+    private int numPanelShifted;
+    private int numPanelShiftNeeded;
 
     public void wheelInit() {
         m_colorMatcher.addColorMatch(kBlue);
         m_colorMatcher.addColorMatch(kGreen);
         m_colorMatcher.addColorMatch(kRed);
         m_colorMatcher.addColorMatch(kYellow);
-        m_motor = new Victor(5);
+        m_motor = new Victor(5); //should be 5
+        currentColor = getColor();
+    }
+    public void startRotating(){
+        active = true;
+        numPanelShiftNeeded = 8*kTargetRevolutions;
+        numPanelShifted = 0;
+        m_motor.set(.5);
     }
     /**Rotates the wheel a set number of times until color is matched. */
-    public void rotate(int revs) {
-        boolean colorMatch = true;
-        String original = getColor();
-        int currentRevs = 0;
-        while (currentRevs <= 2*revs) {
-            m_motor.set(1.0);
-            if (getColor().equals(original)) {
-                if (!colorMatch)
-                    currentRevs++;
-                colorMatch = true;
-            } else {
-                colorMatch = false;
+    public void rotate() {
+        if (active == true){
+            if (numPanelShifted < numPanelShiftNeeded){
+                previousColor = currentColor;
+                currentColor = getColor();
+                if (!currentColor.equals(previousColor)){
+                    numPanelShifted ++;
+                    System.out.println(numPanelShifted);
+                }
+            }
+            else {
+                m_motor.set(0);
+                active = false;
             }
         }
-        m_motor.set(0);
     }
     
     /**Gets the color that is currently being detected*/

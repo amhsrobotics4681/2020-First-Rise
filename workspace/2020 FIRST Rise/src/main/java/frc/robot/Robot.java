@@ -10,7 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+//import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
 
     private Victor m_left;
     private Victor m_right;
-    private DifferentialDrive m_drive;
+    //private DifferentialDrive m_drive;
     @Override
     public void robotInit() {
         m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
@@ -62,8 +62,8 @@ public class Robot extends TimedRobot {
         m_ball.ballSystemInit();
 
         m_left = new Victor(0);
-        m_right = new Victor(1);
-        m_drive = new DifferentialDrive(m_left, m_right);
+        m_right = new Victor(1);//should be 1
+        //m_drive = new DifferentialDrive(m_left, m_right);
     }
 
     @Override
@@ -88,6 +88,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
+        m_wheel.rotate();
         SmartDashboard.putString("Detected Color", m_wheel.getColor());
         SmartDashboard.putNumber("Red", m_wheel.getRed());
         SmartDashboard.putNumber("Green", m_wheel.getGreen());
@@ -107,7 +108,8 @@ public class Robot extends TimedRobot {
             //need to add method in wheel class first
         }
         if (controller.getRawButtonPressed(kRotateRevolutionsButton)){
-            m_wheel.rotate(4);
+            m_wheel.startRotating();
+            System.out.println("PRessed");
         }
     }
 
