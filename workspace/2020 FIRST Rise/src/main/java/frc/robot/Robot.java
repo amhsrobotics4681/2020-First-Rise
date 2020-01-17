@@ -37,10 +37,16 @@ public class Robot extends TimedRobot {
     private Wheel m_wheel;
     private BallSystem m_ball;
 
+    private static final int kClimberExtendButton = 1; //Redundant assignment currently
+    private static final int kClimberContractButton = 2; //Redundant assignment currently
+    private static final int kClimberStopButton = 3;
+    private static final int kRotateSetColorButton = 4; //Redundant assignment currently
+    private static final int kRotateRevolutionsButton = 5; //Redundant assignment currently
+
+
     private Victor m_left;
     private Victor m_right;
     private DifferentialDrive m_drive;
-
     @Override
     public void robotInit() {
         m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
@@ -88,7 +94,19 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Blue", m_wheel.getBlue());
         SmartDashboard.putNumber("Confidence", m_wheel.getConfidence());
         SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
-        if (controller.getRawButtonPressed(6)) {
+        if (controller.getRawButtonPressed(kClimberExtendButton)){
+            m_climber.extending();
+        }
+        if (controller.getRawButtonPressed(kClimberContractButton)){
+            m_climber.contracting();
+        }
+        if (controller.getRawButton(kClimberStopButton)){
+            m_climber.stop();
+        }
+        if (controller.getRawButtonPressed(kRotateSetColorButton)){
+            //need to add method in wheel class first
+        }
+        if (controller.getRawButtonPressed(kRotateRevolutionsButton)){
             m_wheel.rotate(4);
         }
     }
