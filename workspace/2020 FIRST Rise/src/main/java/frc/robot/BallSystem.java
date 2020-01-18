@@ -19,9 +19,7 @@ public class BallSystem {
     private int currentBallTotal = 0;
     private DigitalInput m_DIOlimitSwitchWheel;
     private Victor m_wheel;
-    private double kIntakeSpeed = .3; //arbitrary value
     private boolean intakeOn = true;
-    private final double kWheelSpeed = .3; //arbitrary value
 
     public void ballSystemInit() {
         m_intake = new Victor(2);
@@ -35,11 +33,11 @@ public class BallSystem {
             intakeOn = false;
         }
         if (intakeOn){
-            m_intake.set(kIntakeSpeed);
+            m_intake.set(Constants.kIntakeSpeed);
         }
         if (m_DIOlimitSwitchWheel.get() && !switchPressed){
             switchPressed = true;
-            m_wheel.set(kWheelSpeed);
+            m_wheel.set(Constants.kWheelSpeed);
             currentBallTotal ++;	
         }
         if (switchPressed){
@@ -54,13 +52,13 @@ public class BallSystem {
         return m_DIOlimitSwitchWheel.get();
     }
     public void manualWheelOverrideOn(){
-        m_wheel.set(kWheelSpeed);
+        m_wheel.set(Constants.kWheelSpeed);
     }
     public void manualWheelOverrideOff(){
         m_wheel.set(0);
     }
     public void manualIntakeOverrideOn(){
-        m_intake.set(kWheelSpeed);
+        m_intake.set(Constants.kIntakeSpeed);
     }
     public void manualIntakeOverrideOff(){
         m_intake.set(0);

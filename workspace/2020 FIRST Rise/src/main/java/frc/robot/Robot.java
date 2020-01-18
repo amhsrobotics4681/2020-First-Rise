@@ -37,11 +37,7 @@ public class Robot extends TimedRobot {
     private Wheel m_wheel;
     private BallSystem m_ball;
 
-    private static final int kClimberExtendButton = 1; //Redundant assignment currently
-    private static final int kClimberContractButton = 2; //Redundant assignment currently
-    private static final int kClimberStopButton = 3;
-    private static final int kRotateSetColorButton = 4; //Redundant assignment currently
-    private static final int kRotateRevolutionsButton = 5; //Redundant assignment currently
+
 
 
     private Victor m_left;
@@ -61,8 +57,8 @@ public class Robot extends TimedRobot {
         m_ball = new BallSystem();
         m_ball.ballSystemInit();
 
-        m_left = new Victor(0);
-        m_right = new Victor(1);
+        m_left = new Victor(Constants.kLeftMotorInput);
+        m_right = new Victor(Constants.kRightMotorInput);
         //m_drive = new DifferentialDrive(m_left, m_right);
     }
 
@@ -97,19 +93,19 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
         m_right.set(controller.getRawAxis(3));
         m_left.set(controller.getRawAxis(1));
-        if (controller.getRawButtonPressed(kClimberExtendButton)){
+        if (controller.getRawButtonPressed(Constants.kClimberExtendButton)){
             m_climber.extending();
         }
-        if (controller.getRawButtonPressed(kClimberContractButton)){
+        if (controller.getRawButtonPressed(Constants.kClimberContractButton)){
             m_climber.contracting();
         }
-        if (controller.getRawButton(kClimberStopButton)){
+        if (controller.getRawButton(Constants.kClimberStopButton)){
             m_climber.stop();
         }
-        if (controller.getRawButtonPressed(kRotateSetColorButton)){
+        if (controller.getRawButtonPressed(Constants.kRotateSetColorButton)){
             m_wheel.setColor();
         }
-        if (controller.getRawButtonPressed(kRotateRevolutionsButton)){
+        if (controller.getRawButtonPressed(Constants.kRotateRevolutionsButton)){
             m_wheel.startRotating();
             System.out.println("PRessed");
         }

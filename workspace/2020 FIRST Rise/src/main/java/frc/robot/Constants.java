@@ -6,3 +6,30 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
+
+
+public class Constants{
+
+
+    //BallSystem
+    public static double kIntakeSpeed = .3; //arbitrary value
+    public static final double kWheelSpeed = .3; //arbitrary value
+
+
+
+    //Robot
+    public static final int kClimberExtendButton = 1; //Redundant assignment currently
+    public static final int kClimberContractButton = 2; //Redundant assignment currently
+    public static final int kClimberStopButton = 3;
+    public static final int kRotateSetColorButton = 4; //Redundant assignment currently
+    public static final int kRotateRevolutionsButton = 5; //Redundant assignment currently
+    public static final int kLeftMotorInput = 0;//Redundant assignment currently
+    public static final int kRightMotorInput = 1;//Redundant assignment currently
+
+
+
+
+    //Climber
+    public static final int kPulleyInput = 6;//Redundant assignment currently
+    public static final int kWinchInput = 7;//Redundant assignment currently
+}
