@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopPeriodic() {
-        m_wheel.rotate();
+        m_wheel.mainMethod();
         SmartDashboard.putString("Detected Color", m_wheel.getColor());
         SmartDashboard.putNumber("Red", m_wheel.getRed());
         SmartDashboard.putNumber("Green", m_wheel.getGreen());
@@ -105,7 +105,7 @@ public class Robot extends TimedRobot {
             m_climber.stop();
         }
         if (controller.getRawButtonPressed(kRotateSetColorButton)){
-            //need to add method in wheel class first
+            m_wheel.setColor();
         }
         if (controller.getRawButtonPressed(kRotateRevolutionsButton)){
             m_wheel.startRotating();

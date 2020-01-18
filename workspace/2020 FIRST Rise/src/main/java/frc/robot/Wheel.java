@@ -24,7 +24,8 @@ public class Wheel {
     private final Color kGreen = ColorMatch.makeColor(0.21, 0.52, 0.26);
     private final Color kRed = ColorMatch.makeColor(0.43, 0.39, 0.17);
     private final Color kYellow = ColorMatch.makeColor(0.30, 0.54, 0.14);
-    private boolean active = false;
+    private String status = "Stationary";
+    private String targetColor = "Green"; //Abitrary selection, set to whatever needed
     private final int kTargetRevolutions = 4;
     private String previousColor;
     private String currentColor;
@@ -40,14 +41,19 @@ public class Wheel {
         currentColor = getColor();
     }
     public void startRotating(){
-        active = true;
+        status = "Revolutions";
         numPanelShiftNeeded = 8*kTargetRevolutions;
         numPanelShifted = 0;
         m_motor.set(.5);
     }
+    public void setColor(){
+        status = "Color";
+        m_motor.set(.1);
+
+    }
     /**Rotates the wheel a set number of times until color is matched. */
-    public void rotate() {
-        if (active == true){
+    public void mainMethod() {
+        if (status.equals("Revolutions")){
             if (numPanelShifted < numPanelShiftNeeded){
                 previousColor = currentColor;
                 currentColor = getColor();
@@ -58,7 +64,13 @@ public class Wheel {
             }
             else {
                 m_motor.set(0);
-                active = false;
+                status = "Stationary";
+            }
+        }
+        if (status.equals("Color")){
+            if (targetColor.equals(getColor())){
+                m_motor.set(0);
+                status = "Stationary";
             }
         }
     }
