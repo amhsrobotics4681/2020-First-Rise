@@ -15,41 +15,68 @@ public class BallSystem {
     Victor m_intake;
     Victor m_hopper;
     Victor m_shooter;
-    private boolean switchPressed = false;
+    private boolean wheelSwitchPressed = false;
+    private boolean shooterSwitchPressed = false;
     private int currentBallTotal = 0;
     private DigitalInput m_DIOlimitSwitchWheel;
+    private DigitalInput m_DIOlimitSwitchShooter;
     private Victor m_wheel;
     private boolean intakeOn = true;
+    private boolean currentlyShooting = false;
 
     public void ballSystemInit() {
         m_intake = new Victor(2);
         m_hopper = new Victor(3);
         m_shooter = new Victor(4); 
         m_wheel = new Victor(5);
-        m_DIOlimitSwitchWheel = new DigitalInput(3);
+        m_DIOlimitSwitchWheel = new DigitalInput(Constants.kDIOLimitSwitchWheelInput);
+        m_DIOlimitSwitchWheel = new DigitalInput(Constants.kDIOLimitSwitchWheelShooter);
     }
     public void mainMethod() {
         if (currentBallTotal > 4){
             intakeOn = false;
         }
+        else{
+            intakeOn = true;
+        }
         if (intakeOn){
             m_intake.set(Constants.kIntakeSpeed);
         }
-        if (m_DIOlimitSwitchWheel.get() && !switchPressed){
-            switchPressed = true;
+        if (currentlyShooting){
+            if (currentBallTotal == 0){
+                currentlyShooting = false;
+                m_wheel.set(0);
+            }
+            //Add in code for shooting motors here
+        }
+        if (m_DIOlimitSwitchWheel.get() && !wheelSwitchPressed){
+            wheelSwitchPressed = true;
             m_wheel.set(Constants.kWheelSpeed);
             currentBallTotal ++;	
         }
-        if (switchPressed){
+        if (wheelSwitchPressed){
             if (!m_DIOlimitSwitchWheel.get()){
                 m_wheel.set(0);
-                switchPressed = false;
+                wheelSwitchPressed = false;
+            }
+        }
+        if (m_DIOlimitSwitchShooter.get() && !shooterSwitchPressed){
+            wheelSwitchPressed = true;
+            currentBallTotal --;	
+        }
+        if (wheelSwitchPressed){
+            if (!m_DIOlimitSwitchWheel.get()){
+                wheelSwitchPressed = false;
             }
         }
     
     }
     public boolean returnWheelSwtich(){
         return m_DIOlimitSwitchWheel.get();
+    }
+    public void beginShooting(){
+        currentlyShooting = true;
+        m_wheel.set(Constants.kWheelShootingSpeed);
     }
     public void manualWheelOverrideOn(){
         m_wheel.set(Constants.kWheelSpeed);

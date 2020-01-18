@@ -14,6 +14,9 @@ public class Constants{
     //BallSystem
     public static double kIntakeSpeed = .3; //arbitrary value
     public static final double kWheelSpeed = .3; //arbitrary value
+    public static final double kWheelShootingSpeed = .6;//arbitrary value
+    public static final int kDIOLimitSwitchWheelInput = 3;
+    public static final int kDIOLimitSwitchWheelShooter = 4;
 
 
 
