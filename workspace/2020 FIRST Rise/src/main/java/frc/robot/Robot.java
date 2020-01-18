@@ -109,6 +109,7 @@ public class Robot extends TimedRobot {
         }
         if (controller.getRawButtonPressed(kRotateRevolutionsButton)){
             m_wheel.startRotating();
+            m_right.set(.5);
             System.out.println("PRessed");
         }
     }
