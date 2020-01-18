@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
         m_ball.ballSystemInit();
 
         m_left = new Victor(0);
-        m_right = new Victor(1);//should be 1
+        m_right = new Victor(1);
         //m_drive = new DifferentialDrive(m_left, m_right);
     }
 
@@ -111,7 +111,6 @@ public class Robot extends TimedRobot {
         }
         if (controller.getRawButtonPressed(kRotateRevolutionsButton)){
             m_wheel.startRotating();
-            m_right.set(.5);//delete this line and set the victor back to 1
             System.out.println("PRessed");
         }
     }

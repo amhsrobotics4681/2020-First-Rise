@@ -8,7 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Victor;
-//Ball intake/
+// Need to import dio limit switch junk i don't know what its called
+
 public class BallSystem {
     Victor m_intake;
     Victor m_hopper;
@@ -17,8 +18,13 @@ public class BallSystem {
     public void ballSystemInit() {
         m_intake = new Victor(2);
         m_hopper = new Victor(3);
-        m_shooter = new Victor(4);
-    
-    
+        m_shooter = new Victor(4);   
+    }
+
+    public void intake() {
+        
+    }
+    public void mainMethod() {
+
     }
 }

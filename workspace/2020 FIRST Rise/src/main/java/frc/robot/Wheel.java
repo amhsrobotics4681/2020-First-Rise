@@ -37,7 +37,7 @@ public class Wheel {
         m_colorMatcher.addColorMatch(kGreen);
         m_colorMatcher.addColorMatch(kRed);
         m_colorMatcher.addColorMatch(kYellow);
-        m_motor = new Victor(5); //should be 5
+        m_motor = new Victor(5); 
         currentColor = getColor();
     }
     public void startRotating(){
