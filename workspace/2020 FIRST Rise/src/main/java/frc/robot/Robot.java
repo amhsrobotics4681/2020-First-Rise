@@ -95,6 +95,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Blue", m_wheel.getBlue());
         SmartDashboard.putNumber("Confidence", m_wheel.getConfidence());
         SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
+        m_right.set(controller.getRawAxis(3));
+        m_left.set(controller.getRawAxis(1));
         if (controller.getRawButtonPressed(kClimberExtendButton)){
             m_climber.extending();
         }
@@ -109,7 +111,7 @@ public class Robot extends TimedRobot {
         }
         if (controller.getRawButtonPressed(kRotateRevolutionsButton)){
             m_wheel.startRotating();
-            m_right.set(.5);
+            m_right.set(.5);//delete this line and set the victor back to 1
             System.out.println("PRessed");
         }
     }
