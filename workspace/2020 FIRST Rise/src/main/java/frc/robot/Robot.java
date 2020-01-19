@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
@@ -36,7 +37,11 @@ public class Robot extends TimedRobot {
     private Climber m_climber;
     private Wheel m_wheel;
     private BallSystem m_ball;
-
+    private DigitalInput m_raspberryPiX;
+    private DigitalInput m_raspberryPiY;
+    private int xLocation;
+    private int yLocation;
+    private boolean aligningX = false;
 
 
 
@@ -60,6 +65,9 @@ public class Robot extends TimedRobot {
         m_left = new Victor(Constants.kLeftMotorInput);
         m_right = new Victor(Constants.kRightMotorInput);
         //m_drive = new DifferentialDrive(m_left, m_right);
+
+        m_raspberryPiX = new DigitalInput(Constants.kRaspberryPiXInput);
+        m_raspberryPiY = new DigitalInput(Constants.kRaspberryPiYInput);
     }
 
     @Override
@@ -85,6 +93,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         m_wheel.mainMethod();
+        this.alignX();
         SmartDashboard.putString("Detected Color", m_wheel.getColor());
         SmartDashboard.putNumber("Red", m_wheel.getRed());
         SmartDashboard.putNumber("Green", m_wheel.getGreen());
@@ -123,9 +132,31 @@ public class Robot extends TimedRobot {
         if (controller.getRawButtonPressed(Constants.kManualShootingOverrideButton)){
             m_ball.toggleShooting();
         }
+        if (controller.getRawButtonPressed(Constants.kAlignButton)){
+            aligningX = true;
+        }
     }
 
     @Override
     public void testPeriodic() {
     }
+
+    public void alignX(){
+        if (aligningX == true){
+            //xLocation = m_raspberryPiX.get();
+            xLocation = 0; //uncomment line above once figured out how to get value
+            if (xLocation < 20 && xLocation > -20){
+                m_left.set(0);
+                m_right.set(0);
+                aligningX = false;
+            }
+            if (xLocation < -20){
+                m_left.set(Constants.kDrivingSpeed);
+            }
+            if (xLocation > 20){
+                m_right.set(Constants.kDrivingSpeed);
+            }
+        }
+    }
+    
 }

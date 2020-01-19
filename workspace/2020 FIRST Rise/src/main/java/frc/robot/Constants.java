@@ -31,9 +31,13 @@ public class Constants{
     public static final int kManualWheelOverrideButton = 6;
     public static final int kManualIntakeOverrideButton = 7;
     public static final int kManualShootingOverrideButton = 8;
+    public static final int kAlignButton = 9;
     public static final int kLeftMotorInput = 0;//Redundant assignment currently
     public static final int kRightMotorInput = 1;//Redundant assignment currently
-
+    public static final int kRaspberryPiXInput = 0;
+    public static final int kRaspberryPiYInput = 1;
+    public static final boolean automaticShootingAfterAligning = false;//Switch to true if you want to shoot immediately after lining up
+    public static final double kDrivingSpeed = .4;
 
 
 
