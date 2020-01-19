@@ -9,14 +9,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.DigitalInput;
-// Need to import dio limit switch junk i don't know what its called
+
 
 public class BallSystem {
     Victor m_intake;
     Victor m_hopper;
     Victor m_shooter;
     private boolean wheelSwitchPressed = false;
-    private boolean shooterSwitchPressed = false;
+    private final boolean shooterSwitchPressed = false;
     private int currentBallTotal = 0;
     private DigitalInput m_DIOlimitSwitchWheel;
     private DigitalInput m_DIOlimitSwitchShooter;
@@ -27,7 +27,7 @@ public class BallSystem {
     public void ballSystemInit() {
         m_intake = new Victor(2);
         m_hopper = new Victor(3);
-        m_shooter = new Victor(4); 
+        m_shooter = new Victor(4); //Based on assumption that the motor controller goes to both
         m_wheel = new Victor(5);
         m_DIOlimitSwitchWheel = new DigitalInput(Constants.kDIOLimitSwitchWheelInput);
         m_DIOlimitSwitchWheel = new DigitalInput(Constants.kDIOLimitSwitchWheelShooter);
@@ -46,8 +46,9 @@ public class BallSystem {
             if (currentBallTotal == 0){
                 currentlyShooting = false;
                 m_wheel.set(0);
+                m_shooter.set(0);
             }
-            //Add in code for shooting motors here
+            m_shooter.set(Constants.kShooterSpeed);
         }
         if (m_DIOlimitSwitchWheel.get() && !wheelSwitchPressed){
             wheelSwitchPressed = true;
@@ -77,6 +78,7 @@ public class BallSystem {
     public void beginShooting(){
         currentlyShooting = true;
         m_wheel.set(Constants.kWheelShootingSpeed);
+        m_shooter.set(Constants.kShooterSpeed);
     }
     public void manualWheelOverrideOn(){
         m_wheel.set(Constants.kWheelSpeed);
