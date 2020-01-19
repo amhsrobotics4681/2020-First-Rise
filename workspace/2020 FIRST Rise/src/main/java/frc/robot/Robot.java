@@ -109,6 +109,15 @@ public class Robot extends TimedRobot {
             m_wheel.startRotating();
             System.out.println("PRessed");
         }
+        if (controller.getRawButtonPressed(Constants.kManualIntakeOverrideButton)){
+
+        }
+        if (controller.getRawButtonPressed(Constants.kManualWheelOverrideButton)){
+            
+        }
+        if (controller.getRawButtonPressed(Constants.kManualShootingOverrideButton)){
+            m_ball.toggleShooting();
+        }
     }
 
     @Override

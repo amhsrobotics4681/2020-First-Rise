@@ -75,10 +75,16 @@ public class BallSystem {
     public boolean returnWheelSwtich(){
         return m_DIOlimitSwitchWheel.get();
     }
-    public void beginShooting(){
-        currentlyShooting = true;
-        m_wheel.set(Constants.kWheelShootingSpeed);
-        m_shooter.set(Constants.kShooterSpeed);
+    public void toggleShooting(){
+        if (currentlyShooting == false){
+            currentlyShooting = true;
+            m_wheel.set(Constants.kWheelShootingSpeed);
+            m_shooter.set(Constants.kShooterSpeed);
+        }
+        else if (currentlyShooting == true){
+            currentlyShooting = false;
+            m_wheel.set(0);
+        }
     }
     public void manualWheelOverrideOn(){
         m_wheel.set(Constants.kWheelSpeed);

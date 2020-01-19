@@ -28,6 +28,9 @@ public class Constants{
     public static final int kClimberStopButton = 3;
     public static final int kRotateSetColorButton = 4; //Redundant assignment currently
     public static final int kRotateRevolutionsButton = 5; //Redundant assignment currently
+    public static final int kManualWheelOverrideButton = 6;
+    public static final int kManualIntakeOverrideButton = 7;
+    public static final int kManualShootingOverrideButton = 8;
     public static final int kLeftMotorInput = 0;//Redundant assignment currently
     public static final int kRightMotorInput = 1;//Redundant assignment currently
 

@@ -51,7 +51,7 @@ public class Wheel {
         m_motor.set(.1);
 
     }
-    /**Rotates the wheel a set number of times until color is matched. */
+    //Rotates the wheel a set number of times until color is matched. 
     public void mainMethod() {
         if (status.equals("Revolutions")){
             if (numPanelShifted < numPanelShiftNeeded){
