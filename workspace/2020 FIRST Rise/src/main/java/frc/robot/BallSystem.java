@@ -87,6 +87,9 @@ public class BallSystem {
             m_shooter.set(0);
         }
     }
+    public boolean getIntakeStatus(){
+        return intakeOn;
+    }
     public void manualWheelOverrideOn(){
         m_wheel.set(Constants.kWheelSpeed);
     }

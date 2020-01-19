@@ -110,10 +110,15 @@ public class Robot extends TimedRobot {
             System.out.println("PRessed");
         }
         if (controller.getRawButtonPressed(Constants.kManualIntakeOverrideButton)){
-
+            if (m_ball.getIntakeStatus() == true){
+                m_ball.manualIntakeOverrideOff();
+            }
+            else if (m_ball.getIntakeStatus() == false){
+                m_ball.manualIntakeOverrideOff();
+            }
         }
         if (controller.getRawButtonPressed(Constants.kManualWheelOverrideButton)){
-            
+            //Figure out how you want to do this one
         }
         if (controller.getRawButtonPressed(Constants.kManualShootingOverrideButton)){
             m_ball.toggleShooting();
