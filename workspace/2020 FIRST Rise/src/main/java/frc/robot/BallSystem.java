@@ -84,6 +84,7 @@ public class BallSystem {
         else if (currentlyShooting == true){
             currentlyShooting = false;
             m_wheel.set(0);
+            m_shooter.set(0);
         }
     }
     public void manualWheelOverrideOn(){
