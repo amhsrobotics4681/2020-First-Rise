@@ -10,39 +10,26 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class Robot extends TimedRobot {
-    /**  Victor PWM definitions:
-     * 0: left wheel motor
-     * 1: right wheel motor
-     * 2: ball intake motor
-     * 3: ball hopper motor
-     * 4: ball shooter motor
-     * 5: control panel motor
-     * 6: pulley climber motor
-     * 7: winch climber motor
-     */
-
     private static final String kDefaultAuto = "Default";
     private static final String kCustomAuto = "My Auto";
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
+    private String gameData;
 
     private Joystick controller;
     private Climber m_climber;
     private Wheel m_wheel;
     private BallSystem m_ball;
 
-
-
-
     private Victor m_left;
     private Victor m_right;
-    //private DifferentialDrive m_drive;
+
     @Override
     public void robotInit() {
         m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
@@ -57,9 +44,8 @@ public class Robot extends TimedRobot {
         m_ball = new BallSystem();
         m_ball.ballSystemInit();
 
-        m_left = new Victor(Constants.kLeftMotorInput);
-        m_right = new Victor(Constants.kRightMotorInput);
-        //m_drive = new DifferentialDrive(m_left, m_right);
+        m_left = new Victor(Constants.PWM_LeftTreads);
+        m_right = new Victor(Constants.PWM_RightTreads);
     }
 
     @Override
@@ -85,14 +71,10 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         m_wheel.mainMethod();
-        SmartDashboard.putString("Detected Color", m_wheel.getColor());
-        SmartDashboard.putNumber("Red", m_wheel.getRed());
-        SmartDashboard.putNumber("Green", m_wheel.getGreen());
-        SmartDashboard.putNumber("Blue", m_wheel.getBlue());
-        SmartDashboard.putNumber("Confidence", m_wheel.getConfidence());
-        SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
+        m_ball.mainMethod();
         m_right.set(controller.getRawAxis(3));
         m_left.set(controller.getRawAxis(1));
+        gameData = DriverStation.getInstance().getGameSpecificMessage();
         if (controller.getRawButtonPressed(Constants.kClimberExtendButton)){
             m_climber.extending();
         }
@@ -103,26 +85,26 @@ public class Robot extends TimedRobot {
             m_climber.stop();
         }
         if (controller.getRawButtonPressed(Constants.kRotateSetColorButton)){
-            m_wheel.setColor();
+            m_wheel.positionControl(gameData);
+            System.out.println("Position Control");
         }
         if (controller.getRawButtonPressed(Constants.kRotateRevolutionsButton)){
-            m_wheel.startRotating();
-            System.out.println("PRessed");
+            m_wheel.rotationControl();
+            System.out.println("Rotation Control");
         }
         if (controller.getRawButtonPressed(Constants.kManualIntakeOverrideButton)){
-            if (m_ball.getIntakeStatus() == true){
-                m_ball.manualIntakeOverrideOff();
-            }
-            else if (m_ball.getIntakeStatus() == false){
-                m_ball.manualIntakeOverrideOff();
-            }
+            m_ball.toggleIntake();
         }
-        if (controller.getRawButtonPressed(Constants.kManualWheelOverrideButton)){
-            //Figure out how you want to do this one
-        }
+
         if (controller.getRawButtonPressed(Constants.kManualShootingOverrideButton)){
-            m_ball.toggleShooting();
+            m_ball.resetShooter(); // we need to decide on 'all in' or toggle
         }
+        SmartDashboard.putString("Detected Color", m_wheel.getColor());
+        SmartDashboard.putNumber("Red", m_wheel.getRed());
+        SmartDashboard.putNumber("Green", m_wheel.getGreen());
+        SmartDashboard.putNumber("Blue", m_wheel.getBlue());
+        SmartDashboard.putNumber("Confidence", m_wheel.getConfidence());
+        SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
     }
 
     @Override

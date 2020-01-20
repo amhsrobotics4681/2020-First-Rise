@@ -10,96 +10,79 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.DigitalInput;
 
-
 public class BallSystem {
-    Victor m_intake;
-    Victor m_hopper;
-    Victor m_shooter;
-    private boolean wheelSwitchPressed = false;
-    private final boolean shooterSwitchPressed = false;
+    private boolean intakeSwitchPressed = false;
+    private boolean intakeOn = false;
     private int currentBallTotal = 0;
+    private int timer = 0;
+    private double kIntakeSpeed = 0.3; //arbitrary values
+    private double kIndexSpeed = 0.3;
+    private double kEjectionSpeed = 0.6;
+    private double kShooterSpeed = 0.8;
+
+    private Victor m_intake;
+    private Victor m_indexer;
+    private Victor m_shooter;
     private DigitalInput m_DIOlimitSwitchWheel;
-    private DigitalInput m_DIOlimitSwitchShooter;
-    private Victor m_wheel;
-    private boolean intakeOn = true;
-    private boolean currentlyShooting = false;
 
     public void ballSystemInit() {
-        m_intake = new Victor(2);
-        m_hopper = new Victor(3);
-        m_shooter = new Victor(4); //Based on assumption that the motor controller goes to both
-        m_wheel = new Victor(5);
-        m_DIOlimitSwitchWheel = new DigitalInput(Constants.kDIOLimitSwitchWheelInput);
-        m_DIOlimitSwitchWheel = new DigitalInput(Constants.kDIOLimitSwitchWheelShooter);
+        m_intake = new Victor(Constants.PWM_Intake);
+        m_indexer = new Victor(Constants.PWM_Indexer);
+        m_shooter = new Victor(Constants.PWM_Shooter); //Based on assumption that the motor controller goes to both
+        m_intakeSwitch = new DigitalInput(Constants.DIO_IntakeSwitch);
     }
+
     public void mainMethod() {
-        if (currentBallTotal > 4){
-            intakeOn = false;
+        // intake code
+        if (intakeOn && currentBallTotal < 5) {
+            m_intake.set(kIntakeSpeed);
+        } else {
+            m_intake.set(0);
         }
-        else{
-            intakeOn = true;
+        // indexer code
+        if (m_intakeSwitch.get()) {
+            m_indexer.set(kIndexSpeed);
+            if (!intakeSwitchPressed) // i.e. first press
+                currentBallTotal++;
+            intakeSwitchPressed = true;
+        } else {
+            intakeSwitchPressed = false;
+            m_indexer.set(0);
         }
-        if (intakeOn){
-            m_intake.set(Constants.kIntakeSpeed);
+        // shooter code
+        // #secondsToRun / 0.02 --> 6 sec. = 300 timer
+        timer++;
+        if (timer > 300) {
+            m_shooter.set(0);
+            m_indexer.set(0);
         }
-        if (currentlyShooting){
-            if (currentBallTotal == 0){
-                currentlyShooting = false;
-                m_wheel.set(0);
-                m_shooter.set(0);
-            }
-            m_shooter.set(Constants.kShooterSpeed);
-        }
-        if (m_DIOlimitSwitchWheel.get() && !wheelSwitchPressed){
-            wheelSwitchPressed = true;
-            m_wheel.set(Constants.kWheelSpeed);
-            currentBallTotal ++;	
-        }
-        if (wheelSwitchPressed){
-            if (!m_DIOlimitSwitchWheel.get()){
-                m_wheel.set(0);
-                wheelSwitchPressed = false;
-            }
-        }
-        if (m_DIOlimitSwitchShooter.get() && !shooterSwitchPressed){
-            wheelSwitchPressed = true;
-            currentBallTotal --;	
-        }
-        if (wheelSwitchPressed){
-            if (!m_DIOlimitSwitchWheel.get()){
-                wheelSwitchPressed = false;
-            }
-        }
-    
     }
-    public boolean returnWheelSwtich(){
-        return m_DIOlimitSwitchWheel.get();
+
+    public void toggleIntake() {
+        intakeOn = !intakeOn;
     }
-    public void toggleShooting(){
+
+    public void resetShooter() {
+        timer = 0;
+        intakeOn = false;
+        currentBallTotal = 0;
+        m_shooter.set(kShooterSpeed);
+        m_indexer.set(kEjectionSpeed);
+    }
+    /*
+    // I see the value in toggling the shooter in the event
+    // we aren't lined up and need to stop losing our balls.
+    // Also, the problem with too many overrides is not enough buttons.
+    public void toggleShooting() {
         if (currentlyShooting == false){
             currentlyShooting = true;
-            m_wheel.set(Constants.kWheelShootingSpeed);
-            m_shooter.set(Constants.kShooterSpeed);
+            m_wheel.set(kEjectionSpeed);
+            m_shooter.set(kShooterSpeed);
         }
         else if (currentlyShooting == true){
             currentlyShooting = false;
             m_wheel.set(0);
             m_shooter.set(0);
         }
-    }
-    public boolean getIntakeStatus(){
-        return intakeOn;
-    }
-    public void manualWheelOverrideOn(){
-        m_wheel.set(Constants.kWheelSpeed);
-    }
-    public void manualWheelOverrideOff(){
-        m_wheel.set(0);
-    }
-    public void manualIntakeOverrideOn(){
-        m_intake.set(Constants.kIntakeSpeed);
-    }
-    public void manualIntakeOverrideOff(){
-        m_intake.set(0);
-    }
+    }*/
 }
