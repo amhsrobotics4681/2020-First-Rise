@@ -46,13 +46,12 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("Auto choices", m_chooser);
 
         controller = new Joystick(0);
-        m_climber = new Climber(); //basically wash, rinse, repeat
+        m_climber = new Climber();
         m_climber.climberInit();
         m_wheel = new Wheel();
         m_wheel.wheelInit();
         m_ball = new BallSystem();
         m_ball.ballSystemInit();
-        //m_drive = new DifferentialDrive(m_left, m_right);
 
         m_raspberryPiX = new DigitalInput(Constants.kRaspberryPiXInput);
         m_raspberryPiY = new DigitalInput(Constants.kRaspberryPiYInput);
@@ -84,43 +83,38 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         m_wheel.mainMethod();
         this.alignX();
+        m_ball.mainMethod();
+        m_right.set(controller.getRawAxis(3));
+        m_left.set(controller.getRawAxis(1));
+        gameData = DriverStation.getInstance().getGameSpecificMessage();
+        
+        if (controller.getRawButtonPressed(Constants.bExtendClimber))
+            m_climber.extending();
+        if (controller.getRawButtonPressed(Constants.bContractClimber))
+            m_climber.contracting();
+        if (controller.getRawButton(Constants.bStopClimber))
+            m_climber.stop();
+        
+        if (controller.getRawButtonPressed(Constants.bPositionControl))
+            m_wheel.positionControl(gameData);
+        if (controller.getRawButtonPressed(Constants.bRotationControl))
+            m_wheel.rotationControl();
+        
+        if (controller.getRawButtonPressed(Constants.bIntakeToggle))
+            m_ball.toggleIntake();
+        if (controller.getRawButtonPressed(Constants.bResetShooter))
+            m_ball.resetShooter(); // we need to decide on 'all in' or toggle
+
+        if (controller.getRawButtonPressed(Constants.bAlignRobot))
+            aligningX = true;
+        /*
         SmartDashboard.putString("Detected Color", m_wheel.getColor());
         SmartDashboard.putNumber("Red", m_wheel.getRed());
         SmartDashboard.putNumber("Green", m_wheel.getGreen());
         SmartDashboard.putNumber("Blue", m_wheel.getBlue());
         SmartDashboard.putNumber("Confidence", m_wheel.getConfidence());
         SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
-        m_ball.mainMethod();
-        m_right.set(controller.getRawAxis(3));
-        m_left.set(controller.getRawAxis(1));
-        gameData = DriverStation.getInstance().getGameSpecificMessage();
-        if (controller.getRawButtonPressed(Constants.kClimberExtendButton)){
-            m_climber.extending();
-        }
-        if (controller.getRawButtonPressed(Constants.kClimberContractButton)){
-            m_climber.contracting();
-        }
-        if (controller.getRawButton(Constants.kClimberStopButton)){
-            m_climber.stop();
-        }
-        if (controller.getRawButtonPressed(Constants.kRotateSetColorButton)){
-            m_wheel.positionControl(gameData);
-            System.out.println("Position Control");
-        }
-        if (controller.getRawButtonPressed(Constants.kRotateRevolutionsButton)){
-            m_wheel.rotationControl();
-            System.out.println("Rotation Control");
-        }
-        if (controller.getRawButtonPressed(Constants.kManualIntakeOverrideButton)){
-            m_ball.toggleIntake();
-        }
-
-        if (controller.getRawButtonPressed(Constants.kManualShootingOverrideButton)){
-            m_ball.resetShooter(); // we need to decide on 'all in' or toggle
-        }
-        if (controller.getRawButtonPressed(Constants.kAlignButton)){
-            aligningX = true;
-        }
+        */
     }
 
     @Override
@@ -137,10 +131,10 @@ public class Robot extends TimedRobot {
                 aligningX = false;
             }
             if (xLocation < -20){
-                m_left.set(Constants.kDrivingSpeed);
+                m_left.set(Constants.kAligningSpeed);
             }
             if (xLocation > 20){
-                m_right.set(Constants.kDrivingSpeed);
+                m_right.set(Constants.kAligningSpeed);
             }
         }
     }

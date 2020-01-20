@@ -11,18 +11,16 @@ import edu.wpi.first.wpilibj.Victor;
 public class Climber {
     private Victor m_pulley;
     private Victor m_winch;
-    private double kPulleySpeed = 1;
-    private double kWinchSpeed = 1;
 
     public void climberInit() {
         m_pulley = new Victor(Constants.PWM_Pulley);
         m_winch = new Victor(Constants.PWM_Winch);
     }
     public void extending() {
-        m_pulley.set(kPulleySpeed);
+        m_pulley.set(Constants.kPulleySpeed);
     }
     public void contracting() {
-        m_winch.set(kWinchSpeed);
+        m_winch.set(Constants.kWinchSpeed);
     }
     public void stop() {
         m_pulley.set(0);

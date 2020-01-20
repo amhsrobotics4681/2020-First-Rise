@@ -15,15 +15,10 @@ public class BallSystem {
     private boolean intakeOn = false;
     private int currentBallTotal = 0;
     private int timer = 0;
-    private double kIntakeSpeed = 0.3; //arbitrary values
-    private double kIndexSpeed = 0.3;
-    private double kEjectionSpeed = 0.6;
-    private double kShooterSpeed = 0.8;
     private DigitalInput m_intakeSwitch;
     private Victor m_intake;
     private Victor m_indexer;
     private Victor m_shooter;
-    private DigitalInput m_DIOlimitSwitchWheel;
 
     public void ballSystemInit() {
         m_intake = new Victor(Constants.PWM_Intake);
@@ -35,13 +30,13 @@ public class BallSystem {
     public void mainMethod() {
         // intake code
         if (intakeOn && currentBallTotal < 5) {
-            m_intake.set(kIntakeSpeed);
+            m_intake.set(Constants.kIntakeSpeed);
         } else {
             m_intake.set(0);
         }
         // indexer code
         if (m_intakeSwitch.get()) {
-            m_indexer.set(kIndexSpeed);
+            m_indexer.set(Constants.kIndexSpeed);
             if (!intakeSwitchPressed) // i.e. first press
                 currentBallTotal++;
             intakeSwitchPressed = true;
@@ -66,8 +61,8 @@ public class BallSystem {
         timer = 0;
         intakeOn = false;
         currentBallTotal = 0;
-        m_shooter.set(kShooterSpeed);
-        m_indexer.set(kEjectionSpeed);
+        m_shooter.set(Constants.kShooterSpeed);
+        m_indexer.set(Constants.kEjectionSpeed);
     }
     /*
     // I see the value in toggling the shooter in the event
@@ -76,8 +71,8 @@ public class BallSystem {
     public void toggleShooting() {
         if (currentlyShooting == false){
             currentlyShooting = true;
-            m_wheel.set(kEjectionSpeed);
-            m_shooter.set(kShooterSpeed);
+            m_wheel.set(Constants.kEjectionSpeed);
+            m_shooter.set(Constants.kShooterSpeed);
         }
         else if (currentlyShooting == true){
             currentlyShooting = false;

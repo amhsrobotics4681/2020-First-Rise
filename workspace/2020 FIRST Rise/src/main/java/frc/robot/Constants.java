@@ -10,7 +10,7 @@ package frc.robot;
 
 public class Constants {
 
-    // Joystick Buttons
+    // Joystick Buttons - private, so k____ unnecessary
     private static final int buttonX = 1;
     private static final int buttonA = 2;
     private static final int buttonB = 3;
@@ -37,26 +37,31 @@ public class Constants {
     // DIO Declarations
     public static final int DIO_IntakeSwitch = 0;
 
-    //Robot --- CHANGE NUMBERS TO BUTTON VARIABLES DEFINED ABOVE
-    // petition for new naming convention: bXXXXX = button
-    public static final int kClimberExtendButton = 1; //Redundant assignment currently
-    public static final int kClimberContractButton = 2; //Redundant assignment currently
-    public static final int kClimberStopButton = 3;
-    public static final int kRotateSetColorButton = 4; //Redundant assignment currently
-    public static final int kRotateRevolutionsButton = 5; //Redundant assignment currently
-    public static final int kManualIntakeOverrideButton = 7;
-    public static final int kManualShootingOverrideButton = 8;
-    public static final int kAlignButton = 9;
-    public static final int kLeftMotorInput = 0;//Redundant assignment currently
-    public static final int kRightMotorInput = 1;//Redundant assignment currently
+    // Joystick Buttons
+    public static final int bExtendClimber = 1; //Redundant assignment currently
+    public static final int bContractClimber = 2; //Redundant assignment currently
+    public static final int bStopClimber = 3;
+    public static final int bPositionControl = 4; //Redundant assignment currently
+    public static final int bRotationControl = 5; //Redundant assignment currently
+    public static final int bIntakeToggle = 7;
+    public static final int bResetShooter = 8;
+    public static final int bAlignRobot = 9;
+
+    // Various Speed Constants
+    public static final double kIntakeSpeed = 0.3; //arbitrary values
+    public static final double kIndexSpeed = 0.3;
+    public static final double kEjectionSpeed = 0.6;
+    public static double kShooterSpeed = 0.8;
+    public static final double kRotationSpeed = 0.5;
+    public static final double kPositionSpeed = 0.1;
+    public static final double kPulleySpeed = 1.0;
+    public static final double kWinchSpeed = 1.0;
+    public static final double kAligningSpeed = 0.4;
+
+    // Various Robot Constants
     public static final int kRaspberryPiXInput = 0;
     public static final int kRaspberryPiYInput = 1;
-    public static final boolean automaticShootingAfterAligning = false;//Switch to true if you want to shoot immediately after lining up
-    public static final double kDrivingSpeed = .4;
-
-
-
-    //Climber
-    public static final int kPulleyInput = 6;//Redundant assignment currently
-    public static final int kWinchInput = 7;//Redundant assignment currently
+    public static final boolean automaticShootingAfterAligning = false;
+    //Switch to true if you want to shoot immediately after lining up
+    // Going with Ryan-level name lengths, eh? ^^
 }
