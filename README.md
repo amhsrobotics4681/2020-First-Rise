@@ -1,14 +1,13 @@
-![AMHS Robocat Logo](https://lh3.googleusercontent.com/2_4DW8v-YfFLjZBuC3cO5jEoalWOSBz8ERgK-4shDQHpJ9XptatoZCr4_qgZDjHvyAC0gwA=s85)
 # FRC Team 4681 - Murphy's Law
 ![AMHS Logo](https://github.com/garykac/amhs-robotics-4681/blob/gh-pages/img/amhs-logo-white-100.png?raw=true)
 ## Archbishop Murphy High School
 
-Rookie Year: 2013 (Ultimate Ascent)
-This is our code repository for FRC 2020: FIRST Rise, Infinite Recharge.
+Rookie Year: 2013 (Ultimate Ascent)  
+**This is our code repository for FRC 2020: FIRST Rise, Infinite Recharge.**
 
 ### Competitions
-Glacier Peak HS, 2/28 - 3/1
-Auburn HS, 3/27 - 3/29
+* Glacier Peak HS, 2/28 - 3/1
+* Auburn HS, 3/27 - 3/29
 
 ### Meetings
 Everyday after school, 3 pm to 5 pm, and Saturdays, 10 am to 3 pm, except No School days and finals.
