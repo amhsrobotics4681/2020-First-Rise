@@ -25,10 +25,10 @@ public class Wheel {
     private final Color kRed = ColorMatch.makeColor(0.43, 0.39, 0.17);
     private final Color kYellow = ColorMatch.makeColor(0.30, 0.54, 0.14);
     private String status = "Stationary";
+    private String targetColor = "Green"; //Abitrary selection, set to whatever needed
     private final int kTargetRevolutions = 4;
     private String previousColor;
     private String currentColor;
-    private String targetColor;
     private int numPanelShifted;
     private int numPanelShiftNeeded;
 
@@ -40,40 +40,35 @@ public class Wheel {
         m_motor = new Victor(5); 
         currentColor = getColor();
     }
-
-    public void rotationControl() {
-        status = "Rotation";
-        numPanelShiftNeeded = 8*kTargetRevolutions; // methinks unnecessary
+    public void startRotating(){
+        status = "Revolutions";
+        numPanelShiftNeeded = 8*kTargetRevolutions;
         numPanelShifted = 0;
-        m_motor.set(Constants.kRotationSpeed);
+        m_motor.set(.5);
     }
+    public void setColor(){
+        status = "Color";
+        m_motor.set(.1);
 
-    public void positionControl(String gameData) {
-        if (gameData.length() > 0) {
-            targetColor = gameData.charAt(0);
-            status = "Position";
-            m_motor.set(Constants.kPositionSpeed);
-        }
     }
-    //Rotates the wheel a set number of times until color is matched. 
+    /**Rotates the wheel a set number of times until color is matched. */
     public void mainMethod() {
         if (status.equals("Revolutions")){
             if (numPanelShifted < numPanelShiftNeeded){
                 previousColor = currentColor;
                 currentColor = getColor();
-                if (!currentColor.equals(previousColor)) {
+                if (!currentColor.equals(previousColor)){
                     numPanelShifted ++;
                     System.out.println(numPanelShifted);
                 }
-            } else {
+            }
+            else {
                 m_motor.set(0);
                 status = "Stationary";
             }
         }
-        if (status.equals("Color")) {
-            // WE ARE PERPENDICULAR TO FIELD COLOR SENSOR !!!
-            // WE WILL NEED TO ACCOUNT FOR IT !!!
-            if (targetColor == getColor().charAt(0)){
+        if (status.equals("Color")){
+            if (targetColor.equals(getColor())){
                 m_motor.set(0);
                 status = "Stationary";
             }

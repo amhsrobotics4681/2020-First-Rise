@@ -10,35 +10,43 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DriverStation;
 
 public class Robot extends TimedRobot {
+    /**  Victor PWM definitions:
+     * 0: left wheel motor
+     * 1: right wheel motor
+     * 2: ball intake motor
+     * 3: ball hopper motor
+     * 4: ball shooter motor
+     * 5: control panel motor
+     * 6: pulley climber motor
+     * 7: winch climber motor
+     */
+
     private static final String kDefaultAuto = "Default";
     private static final String kCustomAuto = "My Auto";
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
-    private String gameData;
 
     private Joystick controller;
     private Climber m_climber;
     private Wheel m_wheel;
     private BallSystem m_ball;
-    private DigitalInput m_raspberryPiX;
-    private DigitalInput m_raspberryPiY;
-    private int xLocation;
-    private int yLocation;
-    private boolean aligningX = false;
 
-
+    private static final int kClimberExtendButton = 1; //Redundant assignment currently
+    private static final int kClimberContractButton = 2; //Redundant assignment currently
+    private static final int kClimberStopButton = 3;
+    private static final int kRotateSetColorButton = 4; //Redundant assignment currently
+    private static final int kRotateRevolutionsButton = 5; //Redundant assignment currently
 
 
     private Victor m_left;
     private Victor m_right;
-
+    //private DifferentialDrive m_drive;
     @Override
     public void robotInit() {
         m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
@@ -46,17 +54,16 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("Auto choices", m_chooser);
 
         controller = new Joystick(0);
-        m_climber = new Climber();
+        m_climber = new Climber(); //basically wash, rinse, repeat
         m_climber.climberInit();
         m_wheel = new Wheel();
         m_wheel.wheelInit();
         m_ball = new BallSystem();
         m_ball.ballSystemInit();
 
-        m_raspberryPiX = new DigitalInput(Constants.kRaspberryPiXInput);
-        m_raspberryPiY = new DigitalInput(Constants.kRaspberryPiYInput);
-        m_left = new Victor(Constants.PWM_LeftTreads);
-        m_right = new Victor(Constants.PWM_RightTreads);
+        m_left = new Victor(0);
+        m_right = new Victor(1);
+        //m_drive = new DifferentialDrive(m_left, m_right);
     }
 
     @Override
@@ -82,61 +89,33 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         m_wheel.mainMethod();
-        this.alignX();
-        m_ball.mainMethod();
-        m_right.set(controller.getRawAxis(3));
-        m_left.set(controller.getRawAxis(1));
-        gameData = DriverStation.getInstance().getGameSpecificMessage();
-        
-        if (controller.getRawButtonPressed(Constants.bExtendClimber))
-            m_climber.extending();
-        if (controller.getRawButtonPressed(Constants.bContractClimber))
-            m_climber.contracting();
-        if (controller.getRawButton(Constants.bStopClimber))
-            m_climber.stop();
-        
-        if (controller.getRawButtonPressed(Constants.bPositionControl))
-            m_wheel.positionControl(gameData);
-        if (controller.getRawButtonPressed(Constants.bRotationControl))
-            m_wheel.rotationControl();
-        
-        if (controller.getRawButtonPressed(Constants.bIntakeToggle))
-            m_ball.toggleIntake();
-        if (controller.getRawButtonPressed(Constants.bResetShooter))
-            m_ball.resetShooter(); // we need to decide on 'all in' or toggle
-
-        if (controller.getRawButtonPressed(Constants.bAlignRobot))
-            aligningX = true;
-        /*
         SmartDashboard.putString("Detected Color", m_wheel.getColor());
         SmartDashboard.putNumber("Red", m_wheel.getRed());
         SmartDashboard.putNumber("Green", m_wheel.getGreen());
         SmartDashboard.putNumber("Blue", m_wheel.getBlue());
         SmartDashboard.putNumber("Confidence", m_wheel.getConfidence());
         SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
-        */
+        m_right.set(controller.getRawAxis(3));
+        m_left.set(controller.getRawAxis(1));
+        if (controller.getRawButtonPressed(kClimberExtendButton)){
+            m_climber.extending();
+        }
+        if (controller.getRawButtonPressed(kClimberContractButton)){
+            m_climber.contracting();
+        }
+        if (controller.getRawButton(kClimberStopButton)){
+            m_climber.stop();
+        }
+        if (controller.getRawButtonPressed(kRotateSetColorButton)){
+            m_wheel.setColor();
+        }
+        if (controller.getRawButtonPressed(kRotateRevolutionsButton)){
+            m_wheel.startRotating();
+            System.out.println("PRessed");
+        }
     }
 
     @Override
     public void testPeriodic() {
     }
-
-    public void alignX(){
-        if (aligningX == true){
-            //xLocation = m_raspberryPiX.get();
-            xLocation = 0; //uncomment line above once figured out how to get value
-            if (xLocation < 20 && xLocation > -20){
-                m_left.set(0);
-                m_right.set(0);
-                aligningX = false;
-            }
-            if (xLocation < -20){
-                m_left.set(Constants.kAligningSpeed);
-            }
-            if (xLocation > 20){
-                m_right.set(Constants.kAligningSpeed);
-            }
-        }
-    }
-    
 }

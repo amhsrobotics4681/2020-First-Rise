@@ -13,14 +13,14 @@ public class Climber {
     private Victor m_winch;
 
     public void climberInit() {
-        m_pulley = new Victor(Constants.PWM_Pulley);
-        m_winch = new Victor(Constants.PWM_Winch);
+        m_pulley = new Victor(6); //fill in PWM port
+        m_winch = new Victor(7);
     }
     public void extending() {
-        m_pulley.set(Constants.kPulleySpeed);
+        m_pulley.set(1);
     }
     public void contracting() {
-        m_winch.set(Constants.kWinchSpeed);
+        m_winch.set(1);
     }
     public void stop() {
         m_pulley.set(0);
