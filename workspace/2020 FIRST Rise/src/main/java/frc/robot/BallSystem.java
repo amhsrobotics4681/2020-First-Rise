@@ -19,7 +19,7 @@ public class BallSystem {
     private double kIndexSpeed = 0.3;
     private double kEjectionSpeed = 0.6;
     private double kShooterSpeed = 0.8;
-
+    private DigitalInput m_intakeSwitch;
     private Victor m_intake;
     private Victor m_indexer;
     private Victor m_shooter;
