@@ -50,7 +50,7 @@ public class Wheel {
 
     public void positionControl(String gameData) {
         if (gameData.length() > 0) {
-            targetColor = gameData.charAt(0);
+            targetColor = gameData.substring(0,1);
             status = "Position";
             m_motor.set(Constants.kPositionSpeed);
         }
@@ -73,7 +73,7 @@ public class Wheel {
         if (status.equals("Color")) {
             // WE ARE PERPENDICULAR TO FIELD COLOR SENSOR !!!
             // WE WILL NEED TO ACCOUNT FOR IT !!!
-            if (targetColor == getColor().charAt(0)){
+            if (targetColor == getColor().substring(0,1)){
                 m_motor.set(0);
                 status = "Stationary";
             }
