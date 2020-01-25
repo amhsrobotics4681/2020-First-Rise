@@ -46,6 +46,7 @@ public class Wheel {
         numPanelShiftNeeded = 8*kTargetRevolutions; // methinks unnecessary
         numPanelShifted = 0;
         m_motor.set(Constants.kRotationSpeed);
+        System.out.println("Called");
     }
 
     public void positionControl(String gameData) {

@@ -53,8 +53,8 @@ public class Robot extends TimedRobot {
         m_ball = new BallSystem();
         m_ball.ballSystemInit();
 
-        m_raspberryPiX = new DigitalInput(Constants.kRaspberryPiXInput);
-        m_raspberryPiY = new DigitalInput(Constants.kRaspberryPiYInput);
+        //m_raspberryPiX = new DigitalInput(Constants.kRaspberryPiXInput);
+        //m_raspberryPiY = new DigitalInput(Constants.kRaspberryPiYInput);
         m_left = new Victor(Constants.PWM_LeftTreads);
         m_right = new Victor(Constants.PWM_RightTreads);
     }
