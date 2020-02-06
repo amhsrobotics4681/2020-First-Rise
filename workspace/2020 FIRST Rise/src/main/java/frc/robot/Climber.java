@@ -13,8 +13,8 @@ public class Climber {
     private Victor m_winch;
 
     public void climberInit() {
-        m_pulley = new Victor(6); //fill in PWM port
-        m_winch = new Victor(7);
+        m_pulley = new Victor(Constants.PWM_ClimberWinch); //fill in PWM port
+        m_winch = new Victor(Constants.PWM_ClimberPulley);
     }
     public void extending() {
         m_pulley.set(1);

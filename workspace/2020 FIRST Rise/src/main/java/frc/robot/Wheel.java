@@ -40,41 +40,7 @@ public class Wheel {
         m_motor = new Victor(5); 
         currentColor = getColor();
     }
-    public void startRotating(){
-        status = "Revolutions";
-        numPanelShiftNeeded = 8*kTargetRevolutions;
-        numPanelShifted = 0;
-        m_motor.set(.5);
-    }
-    public void setColor(){
-        status = "Color";
-        m_motor.set(.1);
-
-    }
-    /**Rotates the wheel a set number of times until color is matched. */
-    public void mainMethod() {
-        if (status.equals("Revolutions")){
-            if (numPanelShifted < numPanelShiftNeeded){
-                previousColor = currentColor;
-                currentColor = getColor();
-                if (!currentColor.equals(previousColor)){
-                    numPanelShifted ++;
-                    System.out.println(numPanelShifted);
-                }
-            }
-            else {
-                m_motor.set(0);
-                status = "Stationary";
-            }
-        }
-        if (status.equals("Color")){
-            if (targetColor.equals(getColor())){
-                m_motor.set(0);
-                status = "Stationary";
-            }
-        }
-    }
-    
+        
     /**Gets the color that is currently being detected*/
     public String getColor() {
         Color detectedColor = m_colorSensor.getColor();
