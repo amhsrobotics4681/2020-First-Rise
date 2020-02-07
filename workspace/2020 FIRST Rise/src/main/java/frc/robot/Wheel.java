@@ -61,7 +61,42 @@ public class Wheel {
 
         return colorString;
     }
+    public void rotationControl(){
+        if (!status.equals("Rotation")){
+            status = "Rotation";
+            numPanelShiftNeeded = 8*kTargetRevolutions;
+            numPanelShifted = 0;
+            m_motor.set(Constants.kRotationSpeed);
+        }
+        
+    }
+    public void positionControl(){
+        status = "Position";
+        m_motor.set(.1);
 
+    }
+    public void mainMethod() {
+        if (status.equals("Rotation")){
+            if (numPanelShifted < numPanelShiftNeeded){
+                previousColor = currentColor;
+                currentColor = getColor();
+                if (!currentColor.equals(previousColor)){
+                    numPanelShifted ++;
+                    System.out.println(numPanelShifted);
+                }
+            }
+            else {
+                m_motor.set(0);
+                status = "Stationary";
+            }
+        }
+        if (status.equals("Position")){
+            if (targetColor.equals(getColor())){
+                m_motor.set(0);
+                status = "Stationary";
+            }
+        }
+    }
     public double getRed() {
         return m_colorSensor.getColor().red;
     }

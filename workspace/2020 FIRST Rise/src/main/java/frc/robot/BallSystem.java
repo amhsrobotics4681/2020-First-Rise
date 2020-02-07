@@ -34,7 +34,7 @@ public class BallSystem {
         timer = 300;
         maxTime = 200; // = seconds * 50
         intakeSwitchPressed = false;
-        currentlyShooting = false;
+        currentlyShooting = true;
         intakeOn = false;
     }
 
@@ -71,7 +71,12 @@ public class BallSystem {
         m_indexer.set(Constants.kIndexSpeed);
         currentlyShooting = true;
     }
+
     public void toggleIntake(){
         intakeOn = !intakeOn;
+    }
+
+    public boolean currentlyShooting() {
+        return currentlyShooting;
     }
 }

@@ -21,8 +21,11 @@ public class Constants {
     public static final int PWM_Wheel = 5;
     public static final int PWM_ClimberWinch = 6;
     public static final int PWM_ClimberPulley = 7;
+
 //DIO's
     public static final int DIO_BallCounter = 0;
+    public static final int DIO_LIDAR = 1;
+
 //Buttons
     private static final int buttonX = 1;
     private static final int buttonA = 2;
@@ -38,14 +41,11 @@ public class Constants {
     private static final int stickR = 12;
 
 //Button outputs
-    public static final int bExtendClimber = 1; //Redundant assignment currently
-    public static final int bContractClimber = 2; //Redundant assignment currently
-    public static final int bStopClimber = 3;
-    public static final int bPositionControl = 4; //Redundant assignment currently
-    public static final int bRotationControl = 5; //Redundant assignment currently
-    public static final int bIntakeToggle = 7;
-    public static final int bResetShooter = 8;
-    public static final int bAlignRobot = 9;
+    public static final int bPositionControl = 1; //Redundant assignment currently
+    public static final int bRotationControl = 2; //Redundant assignment currently
+    public static final int bIntakeToggle = 3;
+    public static final int bResetShooter = 4;
+    public static final int bAlignRobot = 5;
 
 // Speed declarations
     public static final double kIntakeSpeed = 0.3; //arbitrary values
