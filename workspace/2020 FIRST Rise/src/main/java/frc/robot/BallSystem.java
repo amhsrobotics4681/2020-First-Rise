@@ -22,6 +22,7 @@ public class BallSystem {
     int maxTime;
     boolean intakeSwitchPressed;
     boolean currentlyShooting;
+    boolean intakeOn;
 
     public void ballSystemInit() {
         m_intake = new Victor(Constants.PWM_BallIntake);
@@ -34,11 +35,12 @@ public class BallSystem {
         maxTime = 200; // = seconds * 50
         intakeSwitchPressed = false;
         currentlyShooting = false;
+        intakeOn = false;
     }
 
     public void mainMethod() {
         // INTAKE CODE
-        if(ballCount < 5){
+        if(ballCount < 5 && intakeOn){
             m_intake.set(Constants.kIntakeSpeed*failsafe);
         } else {
             m_intake.set(0);
@@ -68,5 +70,8 @@ public class BallSystem {
         m_shooter.set(Constants.kShooterSpeed);
         m_indexer.set(Constants.kIndexSpeed);
         currentlyShooting = true;
+    }
+    public void toggleIntake(){
+        intakeOn = !intakeOn;
     }
 }

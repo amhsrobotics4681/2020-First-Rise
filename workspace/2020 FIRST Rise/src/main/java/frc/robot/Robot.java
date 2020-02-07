@@ -70,6 +70,7 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopPeriodic() {
+        m_ball.mainMethod();
         SmartDashboard.putString("Detected Color", m_wheel.getColor());
         SmartDashboard.putNumber("Red", m_wheel.getRed());
         SmartDashboard.putNumber("Green", m_wheel.getGreen());
@@ -77,6 +78,30 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Confidence", m_wheel.getConfidence());
         SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
         m_drive.arcadeDrive(controller.getRawAxis(3), controller.getRawAxis(2));
+        if (controller.getRawButtonPressed(Constants.bExtendClimber)){
+            m_climber.extending();
+        }
+        if (controller.getRawButtonPressed(Constants.bContractClimber)){
+            m_climber.contracting();
+        }
+        if (controller.getRawButtonPressed(Constants.bStopClimber)){
+            m_climber.stop();
+        }
+        if (controller.getRawButtonPressed(Constants.bPositionControl)){
+            
+        }
+        if (controller.getRawButtonPressed(Constants.bRotationControl)){
+            
+        }
+        if (controller.getRawButtonPressed(Constants.bIntakeToggle)){
+            m_ball.toggleIntake();
+        }
+        if (controller.getRawButtonPressed(Constants.bResetShooter)){
+            m_ball.resetShooter();
+        }
+        if (controller.getRawButtonPressed(Constants.bAlignRobot)){
+            
+        }
     }
 
     @Override
