@@ -25,19 +25,19 @@ public class Wheel {
     private final Color kRed = ColorMatch.makeColor(0.43, 0.39, 0.17);
     private final Color kYellow = ColorMatch.makeColor(0.30, 0.54, 0.14);
     private String status = "Stationary";
-    private String targetColor = "Green"; //Abitrary selection, set to whatever needed
+    private String targetColor;
     private final int kTargetRevolutions = 4;
     private String previousColor;
     private String currentColor;
     private int numPanelShifted;
-    private int numPanelShiftNeeded;
+    private int numPanelShiftNeeded;   
 
     public void wheelInit() {
         m_colorMatcher.addColorMatch(kBlue);
         m_colorMatcher.addColorMatch(kGreen);
         m_colorMatcher.addColorMatch(kRed);
         m_colorMatcher.addColorMatch(kYellow);
-        m_motor = new Victor(5); 
+        m_motor = new Victor(Constants.PWM_Wheel); 
         currentColor = getColor();
     }
         
@@ -58,10 +58,11 @@ public class Wheel {
         } else {
             colorString = "Unknown";
         }
-
         return colorString;
     }
+
     public void rotationControl(){
+        System.out.println("Rotating");
         if (!status.equals("Rotation")){
             status = "Rotation";
             numPanelShiftNeeded = 8*kTargetRevolutions;
@@ -70,10 +71,13 @@ public class Wheel {
         }
         
     }
-    public void positionControl(){
-        status = "Position";
-        m_motor.set(.1);
-
+    public void positionControl(String gameData) {
+        if (gameData.length() > 0) {
+            targetColor = gameData.substring(0,1);
+            status = "Position";
+            m_motor.set(Constants.kPositionSpeed);
+            adjustColor();
+        }
     }
     public void mainMethod() {
         if (status.equals("Rotation")){
@@ -91,7 +95,7 @@ public class Wheel {
             }
         }
         if (status.equals("Position")){
-            if (targetColor.equals(getColor())){
+            if (targetColor.equals(getColor().substring(0,1))){
                 m_motor.set(0);
                 status = "Stationary";
             }
@@ -111,5 +115,18 @@ public class Wheel {
     }
     public double getProximity() {
         return m_colorSensor.getProximity();
+    }
+    public void adjustColor(){ // ybgr
+        switch(targetColor) {
+            case "Y":
+                targetColor = "G"; break;
+            case "B":
+                targetColor = "R"; break;
+            case "G":
+                targetColor = "Y"; break;
+            case "R":
+                targetColor = "B"; break;
+        
+        }
     }
 }

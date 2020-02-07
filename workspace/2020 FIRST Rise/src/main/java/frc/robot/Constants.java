@@ -41,11 +41,11 @@ public class Constants {
     private static final int stickR = 12;
 
 //Button outputs
-    public static final int bPositionControl = 1; //Redundant assignment currently
-    public static final int bRotationControl = 2; //Redundant assignment currently
-    public static final int bIntakeToggle = 3;
-    public static final int bResetShooter = 4;
-    public static final int bAlignRobot = 5;
+    public static final int bPositionControl = buttonX; //Redundant assignment currently
+    public static final int bRotationControl = buttonY; //Redundant assignment currently
+    public static final int bIntakeToggle = buttonA;
+    public static final int bResetShooter = triggerR;
+    public static final int bAlignRobot = triggerL;
 
 // Speed declarations
     public static final double kIntakeSpeed = 0.3; //arbitrary values
@@ -53,7 +53,7 @@ public class Constants {
     public static final double kEjectionSpeed = 0.6;
     public static double kShooterSpeed = 0.8;
     public static final double kRotationSpeed = 0.5;
-    public static final double kPositionSpeed = 0.1;
+    public static final double kPositionSpeed = 0.5;
     public static final double kPulleySpeed = 1.0;
     public static final double kWinchSpeed = 1.0;
     public static final double kAligningSpeed = 0.4;

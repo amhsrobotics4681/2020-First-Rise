@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class Robot extends TimedRobot {
     private Joystick controller;
@@ -24,6 +25,7 @@ public class Robot extends TimedRobot {
     private DifferentialDrive m_drive;
 
     private boolean aligned;
+
 
     @Override
     public void robotInit() {
@@ -53,7 +55,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         m_ball.mainMethod();
-        System.out.println(controller.getPOV());
+        m_wheel.mainMethod();
         SmartDashboard.putString("Detected Color", m_wheel.getColor());
         SmartDashboard.putNumber("Red", m_wheel.getRed());
         SmartDashboard.putNumber("Green", m_wheel.getGreen());
@@ -69,7 +71,8 @@ public class Robot extends TimedRobot {
             m_climber.stop();
         }
         if (controller.getRawButtonPressed(Constants.bPositionControl)){
-            m_wheel.positionControl();
+           
+            m_wheel.positionControl(DriverStation.getInstance().getGameSpecificMessage());
         }
         if (controller.getRawButtonPressed(Constants.bRotationControl)){
             m_wheel.rotationControl();
