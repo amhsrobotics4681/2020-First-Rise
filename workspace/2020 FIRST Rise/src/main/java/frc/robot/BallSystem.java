@@ -9,7 +9,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.DigitalInput;
-// Need to import dio limit switch junk i don't know what its called
 
 public class BallSystem {
     Victor m_intake;
@@ -74,9 +73,5 @@ public class BallSystem {
 
     public void toggleIntake(){
         intakeOn = !intakeOn;
-    }
-
-    public boolean currentlyShooting() {
-        return currentlyShooting;
     }
 }

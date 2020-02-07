@@ -13,19 +13,21 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Counter;
 
 public class Robot extends TimedRobot {
     private Joystick controller;
     private Climber m_climber;
     private Wheel m_wheel;
     private BallSystem m_ball;
-
+    private int timer;
+    private double cumulative;
     private Victor m_left;
     private Victor m_right;
     private DifferentialDrive m_drive;
 
-    private boolean aligned;
-
+    private Counter counter;
+    private boolean aligning;
 
     @Override
     public void robotInit() {
@@ -41,21 +43,39 @@ public class Robot extends TimedRobot {
         m_right = new Victor(1);
         m_drive = new DifferentialDrive(m_left, m_right);
 
-        aligned = false;
+        counter = new Counter(Constants.DIO_LIDAR);
+        counter.setMaxPeriod(1.0);
+        counter.setSemiPeriodMode(true);
+        counter.reset();
+        aligning = true;
     }
-
-    @Override
-    public void autonomousInit() {}
 
     @Override
     public void autonomousPeriodic() {
         align();
+        m_ball.mainMethod();
+        if (!aligning)
+            m_ball.resetShooter();
+        if (!m_ball.currentlyShooting && getDistance()<180)
+            m_drive.arcadeDrive(-1, 0);
     } 
     
     @Override
+    public void teleopInit() {
+        m_ball.toggleIntake();
+    }
+
+    @Override
     public void teleopPeriodic() {
+        timer++;
+        cumulative += getDistance();
+        if (timer%10==0){
+            System.out.println((Double.toString(cumulative/10)).substring(0,5));
+            cumulative = 0;
+        }
         m_ball.mainMethod();
         m_wheel.mainMethod();
+        align();
         SmartDashboard.putString("Detected Color", m_wheel.getColor());
         SmartDashboard.putNumber("Red", m_wheel.getRed());
         SmartDashboard.putNumber("Green", m_wheel.getGreen());
@@ -71,7 +91,6 @@ public class Robot extends TimedRobot {
             m_climber.stop();
         }
         if (controller.getRawButtonPressed(Constants.bPositionControl)){
-           
             m_wheel.positionControl(DriverStation.getInstance().getGameSpecificMessage());
         }
         if (controller.getRawButtonPressed(Constants.bRotationControl)){
@@ -84,13 +103,23 @@ public class Robot extends TimedRobot {
             m_ball.resetShooter();
         }
         if (controller.getRawButtonPressed(Constants.bAlignRobot)){
-            
+            startAlign();
         }
     }
 
+    private double getDistance() {
+        return counter.getPeriod() * 100000 / 2.54;
+        // getPeriod returns cm / µs, then --> sec --> in
+    }
+
+    private void startAlign() {
+        aligning = true;
+    }
+
     private void align() {
-        // align code!
-        if (true) // condition for aligned
-            aligned = true;
+        if (aligning) {
+        // if location of tape is negative, rotate left
+        // if location of tape is positive, rotate right
+        }
     }
 }
