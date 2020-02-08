@@ -99,7 +99,7 @@ public class Robot extends TimedRobot {
             m_climber.stop();
         }
         if (controller.getRawButtonPressed(Constants.bPositionControl)){
-            m_wheel.positionControl(DriverStation.getInstance().getGameSpecificMessage());
+            m_wheel.positionControl();
         }
         if (controller.getRawButtonPressed(Constants.bRotationControl)){
             m_wheel.rotationControl();

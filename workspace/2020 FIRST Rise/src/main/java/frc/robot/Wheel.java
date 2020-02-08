@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.I2C;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class Wheel {
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -39,6 +40,9 @@ public class Wheel {
         m_colorMatcher.addColorMatch(kYellow);
         m_motor = new Victor(Constants.PWM_Wheel); 
         currentColor = getColor();
+        targetColor = DriverStation.getInstance().getGameSpecificMessage();
+        targetColor = targetColor.substring(0,1);
+        adjustColor();
     }
         
     //Gets the color that is currently being detected
@@ -71,13 +75,11 @@ public class Wheel {
         }
     }
 
-    public void positionControl(String gameData) { //Starts motor and sets target color
-        if (gameData.length() > 0) {
-            targetColor = gameData.substring(0,1);
-            status = "Position";
-            m_motor.set(Constants.kPositionSpeed);
-            adjustColor();
-        }
+    public void positionControl() { //Starts motor and sets target color
+        status = "Position";
+        System.out.println("Position");
+        System.out.println(targetColor);
+        m_motor.set(Constants.kPositionSpeed);
     }
     public void toggleWheel(){
         status = "Stationary";
