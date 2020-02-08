@@ -26,7 +26,7 @@ public class Wheel {
     private final Color kYellow = ColorMatch.makeColor(0.30, 0.54, 0.14);
     private String status = "Stationary";
     private String targetColor;
-    private final int kTargetRevolutions = 4;
+    private final int kTargetRevolutions = 5;
     private String previousColor;
     private String currentColor;
     private int numPanelShifted;
@@ -41,7 +41,7 @@ public class Wheel {
         currentColor = getColor();
     }
         
-    /**Gets the color that is currently being detected*/
+    //Gets the color that is currently being detected
     public String getColor() {
         Color detectedColor = m_colorSensor.getColor();
         String colorString;
@@ -61,7 +61,7 @@ public class Wheel {
         return colorString;
     }
 
-    public void rotationControl(){
+    public void rotationControl(){ //Starts motor and sets target rotations
         System.out.println("Rotating");
         if (!status.equals("Rotation")){
             status = "Rotation";
@@ -69,9 +69,9 @@ public class Wheel {
             numPanelShifted = 0;
             m_motor.set(Constants.kRotationSpeed);
         }
-        
     }
-    public void positionControl(String gameData) {
+
+    public void positionControl(String gameData) { //Starts motor and sets target color
         if (gameData.length() > 0) {
             targetColor = gameData.substring(0,1);
             status = "Position";
@@ -79,8 +79,9 @@ public class Wheel {
             adjustColor();
         }
     }
+
     public void mainMethod() {
-        if (status.equals("Rotation")){
+        if (status.equals("Rotation")){ //If rotating, spin wheel until target rotation is reached
             if (numPanelShifted < numPanelShiftNeeded){
                 previousColor = currentColor;
                 currentColor = getColor();
@@ -88,19 +89,21 @@ public class Wheel {
                     numPanelShifted ++;
                     System.out.println(numPanelShifted);
                 }
-            }
-            else {
+            } else {
                 m_motor.set(0);
                 status = "Stationary";
             }
         }
-        if (status.equals("Position")){
+
+        if (status.equals("Position")){ //If positioning, spin wheel until target color is reached
             if (targetColor.equals(getColor().substring(0,1))){
                 m_motor.set(0);
                 status = "Stationary";
             }
         }
     }
+
+    //Gets data for Smart Dashboard
     public double getRed() {
         return m_colorSensor.getColor().red;
     }
@@ -116,6 +119,8 @@ public class Wheel {
     public double getProximity() {
         return m_colorSensor.getProximity();
     }
+
+    //Transforms desired color into target color
     public void adjustColor(){ // ybgr
         switch(targetColor) {
             case "Y":

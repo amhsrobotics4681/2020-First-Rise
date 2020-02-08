@@ -7,18 +7,15 @@
 
 package frc.robot;
 
-/**
- * Add your docs here.
- */
 public class Constants {
     
 //PWM's
-    public static final int PWM_TreadsLeft = 0;
+    public static final int PWM_TreadsLeft = 0; 
     public static final int PWM_TreadsRight = 1;
     public static final int PWM_BallIntake = 2;
     public static final int PWM_BallIndexer = 3;
     public static final int PWM_BallShooter = 4;
-    public static final int PWM_Wheel = 5;
+    public static final int PWM_Wheel = 5; 
     public static final int PWM_ClimberWinch = 6;
     public static final int PWM_ClimberPulley = 7;
 

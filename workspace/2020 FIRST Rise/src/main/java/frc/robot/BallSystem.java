@@ -17,7 +17,7 @@ public class BallSystem {
     DigitalInput m_intakeSwitch;
     int ballCount;
     int failsafe;
-    int timer;
+    private int timer;
     int maxTime;
     boolean intakeSwitchPressed;
     boolean currentlyShooting;
@@ -38,13 +38,13 @@ public class BallSystem {
     }
 
     public void mainMethod() {
-        // INTAKE CODE
+        // INTAKE CODE- spin until system is full
         if(ballCount < 5 && intakeOn){
             m_intake.set(Constants.kIntakeSpeed*failsafe);
         } else {
             m_intake.set(0);
         }
-        // INDEXER CODE
+        // INDEXER CODE- spin when ball is collected and count balls in system
         if(m_intakeSwitch.get()){
             m_indexer.set(Constants.kIndexSpeed);
             if(!intakeSwitchPressed) {
@@ -53,9 +53,11 @@ public class BallSystem {
             }
         } else {
             intakeSwitchPressed = false;
-            if(!currentlyShooting) {m_indexer.set(0);} // eric did this, not chris (surprise surprise)
+            if(!currentlyShooting) {
+                m_indexer.set(0);
+            } //happy now?
         }
-        // SHOOTER CODE
+        // SHOOTER CODE- run shooter until timer runs out
         if(timer > maxTime) {
             m_shooter.set(0);
             currentlyShooting = false;
@@ -63,7 +65,7 @@ public class BallSystem {
         timer++;
     }
 
-    public void resetShooter(){
+    public void resetShooter(){ //Resets timer and engages shooting system
         timer = 0;
         ballCount = 0;
         m_shooter.set(Constants.kShooterSpeed);

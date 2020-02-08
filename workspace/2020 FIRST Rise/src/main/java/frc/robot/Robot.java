@@ -73,15 +73,20 @@ public class Robot extends TimedRobot {
             System.out.println((Double.toString(cumulative/10)).substring(0,5));
             cumulative = 0;
         }
+
         m_ball.mainMethod();
         m_wheel.mainMethod();
         align();
+
+        //SmartDashboard outputs
         SmartDashboard.putString("Detected Color", m_wheel.getColor());
         SmartDashboard.putNumber("Red", m_wheel.getRed());
         SmartDashboard.putNumber("Green", m_wheel.getGreen());
         SmartDashboard.putNumber("Blue", m_wheel.getBlue());
         SmartDashboard.putNumber("Confidence", m_wheel.getConfidence());
         SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
+
+        //Controls
         m_drive.arcadeDrive(controller.getRawAxis(3), controller.getRawAxis(2));
         if (controller.getPOV() == 0){
             m_climber.extending();
@@ -112,6 +117,7 @@ public class Robot extends TimedRobot {
         // getPeriod returns cm / µs, then --> sec --> in
     }
 
+    //Pending completion of vision project
     private void startAlign() {
         aligning = true;
     }
