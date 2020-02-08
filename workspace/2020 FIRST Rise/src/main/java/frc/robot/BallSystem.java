@@ -53,7 +53,9 @@ public class BallSystem {
             }
         } else {
             intakeSwitchPressed = false;
-            if(!currentlyShooting) {m_indexer.set(0);} // eric did this, not chris (surprise surprise)
+            if(!currentlyShooting) {
+                m_indexer.set(0);
+            } // "Happy now nerds?" (Ben Madow) 
         }
         // SHOOTER CODE
         if(timer > maxTime) {
