@@ -55,7 +55,7 @@ public class BallSystem {
             intakeSwitchPressed = false;
             if(!currentlyShooting) {
                 m_indexer.set(0);
-            } //happy now?
+            } // "Happy now nerds?" (Ben Madow) 
         }
         // SHOOTER CODE- run shooter until timer runs out
         if(timer > maxTime) {
