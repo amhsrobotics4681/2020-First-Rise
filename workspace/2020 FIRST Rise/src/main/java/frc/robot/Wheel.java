@@ -79,7 +79,10 @@ public class Wheel {
             adjustColor();
         }
     }
-
+    public void toggleWheel(){
+        status = "Stationary";
+        m_motor.set(0);
+    }
     public void mainMethod() {
         if (status.equals("Rotation")){ //If rotating, spin wheel until target rotation is reached
             if (numPanelShifted < numPanelShiftNeeded){

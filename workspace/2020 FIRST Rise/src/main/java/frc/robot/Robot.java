@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
     private double cumulative;
     private Victor m_left;
     private Victor m_right;
-    private DifferentialDrive m_drive;
+    //private DifferentialDrive m_drive;
 
     private Counter counter;
     private boolean aligning;
@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
 
         m_left = new Victor(0);
         m_right = new Victor(1);
-        m_drive = new DifferentialDrive(m_left, m_right);
+        //m_drive = new DifferentialDrive(m_left, m_right);
 
         counter = new Counter(Constants.DIO_LIDAR);
         counter.setMaxPeriod(1.0);
@@ -56,8 +56,9 @@ public class Robot extends TimedRobot {
         m_ball.mainMethod();
         if (!aligning)
             m_ball.resetShooter();
-        if (!m_ball.currentlyShooting && getDistance()<180)
-            m_drive.arcadeDrive(-1, 0);
+        if (!m_ball.currentlyShooting && getDistance()<180){
+            //m_drive.arcadeDrive(-1, 0);
+        }
     } 
     
     @Override
@@ -87,7 +88,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
 
         //Controls
-        m_drive.arcadeDrive(controller.getRawAxis(3), controller.getRawAxis(2));
+        //m_drive.arcadeDrive(-1*controller.getRawAxis(0), -1*controller.getRawAxis(1));
+        m_left.set(controller.getRawAxis(0));
+        m_right.set(controller.getRawAxis(0));
         if (controller.getPOV() == 0){
             m_climber.extending();
         } else if (controller.getPOV() == 180){
@@ -109,6 +112,9 @@ public class Robot extends TimedRobot {
         }
         if (controller.getRawButtonPressed(Constants.bAlignRobot)){
             startAlign();
+        }
+        if (controller.getRawButtonPressed(Constants.bToggleWheel)){
+            m_wheel.toggleWheel();
         }
     }
 

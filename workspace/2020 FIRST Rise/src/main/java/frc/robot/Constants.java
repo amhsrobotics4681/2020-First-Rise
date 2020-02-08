@@ -43,10 +43,11 @@ public class Constants {
     public static final int bIntakeToggle = buttonA;
     public static final int bResetShooter = triggerR;
     public static final int bAlignRobot = triggerL;
+    public static final int bToggleWheel = bumperR;
 
 // Speed declarations
-    public static final double kIntakeSpeed = 0.3; //arbitrary values
-    public static final double kIndexSpeed = 0.3;
+    public static final double kIntakeSpeed = -0.3; //arbitrary values
+    public static final double kIndexSpeed = -0.5;
     public static final double kEjectionSpeed = 0.6;
     public static double kShooterSpeed = 0.8;
     public static final double kRotationSpeed = 0.5;
