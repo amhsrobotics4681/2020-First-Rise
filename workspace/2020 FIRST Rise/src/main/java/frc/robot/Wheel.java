@@ -26,7 +26,7 @@ public class Wheel {
     private final Color kYellow = ColorMatch.makeColor(0.30, 0.54, 0.14);
     private String status = "Stationary";
     private String targetColor;
-    private final int kTargetRevolutions = 5;
+    private final int kTargetRevolutions = 4;
     private String previousColor;
     private String currentColor;
     private int numPanelShifted;

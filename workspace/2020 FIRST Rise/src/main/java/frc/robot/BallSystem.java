@@ -39,6 +39,7 @@ public class BallSystem {
 
     public void mainMethod() {
         // INTAKE CODE- spin until system is full
+        //System.out.println(m_intakeSwitch.get());
         if(ballCount < 5 && intakeOn){
             m_intake.set(Constants.kIntakeSpeed*failsafe);
         } else {

@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
         timer++;
         cumulative += getDistance();
         if (timer%10==0){
-            System.out.println((Double.toString(cumulative/10)).substring(0,5));
+            //System.out.println((Double.toString(cumulative/10)).substring(0,5));
             cumulative = 0;
         }
 
