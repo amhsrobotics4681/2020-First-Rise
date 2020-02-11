@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Counter;
 
 public class Robot extends TimedRobot {
@@ -38,9 +37,8 @@ public class Robot extends TimedRobot {
         m_wheel.wheelInit();
         m_ball = new BallSystem();
         m_ball.ballSystemInit();
-
-        m_left = new Victor(0);
-        m_right = new Victor(1);
+        m_left = new Victor(Constants.PWM_TreadsLeft);
+        m_right = new Victor(Constants.PWM_TreadsRight);
         m_right.setInverted(true);
         m_left.setInverted(true);
         m_drive = new DifferentialDrive(m_left, m_right);

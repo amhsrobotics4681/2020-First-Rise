@@ -20,8 +20,8 @@ public class Constants {
     public static final int PWM_ClimberPulley = 7;
 
 //DIO's
-    public static final int DIO_BallCounter = 0;
-    public static final int DIO_LIDAR = 1;
+    public static final int DIO_BallCounter = 1;
+    public static final int DIO_LIDAR = 0;
 
 //Buttons
     private static final int buttonX = 1;
