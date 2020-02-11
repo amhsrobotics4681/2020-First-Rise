@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.I2C;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class Wheel {
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -26,7 +27,7 @@ public class Wheel {
     private final Color kYellow = ColorMatch.makeColor(0.30, 0.54, 0.14);
     private String status = "Stationary";
     private String targetColor;
-    private final int kTargetRevolutions = 5;
+    private final int kTargetRevolutions = 4;
     private String previousColor;
     private String currentColor;
     private int numPanelShifted;
@@ -39,6 +40,9 @@ public class Wheel {
         m_colorMatcher.addColorMatch(kYellow);
         m_motor = new Victor(Constants.PWM_Wheel); 
         currentColor = getColor();
+        targetColor = DriverStation.getInstance().getGameSpecificMessage();
+        targetColor = targetColor.substring(0,1);
+        adjustColor();
     }
         
     //Gets the color that is currently being detected
@@ -71,15 +75,17 @@ public class Wheel {
         }
     }
 
-    public void positionControl(String gameData) { //Starts motor and sets target color
-        if (gameData.length() > 0) {
-            targetColor = gameData.substring(0,1);
-            status = "Position";
-            m_motor.set(Constants.kPositionSpeed);
-            adjustColor();
-        }
-    }
 
+    public void positionControl() { //Starts motor and sets target color
+        status = "Position";
+        System.out.println("Position");
+        System.out.println(targetColor);
+        m_motor.set(Constants.kPositionSpeed);
+    }
+    public void toggleWheel(){
+        status = "Stationary";
+        m_motor.set(0);
+    }
     public void mainMethod() {
         if (status.equals("Rotation")){ //If rotating, spin wheel until target rotation is reached
             if (numPanelShifted < numPanelShiftNeeded){

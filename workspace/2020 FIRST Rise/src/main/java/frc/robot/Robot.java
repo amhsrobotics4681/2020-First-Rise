@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Counter;
 
 public class Robot extends TimedRobot {
@@ -38,9 +37,10 @@ public class Robot extends TimedRobot {
         m_wheel.wheelInit();
         m_ball = new BallSystem();
         m_ball.ballSystemInit();
-
-        m_left = new Victor(0);
-        m_right = new Victor(1);
+        m_left = new Victor(Constants.PWM_TreadsLeft);
+        m_right = new Victor(Constants.PWM_TreadsRight);
+        m_right.setInverted(true);
+        m_left.setInverted(true);
         m_drive = new DifferentialDrive(m_left, m_right);
 
         counter = new Counter(Constants.DIO_LIDAR);
@@ -56,8 +56,9 @@ public class Robot extends TimedRobot {
         m_ball.mainMethod();
         if (!aligning)
             m_ball.resetShooter();
-        if (!m_ball.currentlyShooting && getDistance()<180)
+        if (!m_ball.currentlyShooting && getDistance()<180){
             m_drive.arcadeDrive(-1, 0);
+        }
     } 
     
     @Override
@@ -70,7 +71,7 @@ public class Robot extends TimedRobot {
         timer++;
         cumulative += getDistance();
         if (timer%10==0){
-            System.out.println((Double.toString(cumulative/10)).substring(0,5));
+            //System.out.println((Double.toString(cumulative/10)).substring(0,5));
             cumulative = 0;
         }
 
@@ -87,7 +88,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
 
         //Controls
-        m_drive.arcadeDrive(controller.getRawAxis(3), controller.getRawAxis(2));
+        m_drive.arcadeDrive((controller.getRawAxis(1)), (-1*controller.getRawAxis(0)));
         if (controller.getPOV() == 0){
             m_climber.extending();
         } else if (controller.getPOV() == 180){
@@ -96,7 +97,7 @@ public class Robot extends TimedRobot {
             m_climber.stop();
         }
         if (controller.getRawButtonPressed(Constants.bPositionControl)){
-            m_wheel.positionControl(DriverStation.getInstance().getGameSpecificMessage());
+            m_wheel.positionControl();
         }
         if (controller.getRawButtonPressed(Constants.bRotationControl)){
             m_wheel.rotationControl();
@@ -109,6 +110,9 @@ public class Robot extends TimedRobot {
         }
         if (controller.getRawButtonPressed(Constants.bAlignRobot)){
             startAlign();
+        }
+        if (controller.getRawButtonPressed(Constants.bToggleWheel)){
+            m_wheel.toggleWheel();
         }
     }
 

@@ -20,8 +20,8 @@ public class Constants {
     public static final int PWM_ClimberPulley = 7;
 
 //DIO's
-    public static final int DIO_BallCounter = 0;
-    public static final int DIO_LIDAR = 1;
+    public static final int DIO_BallCounter = 1;
+    public static final int DIO_LIDAR = 0;
 
 //Buttons
     private static final int buttonX = 1;
@@ -43,10 +43,11 @@ public class Constants {
     public static final int bIntakeToggle = buttonA;
     public static final int bResetShooter = triggerR;
     public static final int bAlignRobot = triggerL;
+    public static final int bToggleWheel = bumperR;
 
 // Speed declarations
-    public static final double kIntakeSpeed = 0.3; //arbitrary values
-    public static final double kIndexSpeed = 0.3;
+    public static final double kIntakeSpeed = -0.3; //arbitrary values
+    public static final double kIndexSpeed = -0.5;
     public static final double kEjectionSpeed = 0.6;
     public static double kShooterSpeed = 0.8;
     public static final double kRotationSpeed = 0.5;
