@@ -69,7 +69,7 @@ public class BallSystem {
         timer = 0;
         ballCount = 0;
         m_shooter.set(Constants.kShooterSpeed);
-        m_indexer.set(Constants.kIndexSpeed);
+        m_indexer.set(Constants.kEjectionSpeed);
         currentlyShooting = true;
     }
 
