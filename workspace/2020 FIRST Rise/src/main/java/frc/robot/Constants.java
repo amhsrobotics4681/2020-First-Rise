@@ -44,6 +44,8 @@ public class Constants {
     public static final int bResetShooter = triggerR;
     public static final int bAlignRobot = triggerL;
     public static final int bToggleWheel = bumperR;
+    public static final int bBallCountUp = buttonStart; //New idea - Eric
+    public static final int bBallCountDown = buttonBack; //If you don't like it, I'll remove it
 
 // Speed declarations
     public static final double kIntakeSpeed = -0.3; //arbitrary values

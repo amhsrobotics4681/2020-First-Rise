@@ -47,7 +47,7 @@ public class BallSystem {
         }
         // INDEXER CODE- spin when ball is collected and count balls in system
         if(m_intakeSwitch.get()){
-            //m_indexer.set(Constants.kIndexSpeed); uncomment later
+            m_indexer.set(Constants.kIndexSpeed);
             if(!intakeSwitchPressed) {
                 ballCount ++;
                 intakeSwitchPressed = true;
@@ -76,5 +76,17 @@ public class BallSystem {
 
     public void toggleIntake(){
         intakeOn = !intakeOn;
+    }
+
+    public void ballCountUp(){
+        if(ballCount < 5){
+            ballCount ++;
+        }
+    }
+
+    public void ballCountDown(){
+        if(ballCount > 0){
+            ballCount --;
+        }
     }
 }
