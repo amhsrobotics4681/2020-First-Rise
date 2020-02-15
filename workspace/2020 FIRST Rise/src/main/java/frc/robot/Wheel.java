@@ -41,7 +41,7 @@ public class Wheel {
         m_motor = new Victor(Constants.PWM_Wheel); 
         currentColor = getColor();
         targetColor = DriverStation.getInstance().getGameSpecificMessage();
-        targetColor = targetColor.substring(0,1);
+        //targetColor = targetColor.substring(0,1);
         adjustColor();
     }
         

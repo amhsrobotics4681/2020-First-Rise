@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Robot extends TimedRobot {
     private Joystick controller;
@@ -24,9 +25,10 @@ public class Robot extends TimedRobot {
     private Victor m_left;
     private Victor m_right;
     private DifferentialDrive m_drive;
-
     private Counter counter;
     private boolean aligning;
+    private double vTranslational;
+    private double vRotational;
 
     @Override
     public void robotInit() {
@@ -42,12 +44,13 @@ public class Robot extends TimedRobot {
         m_right.setInverted(true);
         m_left.setInverted(true);
         m_drive = new DifferentialDrive(m_left, m_right);
-
         counter = new Counter(Constants.DIO_LIDAR);
         counter.setMaxPeriod(1.0);
         counter.setSemiPeriodMode(true);
         counter.reset();
         aligning = true;
+        vTranslational = 0;
+        vRotational = 0;
     }
 
     @Override
@@ -74,9 +77,9 @@ public class Robot extends TimedRobot {
             //System.out.println((Double.toString(cumulative/10)).substring(0,5));
             cumulative = 0;
         }
-
         m_ball.mainMethod();
         m_wheel.mainMethod();
+        m_ball.screwSpeed(-1*controller.getRawAxis(3));
         align();
 
         //SmartDashboard outputs
@@ -88,7 +91,20 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
 
         //Controls
-        m_drive.arcadeDrive((controller.getRawAxis(1)), (-1*controller.getRawAxis(0)));
+        if(vTranslational < controller.getRawAxis(1)){
+            vTranslational += Constants.kSpeedCurve;
+        }
+        if(vTranslational > controller.getRawAxis(1)){
+            vTranslational -= Constants.kSpeedCurve;
+        }
+        if(vRotational < controller.getRawAxis(1)){
+            vRotational += Constants.kSpeedCurve;
+        }
+        if(vRotational > controller.getRawAxis(1)){
+            vRotational += Constants.kSpeedCurve;
+        }
+        m_drive.arcadeDrive(vTranslational, vRotational);
+
         if (controller.getPOV() == 0){
             m_climber.extending();
         } else if (controller.getPOV() == 180){
@@ -113,6 +129,12 @@ public class Robot extends TimedRobot {
         }
         if (controller.getRawButtonPressed(Constants.bToggleWheel)){
             m_wheel.toggleWheel();
+        }
+        if (controller.getRawButtonPressed(Constants.bIndexToggle)){
+            m_ball.toggleIndexer();
+        }
+        if (controller.getRawButtonPressed(Constants.bKillShooter)){
+            m_ball.killShooter();
         }
     }
 
