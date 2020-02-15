@@ -17,7 +17,6 @@ public class BallSystem {
     Victor m_shooterRight;
     Victor m_screw;
     DigitalInput m_intakeSwitch;
-    int ballCount;
     int failsafe;
     private int timer;
     int maxTime;
@@ -33,7 +32,6 @@ public class BallSystem {
         m_shooterRight = new Victor(Constants.PWM_BallShooterR);
         m_intakeSwitch = new DigitalInput(Constants.DIO_BallCounter);
         m_screw = new Victor(Constants.PWM_Screw);
-        ballCount = 0; //May have to change to 3
         failsafe = 1;
         timer = 300;
         maxTime = 400; // = seconds * 50
@@ -49,43 +47,28 @@ public class BallSystem {
     }
 
     public void mainMethod() {
+        System.out.println(!m_intakeSwitch.get()); //invert
         // INTAKE CODE- spin until system is full
-        System.out.println(m_intakeSwitch.get());
-        if(!m_intakeSwitch.get()){
-            System.out.println(timer);
-        }
-        System.out.println("Ball Count: " + ballCount);
-        if(ballCount < 5 && intakeOn){
+        if (intakeOn) {
             m_intake.set(Constants.kIntakeSpeed*failsafe);
         } else {
-            if(!currentlyShooting){
-                m_intake.set(0);
-            }
+            m_intake.set(0);
         }
-        if (indexerOn){
-            m_indexer.set(Constants.kIndexSpeed);
-        }
-        else{
-            if (!currentlyShooting){
-                m_indexer.set(0);
-            }
-        }
+
         // INDEXER CODE- spin when ball is collected and count balls in system
-        
-        
-        
-        //For a switch
-        if(!m_intakeSwitch.get()){
+        if (indexerOn) {
             m_indexer.set(Constants.kIndexSpeed);
-            if(!intakeSwitchPressed) {
-                ballCount ++;
-                intakeSwitchPressed = true;
-            }
         } else {
-            intakeSwitchPressed = false;
-            if(!currentlyShooting && !indexerOn) { //delete '&& !indexerOn' once index toggle system removed
+            if (!currentlyShooting) {
                 m_indexer.set(0);
             }
+        }        
+        //For a switch
+        if(!m_intakeSwitch.get()) {
+            m_indexer.set(Constants.kIndexSpeed);
+        } else {
+            if(!currentlyShooting && !indexerOn) //delete '&& !indexerOn' once index toggle system removed
+                m_indexer.set(0);
         }
         // SHOOTER CODE- run shooter until timer runs out
         if(timer > maxTime) {
@@ -98,7 +81,6 @@ public class BallSystem {
 
     public void resetShooter(){ //Resets timer and engages shooting system
         timer = 0;
-        ballCount = 0;
         m_shooterLeft.set(Constants.kShooterSpeed);
         m_shooterRight.set(Constants.kShooterSpeed);
         m_indexer.set(Constants.kEjectionSpeed);
@@ -110,17 +92,5 @@ public class BallSystem {
     }
     public void toggleIntake(){
         intakeOn = !intakeOn;
-    }
-
-    public void ballCountUp(){
-        if(ballCount < 5){
-            ballCount ++;
-        }
-    }
-
-    public void ballCountDown(){
-        if(ballCount > 0){
-            ballCount --;
-        }
     }
 }

@@ -13,15 +13,12 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Counter;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Robot extends TimedRobot {
     private Joystick controller;
     private Climber m_climber;
     private Wheel m_wheel;
     private BallSystem m_ball;
-    private int timer;
-    private double cumulative;
     private Victor m_left;
     private Victor m_right;
     private DifferentialDrive m_drive;
@@ -41,7 +38,7 @@ public class Robot extends TimedRobot {
         m_ball.ballSystemInit();
         m_left = new Victor(Constants.PWM_TreadsLeft);
         m_right = new Victor(Constants.PWM_TreadsRight);
-        m_right.setInverted(true);
+        m_right.setInverted(false);
         m_left.setInverted(true);
         m_drive = new DifferentialDrive(m_left, m_right);
         counter = new Counter(Constants.DIO_LIDAR);
@@ -71,12 +68,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        timer++;
-        cumulative += getDistance();
-        if (timer%10==0){
-            //System.out.println((Double.toString(cumulative/10)).substring(0,5));
-            cumulative = 0;
-        }
+        //System.out.println(getDistance());
         m_ball.mainMethod();
         m_wheel.mainMethod();
         m_ball.screwSpeed(-1*controller.getRawAxis(3));
@@ -97,11 +89,11 @@ public class Robot extends TimedRobot {
         if(vTranslational > controller.getRawAxis(1)){
             vTranslational -= Constants.kSpeedCurve;
         }
-        if(vRotational < controller.getRawAxis(1)){
+        if(vRotational < controller.getRawAxis(0)){
             vRotational += Constants.kSpeedCurve;
         }
-        if(vRotational > controller.getRawAxis(1)){
-            vRotational += Constants.kSpeedCurve;
+        if(vRotational > controller.getRawAxis(0)){
+            vRotational -= Constants.kSpeedCurve;
         }
         m_drive.arcadeDrive(vTranslational, vRotational);
 
@@ -124,15 +116,6 @@ public class Robot extends TimedRobot {
         if (controller.getRawButtonPressed(Constants.bResetShooter)){
             m_ball.resetShooter();
         }
-        if(controller.getRawButtonPressed(Constants.bBallCountUp)){
-            m_ball.ballCountUp();
-        }
-        if(controller.getRawButtonPressed(Constants.bBallCountDown)){
-            m_ball.ballCountDown();
-        }
-        if (controller.getRawButtonPressed(Constants.bAlignRobot)){
-            startAlign();
-        }
         if (controller.getRawButtonPressed(Constants.bToggleWheel)){
             m_wheel.toggleWheel();
         }
@@ -142,6 +125,13 @@ public class Robot extends TimedRobot {
         if (controller.getRawButtonPressed(Constants.bKillShooter)){
             m_ball.killShooter();
         }
+        if (controller.getRawButton(Constants.bAlignRobot)) {
+            align();
+            if (!aligning)
+                m_ball.resetShooter();
+        } else {
+            aligning = false;
+        }
     }
 
     private double getDistance() {
@@ -149,15 +139,9 @@ public class Robot extends TimedRobot {
         // getPeriod returns cm / µs, then --> sec --> in
     }
 
-    //Pending completion of vision project
-    private void startAlign() {
-        aligning = true;
-    }
-
     private void align() {
-        if (aligning) {
-        // if location of tape is negative, rotate left
-        // if location of tape is positive, rotate right
-        }
+        // if location of tape is negative, rotate left; aligning = true;
+        // if location of tape is positive, rotate right; aligning = true;
+        // else, set aligning to false. we're done
     }
 }

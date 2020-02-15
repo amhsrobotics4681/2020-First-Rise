@@ -10,10 +10,10 @@ package frc.robot;
 public class Constants {
     
 //PWM's
-    public static final int PWM_TreadsLeft = 2;// 
+    public static final int PWM_TreadsLeft = 2;
     public static final int PWM_TreadsRight = 1;
     public static final int PWM_BallIntake = 3;
-    public static final int PWM_BallIndexer = 4;//
+    public static final int PWM_BallIndexer = 4;
     public static final int PWM_BallShooterL = 7;
     public static final int PWM_BallShooterR = 8;
     public static final int PWM_Wheel = 5; 
@@ -21,8 +21,9 @@ public class Constants {
     public static final int PWM_Screw = 6;
 
 //DIO's
-    public static final int DIO_BallCounter = 9;
-    public static final int DIO_LIDAR = 0;
+    public static final int DIO_BallCounter = 0;
+    public static final int DIO_LIDAR = 1;
+    public static final int DIO_ClimberSwitch = 2;
 
 //Buttons
     private static final int buttonX = 1;
@@ -47,14 +48,12 @@ public class Constants {
     public static final int bAlignRobot = triggerL;
     public static final int bToggleWheel = bumperR;
     public static final int bKillShooter = bumperL;
-    public static final int bBallCountUp = buttonStart; //New idea - Eric
-    public static final int bBallCountDown = buttonBack; //If you don't like it, I'll remove it
-
+    
 // Speed declarations
-    public static final double kIntakeSpeed = -0.5; //arbitrary values
-    public static final double kIndexSpeed = -0.5;
-    public static final double kEjectionSpeed = -0.6;
-    public static final double kShooterSpeed = -0.6;
+    public static final double kIntakeSpeed = -0.5; //neg
+    public static final double kIndexSpeed = -0.5; //neg
+    public static final double kEjectionSpeed = -0.6; //neg
+    public static final double kShooterSpeed = -0.6; //neg
     public static final double kRotationSpeed = 0.5;
     public static final double kPositionSpeed = 0.5;
     public static final double kPulleySpeed = 1.0;
