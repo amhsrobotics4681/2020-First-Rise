@@ -124,6 +124,12 @@ public class Robot extends TimedRobot {
         if (controller.getRawButtonPressed(Constants.bResetShooter)){
             m_ball.resetShooter();
         }
+        if(controller.getRawButtonPressed(Constants.bBallCountUp)){
+            m_ball.ballCountUp();
+        }
+        if(controller.getRawButtonPressed(Constants.bBallCountDown)){
+            m_ball.ballCountDown();
+        }
         if (controller.getRawButtonPressed(Constants.bAlignRobot)){
             startAlign();
         }

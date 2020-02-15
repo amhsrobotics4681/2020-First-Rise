@@ -111,4 +111,16 @@ public class BallSystem {
     public void toggleIntake(){
         intakeOn = !intakeOn;
     }
+
+    public void ballCountUp(){
+        if(ballCount < 5){
+            ballCount ++;
+        }
+    }
+
+    public void ballCountDown(){
+        if(ballCount > 0){
+            ballCount --;
+        }
+    }
 }
