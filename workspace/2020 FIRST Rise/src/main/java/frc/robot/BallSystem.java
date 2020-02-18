@@ -11,19 +11,15 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class BallSystem {
-    Victor m_intake;
-    Victor m_indexer;
-    Victor m_shooterLeft;
-    Victor m_shooterRight;
-    Victor m_screw;
+    Victor m_intake, m_indexer, m_shooterLeft, m_shooterRight, m_screw;
     DigitalInput m_intakeSwitch;
-    int failsafe;
     private int timer;
     int maxTime;
     boolean intakeSwitchPressed;
     boolean currentlyShooting;
     boolean intakeOn;
     boolean indexerOn;
+    boolean spitting = false;
 
     public void ballSystemInit() {
         m_intake = new Victor(Constants.PWM_BallIntake);
@@ -32,9 +28,8 @@ public class BallSystem {
         m_shooterRight = new Victor(Constants.PWM_BallShooterR);
         m_intakeSwitch = new DigitalInput(Constants.DIO_BallCounter);
         m_screw = new Victor(Constants.PWM_Screw);
-        failsafe = 1;
         timer = 300;
-        maxTime = 400; // = seconds * 50
+        maxTime = 200; // = seconds * 50
         intakeSwitchPressed = false;
         currentlyShooting = true;
         intakeOn = false;
@@ -50,9 +45,10 @@ public class BallSystem {
         System.out.println(!m_intakeSwitch.get()); //invert
         // INTAKE CODE- spin until system is full
         if (intakeOn) {
-            m_intake.set(Constants.kIntakeSpeed*failsafe);
+            m_intake.set(Constants.kIntakeSpeed);
         } else {
-            m_intake.set(0);
+            if (!spitting)
+                m_intake.set(0);
         }
 
         // INDEXER CODE- spin when ball is collected and count balls in system
@@ -79,6 +75,14 @@ public class BallSystem {
         timer++;
     }
 
+    public void spit() { //it's a toggle
+        spitting = !spitting;
+        if (spitting)
+            m_intake.set(.5);
+        else
+            m_intake.set(0);
+        }
+
     public void resetShooter(){ //Resets timer and engages shooting system
         timer = 0;
         m_shooterLeft.set(Constants.kShooterSpeed);
@@ -91,6 +95,7 @@ public class BallSystem {
         m_shooterRight.set(0);
     }
     public void toggleIntake(){
-        intakeOn = !intakeOn;
+        if (!spitting)
+            intakeOn = !intakeOn;
     }
 }

@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
         if(vRotational > controller.getRawAxis(0)){
             vRotational -= Constants.kSpeedCurve;
         }
-        m_drive.arcadeDrive(vTranslational, vRotational);
+        m_drive.arcadeDrive(-vRotational, vTranslational);
 
         if (controller.getPOV() == 0){
             m_climber.extending();
@@ -125,6 +125,8 @@ public class Robot extends TimedRobot {
         if (controller.getRawButtonPressed(Constants.bKillShooter)){
             m_ball.killShooter();
         }
+        if (controller.getRawButtonPressed(Constants.bSpitOut))
+            m_ball.spit();
         if (controller.getRawButton(Constants.bAlignRobot)) {
             align();
             if (!aligning)
@@ -140,6 +142,7 @@ public class Robot extends TimedRobot {
     }
 
     private void align() {
+        aligning = true;
         // if location of tape is negative, rotate left; aligning = true;
         // if location of tape is positive, rotate right; aligning = true;
         // else, set aligning to false. we're done
