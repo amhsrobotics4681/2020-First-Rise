@@ -8,7 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
@@ -74,14 +73,6 @@ public class Robot extends TimedRobot {
         m_wheel.mainMethod();
         m_ball.screwSpeed(-1*controller.getRawAxis(3));
         align();
-
-        //SmartDashboard outputs
-        SmartDashboard.putString("Detected Color", m_wheel.getColor());
-        SmartDashboard.putNumber("Red", m_wheel.getRed());
-        SmartDashboard.putNumber("Green", m_wheel.getGreen());
-        SmartDashboard.putNumber("Blue", m_wheel.getBlue());
-        SmartDashboard.putNumber("Confidence", m_wheel.getConfidence());
-        SmartDashboard.putNumber("Proximity", m_wheel.getProximity());
         //Controls
         if(vTranslational < controller.getRawAxis(1)){
             vTranslational += Constants.kSpeedCurve;
