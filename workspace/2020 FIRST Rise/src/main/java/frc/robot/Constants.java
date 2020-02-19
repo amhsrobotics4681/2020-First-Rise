@@ -52,7 +52,7 @@ public class Constants {
     
 // Speed declarations
     public static final double kIntakeSpeed = -0.5; //neg
-    public static final double kIndexSpeed = -0.7; //neg
+    public static final double kIndexSpeed = -0.9; //neg
     public static final double kEjectionSpeed = -0.7; //neg
     public static final double kShooterSpeed = 1.0; //neg
     public static final double kRotationSpeed = 0.5;

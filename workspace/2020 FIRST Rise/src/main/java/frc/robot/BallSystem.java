@@ -14,14 +14,17 @@ public class BallSystem {
     Victor m_intake, m_indexer, m_shooterLeft, m_shooterRight, m_screw;
     DigitalInput m_intakeSwitch;
     private int timer;
+    private int switchEnd;
     int maxTime;
     boolean intakeSwitchPressed;
     boolean currentlyShooting;
     boolean intakeOn;
     boolean indexerOn;
     boolean spitting = false;
+    boolean switchPressed;
 
     public void ballSystemInit() {
+        switchEnd = -1;
         m_intake = new Victor(Constants.PWM_BallIntake);
         m_indexer = new Victor(Constants.PWM_BallIndexer);
         m_shooterLeft = new Victor(Constants.PWM_BallShooterL); 
@@ -62,9 +65,14 @@ public class BallSystem {
         //For a switch
         if(!m_intakeSwitch.get()) {
             m_indexer.set(Constants.kIndexSpeed);
+            if (!switchPressed){
+                switchEnd = timer + 30;
+                switchPressed = true;
+            }
         } else {
-            if(!currentlyShooting && !indexerOn) //delete '&& !indexerOn' once index toggle system removed
+            if(!currentlyShooting && switchEnd < timer) //delete '&& !indexerOn' once index toggle system removed
                 m_indexer.set(0);
+                switchPressed = false;
         }
         // SHOOTER CODE- run shooter until timer runs out
         if(timer > maxTime) {
