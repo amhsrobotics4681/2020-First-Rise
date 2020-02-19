@@ -66,7 +66,7 @@ public class BallSystem {
         if(!m_intakeSwitch.get()) {
             m_indexer.set(Constants.kIndexSpeed);
             if (!switchPressed){
-                switchEnd = timer + 30;
+                switchEnd = timer + 50;
                 switchPressed = true;
             }
         } else {
