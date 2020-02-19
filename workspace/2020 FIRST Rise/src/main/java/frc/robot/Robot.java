@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
 
 public class Robot extends TimedRobot {
     private Joystick controller;
@@ -52,7 +51,7 @@ public class Robot extends TimedRobot {
         aligning = true;
         vTranslational = 0;
         vRotational = 0;
-        m_cameraServer = new UsbCamera("Front Camera", 0);
+        m_cameraServer = new UsbCamera("Front Camera", 1);
     }
 
     @Override
@@ -70,7 +69,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        //System.out.println(getDistance());
+        System.out.println(getDistance());
         m_ball.mainMethod();
         m_wheel.mainMethod();
         m_ball.screwSpeed(-1*controller.getRawAxis(3));
@@ -138,7 +137,7 @@ public class Robot extends TimedRobot {
     }
 
     private double getDistance() {
-        return counter.getPeriod() * 100000 / 2.54;
+        return (counter.getPeriod() * 100000 / 2.54)-Constants.LidarError;
         // getPeriod returns cm / µs, then --> sec --> in
     }
 

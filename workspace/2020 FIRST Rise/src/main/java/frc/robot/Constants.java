@@ -23,6 +23,7 @@ public class Constants {
 //DIO's
     public static final int DIO_BallCounter = 0;
     public static final int DIO_LIDAR = 1;
+    public static final int LidarError = 21;//Distance from shooting point to lidar
     public static final int DIO_ClimberSwitch = 2;
 
 //Buttons
