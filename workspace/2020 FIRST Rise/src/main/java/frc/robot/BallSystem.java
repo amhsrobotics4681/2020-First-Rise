@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class BallSystem {
     Victor m_intake, m_indexer, m_shooterLeft, m_shooterRight, m_screw;
     DigitalInput m_intakeSwitch;
+    DigitalInput m_intakeSwitch2;
     private int timer;
     private int switchEnd;
     int maxTime;
@@ -30,6 +31,7 @@ public class BallSystem {
         m_shooterLeft = new Victor(Constants.PWM_BallShooterL); 
         m_shooterRight = new Victor(Constants.PWM_BallShooterR);
         m_intakeSwitch = new DigitalInput(Constants.DIO_BallCounter);
+        m_intakeSwitch2 = new DigitalInput(Constants.DIO_BallCounter2);
         m_screw = new Victor(Constants.PWM_Screw);
         timer = 300;
         maxTime = 200; // = seconds * 50
@@ -63,17 +65,22 @@ public class BallSystem {
             }
         }        
         //For a switch
-        if(!m_intakeSwitch.get()) {
+        if(!m_intakeSwitch.get())
             m_indexer.set(Constants.kIndexSpeed);
+            switchPressed = true;
+        /*if (!m_intakeSwitch2.get()){
             if (!switchPressed){
-                switchEnd = timer + 50;
                 switchPressed = true;
             }
-        } else {
-            if(!currentlyShooting && switchEnd < timer) //delete '&& !indexerOn' once index toggle system removed
-                m_indexer.set(0);
-                switchPressed = false;
         }
+        if (switchPressed && m_intakeSwitch2.get()){
+            m_indexer.set(0);
+            switchPressed = false;
+        }*/
+        if (switchPressed && m_intakeSwitch2.get() && !currentlyShooting)
+            m_indexer.set(0);
+            switchPressed = false;
+
         // SHOOTER CODE- run shooter until timer runs out
         if(timer > maxTime) {
             m_shooterLeft.set(0);

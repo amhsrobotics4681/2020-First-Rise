@@ -22,9 +22,10 @@ public class Constants {
 
 //DIO's
     public static final int DIO_BallCounter = 0;
+    public static final int DIO_BallCounter2 = 2;
     public static final int DIO_LIDAR = 1;
     public static final int LidarError = 21;//Distance from shooting point to lidar
-    public static final int DIO_ClimberSwitch = 2;
+    public static final int DIO_ClimberSwitch = 3;
 
 //Buttons
     private static final int buttonX = 1;
@@ -56,6 +57,7 @@ public class Constants {
     public static final double kIndexSpeed = -0.9; //neg
     public static final double kEjectionSpeed = -0.7; //neg
     public static final double kShooterSpeed = 1.0; //neg
+    public static final double kAutonomousShooterSpeed = .6;
     public static final double kRotationSpeed = 0.5;
     public static final double kPositionSpeed = 0.5;
     public static final double kPulleySpeed = 1.0;

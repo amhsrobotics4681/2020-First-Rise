@@ -21,11 +21,12 @@ pts = deque(maxlen=args["buffer"])
  
 # if a video path was not supplied, grab the reference
 # to the webcam
-if not args.get("video", False):
+"""if not args.get("video", False):
     vs = VideoStream(src=0).start()
 # otherwise, grab a reference to the video file
 else:
-    vs = cv2.VideoCapture(args["video"])
+    vs = cv2.VideoCapture(args["video"])"""
+vs = cv2.VideoCapture(args["video"])
 # allow the camera or video file to warm up
 time.sleep(2.0)
 ####################################
