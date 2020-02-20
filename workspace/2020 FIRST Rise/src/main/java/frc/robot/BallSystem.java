@@ -23,6 +23,8 @@ public class BallSystem {
     boolean indexerOn;
     boolean spitting = false;
     boolean switchPressed;
+    boolean currentlySpinning;
+    boolean toggleOn;
 
     public void ballSystemInit() {
         switchEnd = -1;
@@ -37,7 +39,9 @@ public class BallSystem {
         maxTime = 200; // = seconds * 50
         intakeSwitchPressed = false;
         currentlyShooting = true;
+        currentlySpinning = false;
         intakeOn = false;
+        toggleOn = false;
     }
     public void screwSpeed(double speed){
         m_screw.set(speed);
@@ -47,7 +51,7 @@ public class BallSystem {
     }
 
     public void mainMethod() {
-        System.out.println(!m_intakeSwitch.get()); //invert
+        /*System.out.println(!m_intakeSwitch.get()); //invert
         // INTAKE CODE- spin until system is full
         if (intakeOn) {
             m_intake.set(Constants.kIntakeSpeed);
@@ -76,7 +80,7 @@ public class BallSystem {
         if (switchPressed && m_intakeSwitch2.get()){
             m_indexer.set(0);
             switchPressed = false;
-        }*/
+        }
         if (switchPressed && m_intakeSwitch2.get() && !currentlyShooting)
             m_indexer.set(0);
             switchPressed = false;
@@ -87,7 +91,46 @@ public class BallSystem {
             m_shooterRight.set(0);
             currentlyShooting = false;
         }
-        timer++;
+        timer++;*/
+        
+
+
+
+
+        System.out.println(!m_intakeSwitch.get());
+        System.out.println(!m_intakeSwitch2.get());
+        if (intakeOn) {
+            m_intake.set(Constants.kIntakeSpeed);
+        } else {
+            if (!spitting)
+                m_intake.set(0);
+        }
+        if (currentlyShooting){
+            m_indexer.set(Constants.kIndexSpeed);
+        }   
+        else if (!m_intakeSwitch.get()){
+            currentlySpinning = true;
+            m_indexer.set(Constants.kIndexSpeed);
+        }
+        else if (currentlySpinning){
+            if (m_intakeSwitch2.get()){
+                m_indexer.set(0);
+                currentlySpinning = false;
+            }
+        }
+        else if (toggleOn){
+            m_indexer.set(Constants.kIndexSpeed);
+        }
+        else {
+            m_indexer.set(0);
+        }
+        //Shooter code
+        if(timer > maxTime) {
+            m_shooterLeft.set(0);
+            m_shooterRight.set(0);
+            currentlyShooting = false;
+        }
+        timer ++;
     }
 
     public void spit() { //it's a toggle
