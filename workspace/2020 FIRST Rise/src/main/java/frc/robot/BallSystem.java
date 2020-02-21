@@ -51,54 +51,8 @@ public class BallSystem {
     }
 
     public void mainMethod() {
-        /*System.out.println(!m_intakeSwitch.get()); //invert
-        // INTAKE CODE- spin until system is full
-        if (intakeOn) {
-            m_intake.set(Constants.kIntakeSpeed);
-        } else {
-            if (!spitting)
-                m_intake.set(0);
-        }
-
-        // INDEXER CODE- spin when ball is collected and count balls in system
-        if (indexerOn) {
-            m_indexer.set(Constants.kIndexSpeed);
-        } else {
-            if (!currentlyShooting) {
-                m_indexer.set(0);
-            }
-        }        
-        //For a switch
-        if(!m_intakeSwitch.get())
-            m_indexer.set(Constants.kIndexSpeed);
-            switchPressed = true;
-        /*if (!m_intakeSwitch2.get()){
-            if (!switchPressed){
-                switchPressed = true;
-            }
-        }
-        if (switchPressed && m_intakeSwitch2.get()){
-            m_indexer.set(0);
-            switchPressed = false;
-        }
-        if (switchPressed && m_intakeSwitch2.get() && !currentlyShooting)
-            m_indexer.set(0);
-            switchPressed = false;
-
-        // SHOOTER CODE- run shooter until timer runs out
-        if(timer > maxTime) {
-            m_shooterLeft.set(0);
-            m_shooterRight.set(0);
-            currentlyShooting = false;
-        }
-        timer++;*/
-        
-
-
-
-
-        System.out.println(!m_intakeSwitch.get());
-        System.out.println(!m_intakeSwitch2.get());
+        //System.out.println(!m_intakeSwitch.get());
+        //System.out.println(!m_intakeSwitch2.get());
         if (intakeOn) {
             m_intake.set(Constants.kIntakeSpeed);
         } else {
@@ -151,6 +105,7 @@ public class BallSystem {
     public void killShooter(){
         m_shooterLeft.set(0);
         m_shooterRight.set(0);
+        m_indexer.set(0);
     }
     public void toggleIntake(){
         if (!spitting)

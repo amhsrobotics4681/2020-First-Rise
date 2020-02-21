@@ -15,7 +15,8 @@ import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.cscore.UsbCamera;
 
 public class Robot extends TimedRobot {
-    private Joystick controller;
+    private Joystick controllerDriver;
+    private Joystick controllerShooter;
     private Climber m_climber;
     private Wheel m_wheel;
     private BallSystem m_ball;
@@ -31,7 +32,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        controller = new Joystick(0);
+        controllerDriver = new Joystick(0);
+        controllerShooter = new Joystick(1);
         m_climber = new Climber();
         m_climber.climberInit();
         m_wheel = new Wheel();
@@ -50,7 +52,7 @@ public class Robot extends TimedRobot {
         aligning = true;
         vTranslational = 0;
         vRotational = 0;
-        m_cameraServer = new UsbCamera("Front Camera", 1);
+        //m_cameraServer = new UsbCamera("Front Camera", 1);
     }
 
     @Override
@@ -68,57 +70,57 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        System.out.println(getDistance());
+        //System.out.println(getDistance());
         m_ball.mainMethod();
         m_wheel.mainMethod();
-        m_ball.screwSpeed(-1*controller.getRawAxis(3));
+        m_ball.screwSpeed(-1*controllerShooter.getRawAxis(1));
         align();
         //Controls
-        if(vTranslational < controller.getRawAxis(1)){
+        if(vTranslational < controllerDriver.getRawAxis(1)){
             vTranslational += Constants.kSpeedCurve;
         }
-        if(vTranslational > controller.getRawAxis(1)){
+        if(vTranslational > controllerDriver.getRawAxis(1)){
             vTranslational -= Constants.kSpeedCurve;
         }
-        if(vRotational < controller.getRawAxis(0)){
+        if(vRotational < controllerDriver.getRawAxis(2)){
             vRotational += Constants.kSpeedCurve;
         }
-        if(vRotational > controller.getRawAxis(0)){
+        if(vRotational > controllerDriver.getRawAxis(2)){
             vRotational -= Constants.kSpeedCurve;
         }
         m_drive.arcadeDrive(-vRotational, vTranslational);
 
-        if (controller.getPOV() == 0){
+        if (controllerDriver.getPOV() == 0){
             m_climber.extending();
-        } else if (controller.getPOV() == 180){
+        } else if (controllerDriver.getPOV() == 180){
             m_climber.contracting();
         } else {
             m_climber.stop();
         }
-        if (controller.getRawButtonPressed(Constants.bPositionControl)){
+        if (controllerDriver.getRawButtonPressed(Constants.bPositionControl)){
             m_wheel.positionControl();
         }
-        if (controller.getRawButtonPressed(Constants.bRotationControl)){
+        if (controllerDriver.getRawButtonPressed(Constants.bRotationControl)){
             m_wheel.rotationControl();
         }
-        if (controller.getRawButtonPressed(Constants.bIntakeToggle)){
+        if (controllerDriver.getRawButtonPressed(Constants.bIntakeToggle)){
             m_ball.toggleIntake();
         }
-        if (controller.getRawButtonPressed(Constants.bResetShooter)){
+        if (controllerShooter.getRawButtonPressed(1)){
             m_ball.resetShooter();
         }
-        if (controller.getRawButtonPressed(Constants.bToggleWheel)){
+        if (controllerDriver.getRawButtonPressed(Constants.bToggleWheel)){
             m_wheel.toggleWheel();
         }
-        if (controller.getRawButtonPressed(Constants.bIndexToggle)){
+        if (controllerDriver.getRawButtonPressed(Constants.bIndexToggle)){
             m_ball.toggleIndexer();
         }
-        if (controller.getRawButtonPressed(Constants.bKillShooter)){
+        if (controllerShooter.getRawButtonPressed(3)){
             m_ball.killShooter();
         }
-        if (controller.getRawButtonPressed(Constants.bSpitOut))
+        if (controllerDriver.getRawButtonPressed(Constants.bSpitOut))
             m_ball.spit();
-        if (controller.getRawButton(Constants.bAlignRobot)) {
+        if (controllerDriver.getRawButton(Constants.bAlignRobot)) {
             align();
             if (!aligning)
                 m_ball.resetShooter();
