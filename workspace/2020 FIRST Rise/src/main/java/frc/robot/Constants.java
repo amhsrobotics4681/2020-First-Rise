@@ -19,6 +19,7 @@ public class Constants {
     public static final int PWM_Wheel = 5; 
     public static final int PWM_ClimberPulley = 9;
     public static final int PWM_Screw = 6;
+    public static final int PWM_Servo = 0;
 
 //DIO's
     public static final int DIO_BallCounter = 0;
@@ -63,5 +64,5 @@ public class Constants {
     public static final double kPulleySpeed = 1.0;
     public static final double kWinchSpeed = 1.0;
     public static final double kAligningSpeed = 0.4;
-    public static final double kSpeedCurve = 0.05;
+    public static final double kSpeedCurve = 0.025;
 }

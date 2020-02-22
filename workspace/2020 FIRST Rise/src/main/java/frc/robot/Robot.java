@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Counter;
-import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
 
 public class Robot extends TimedRobot {
     private Joystick controllerDriver;
@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
     private double vTranslational;
     private double vRotational;
     private int timer;
-    private UsbCamera m_cameraServer;
+    private CameraServer m_cameraServer;
 
     @Override
     public void robotInit() {
@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
         aligning = true;
         vTranslational = 0;
         vRotational = 0;
-        //m_cameraServer = new UsbCamera("Front Camera", 1);
+        m_cameraServer.getInstance().startAutomaticCapture("Front Camera", 0);
     }
 
     @Override
