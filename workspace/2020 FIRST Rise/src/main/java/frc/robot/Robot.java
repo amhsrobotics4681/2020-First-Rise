@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
     private double vRotational;
     private int timer;
     private CameraServer m_cameraServer;
+    private boolean currentlyDriving;
 
     @Override
     public void robotInit() {
@@ -52,6 +53,7 @@ public class Robot extends TimedRobot {
         aligning = true;
         vTranslational = 0;
         vRotational = 0;
+        currentlyDriving = true;
         m_cameraServer.getInstance().startAutomaticCapture("Front Camera", 0);
     }
 
@@ -76,17 +78,19 @@ public class Robot extends TimedRobot {
         m_ball.screwSpeed(-1*controllerShooter.getRawAxis(1));
         align();
         //Controls
-        if(vTranslational < controllerDriver.getRawAxis(1)){
-            vTranslational += Constants.kSpeedCurve;
+        if (currentlyDriving){
+            if(vTranslational < controllerDriver.getRawAxis(1))
+                vTranslational += Constants.kSpeedCurve;
+            if(vTranslational > controllerDriver.getRawAxis(1))
+                vTranslational -= Constants.kSpeedCurve;
+            if(vRotational < controllerDriver.getRawAxis(2))
+                vRotational += Constants.kSpeedCurve;
+            if(vRotational > controllerDriver.getRawAxis(2))
+                vRotational -= Constants.kSpeedCurve;
         }
-        if(vTranslational > controllerDriver.getRawAxis(1)){
-            vTranslational -= Constants.kSpeedCurve;
-        }
-        if(vRotational < controllerDriver.getRawAxis(2)){
-            vRotational += Constants.kSpeedCurve;
-        }
-        if(vRotational > controllerDriver.getRawAxis(2)){
-            vRotational -= Constants.kSpeedCurve;
+        else{
+            vTranslational = 0;
+            vRotational = (controllerShooter.getRawAxis(0)/5); 
         }
         m_drive.arcadeDrive(-vRotational, vTranslational);
 
@@ -117,6 +121,12 @@ public class Robot extends TimedRobot {
         }
         if (controllerShooter.getRawButtonPressed(3)){
             m_ball.killShooter();
+        }
+        if (controllerShooter.getRawButtonPressed(2)){
+            currentlyDriving = false;
+        }
+        if (controllerDriver.getRawButtonPressed(10)){
+            currentlyDriving = true;
         }
         if (controllerDriver.getRawButtonPressed(Constants.bSpitOut))
             m_ball.spit();
