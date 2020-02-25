@@ -12,29 +12,40 @@ import edu.wpi.first.wpilibj.Servo;
 public class Climber {
     private Victor m_pulley;
     private Servo m_servo;
-
+    private boolean climbing;
+    private int counter;
+    private String status;
     public void climberInit() {
         m_pulley = new Victor(Constants.PWM_ClimberPulley); //fill in PWM port
         m_servo = new Servo(Constants.PWM_Servo);
+    
     }
     public void extending() {
-        if (m_servo.get() > 1){
-            m_servo.set(1);
-        }
-        m_pulley.set(1);
-        //m_servo.setAngle(20);
-        m_servo.set(1);
-        System.out.println(m_servo.getAngle());
-        System.out.println(m_servo.get());
+        status = "Climbing";
+
     } 
     public void contracting() {
-        m_pulley.set(-1);
-        m_servo.set(0);
-
+        status = "Contracting";
     }
     public void stop() {
-        m_pulley.set(0);
-        m_servo.setAngle(0);
+        status = "Stationary";
+    }
+    public void MainMethod(){
+        if (status.equals("Stationary")){
+            m_servo.set(0);
+        }
+        else if (status.equals("Climbing")){
+            m_servo.setAngle(90);
+            if (m_servo.getAngle() < 45){
+                m_servo.set(-1);//Goes down until enough weight removed to pull servo
+            }
+            if (m_servo.getAngle() > 45){
+                m_servo.set(1);
+            }
+        }
+        else if (status.equals("Contracting")){
+            m_servo.set(-1);
+        }
     }
 
 }
