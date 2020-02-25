@@ -18,7 +18,7 @@ public class Climber {
     public void climberInit() {
         m_pulley = new Victor(Constants.PWM_ClimberPulley); //fill in PWM port
         m_servo = new Servo(Constants.PWM_Servo);
-    
+        status="";
     }
     public void extending() {
         status = "Climbing";
@@ -32,19 +32,18 @@ public class Climber {
     }
     public void MainMethod(){
         if (status.equals("Stationary")){
-            m_servo.set(0);
-        }
-        else if (status.equals("Climbing")){
+            m_pulley.set(0);
+        } else if (status.equals("Climbing")){
             m_servo.setAngle(90);
             if (m_servo.getAngle() < 45){
-                m_servo.set(-1);//Goes down until enough weight removed to pull servo
+                m_pulley.set(-.3);//Goes down until enough weight removed to pull servo
             }
             if (m_servo.getAngle() > 45){
-                m_servo.set(1);
+                m_pulley.set(.3);
             }
-        }
-        else if (status.equals("Contracting")){
-            m_servo.set(-1);
+        } else if (status.equals("Contracting")){
+            m_pulley.set(-.3);
+            m_servo.setAngle(0);
         }
     }
 

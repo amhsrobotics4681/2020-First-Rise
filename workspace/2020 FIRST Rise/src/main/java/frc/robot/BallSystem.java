@@ -59,8 +59,9 @@ public class BallSystem {
             if (!spitting)
                 m_intake.set(0);
         }
-        if (currentlyShooting){
-            m_indexer.set(Constants.kIndexSpeed);
+        // INDEXER CODE
+        if (currentlyShooting && timer > 20){
+            m_indexer.set(Constants.kEjectionSpeed);
         }   
         else if (!m_intakeSwitch.get()){
             currentlySpinning = true;
@@ -91,7 +92,7 @@ public class BallSystem {
         timer = 0;
         m_shooterLeft.set(Constants.kShooterSpeed);
         m_shooterRight.set(Constants.kShooterSpeed);
-        m_indexer.set(Constants.kEjectionSpeed);
+        //m_indexer.set(Constants.kEjectionSpeed);
         currentlyShooting = true;
     }
     public void killShooter(){

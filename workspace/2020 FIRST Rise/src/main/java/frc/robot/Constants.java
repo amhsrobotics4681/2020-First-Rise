@@ -10,16 +10,16 @@ package frc.robot;
 public class Constants {
     
 //PWM's
-    public static final int PWM_TreadsLeft = 2;
+    public static final int PWM_TreadsLeft = 0;
     public static final int PWM_TreadsRight = 1;
     public static final int PWM_BallIntake = 3;
-    public static final int PWM_BallIndexer = 4;
-    public static final int PWM_BallShooterL = 7;
-    public static final int PWM_BallShooterR = 8;
-    public static final int PWM_Wheel = 5; 
-    public static final int PWM_ClimberPulley = 9;
-    public static final int PWM_Screw = 6;
-    public static final int PWM_Servo = 0;
+    public static final int PWM_BallIndexer = 2;
+    public static final int PWM_BallShooterL = 4;
+    public static final int PWM_BallShooterR = 5;
+    public static final int PWM_Wheel = 8; 
+    public static final int PWM_ClimberPulley = 6;
+    public static final int PWM_Screw = 9;
+    public static final int PWM_Servo = 7;
 
 //DIO's
     public static final int DIO_BallCounter = 0;
