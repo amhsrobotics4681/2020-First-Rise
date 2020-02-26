@@ -88,6 +88,14 @@ public class BallSystem {
         timer ++;
     }
 
+    public void spit() { //it's a toggle
+        spitting = !spitting;
+        if (spitting)
+            m_intake.set(.5);
+        else
+            m_intake.set(0);
+        }
+
     public void resetShooter(){ //Resets timer and engages shooting system
         timer = 0;
         m_shooterLeft.set(Constants.kShooterSpeed);
@@ -101,11 +109,7 @@ public class BallSystem {
         m_indexer.set(0);
     }
     public void toggleIntake(){
-        intakeOn = !intakeOn;
-        spitting = false;
-    }
-    public void toggleSpit() {
-        spitting = !spitting;
-        intakeOn = false;
+        if (!spitting)
+            intakeOn = !intakeOn;
     }
 }

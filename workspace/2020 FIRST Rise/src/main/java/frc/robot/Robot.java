@@ -67,7 +67,6 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopInit() {
-        m_ball.toggleSpit();
         m_ball.toggleIntake();
     }
 
@@ -76,7 +75,7 @@ public class Robot extends TimedRobot {
         //System.out.println(getDistance());
         m_ball.mainMethod();
         m_wheel.mainMethod();
-        m_climber.MainMethod();
+        m_climber.mainMethod();
         m_ball.screwSpeed(-1*controllerShooter.getRawAxis(1));
         align();
         //Controls
@@ -127,11 +126,11 @@ public class Robot extends TimedRobot {
         if (controllerShooter.getRawButtonPressed(2)){
             currentlyDriving = false;
         }
-        if (controllerDriver.getRawButtonPressed(10)){//Start button
+        if (controllerDriver.getRawButtonPressed(10)){
             currentlyDriving = true;
         }
         if (controllerDriver.getRawButtonPressed(Constants.bSpitOut))
-            m_ball.toggleSpit();
+            m_ball.spit();
         if (controllerDriver.getRawButton(Constants.bAlignRobot)) {
             align();
             if (!aligning)
