@@ -61,8 +61,7 @@ public class Constants {
     public static final double kAutonomousShooterSpeed = .6;
     public static final double kRotationSpeed = 0.5;
     public static final double kPositionSpeed = 0.5;
-    public static final double kPulleySpeed = 1.0;
-    public static final double kWinchSpeed = 1.0;
+    public static final double kPulleySpeed = 0.2;
     public static final double kAligningSpeed = 0.4;
     public static final double kSpeedCurve = 0.025;
 }
