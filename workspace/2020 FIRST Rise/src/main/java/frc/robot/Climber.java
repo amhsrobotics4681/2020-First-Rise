@@ -33,8 +33,9 @@ public class Climber {
     public void MainMethod(){
         if (status.equals("Stationary")){
             m_pulley.set(0);
+            m_servo.setAngle(0);
         } else if (status.equals("Climbing")){
-            m_servo.setAngle(90);
+            m_servo.setAngle(45);
             if (m_servo.getAngle() < 45){
                 m_pulley.set(-.3);//Goes down until enough weight removed to pull servo
             }
