@@ -52,14 +52,14 @@ public class Climber {
             m_servo.setAngle(180);
         } else if (status.equals("Climbing")){
             m_servo.setAngle(135);
-            if (counter < 50){
-                m_pulley.set(-1*(Constants.kPulleySpeed));//Goes down until enough weight removed to pull servo
+            if (counter < 25){
+                m_pulley.set(-.5*(Constants.kPulleySpeed));//Goes down until enough weight removed to pull servo
             }
             else{
                 m_pulley.set(Constants.kPulleySpeed);
             }
         } else if (status.equals("Contracting")){
-            m_pulley.set(-1*Constants.kPulleySpeed);
+            m_pulley.set(-2*Constants.kPulleySpeed);
             m_servo.setAngle(180);
         }
     counter += 1;

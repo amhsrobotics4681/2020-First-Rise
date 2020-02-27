@@ -52,16 +52,18 @@ public class Constants {
     public static final int bToggleWheel = bumperR;
     public static final int bKillShooter = bumperL;//remote 2
     public static final int bSpitOut = triggerL;
+    public static final int bDriving = buttonStart;
     
 // Speed declarations
-    public static final double kIntakeSpeed = -0.5; //neg
+    public static final double kIntakeSpeed = 0.5; //neg
+    public static final double kSpitSpeed = -0.9;
     public static final double kIndexSpeed = -0.7; //neg
     public static final double kEjectionSpeed = -0.7; //neg
-    public static final double kShooterSpeed = 1.0; //neg
+    public static final double kShooterSpeed = .8; //neg
     public static final double kAutonomousShooterSpeed = .6;
     public static final double kRotationSpeed = 0.5;
     public static final double kPositionSpeed = 0.5;
-    public static final double kPulleySpeed = 0.2;
+    public static final double kPulleySpeed = 0.4;
     public static final double kAligningSpeed = 0.4;
-    public static final double kSpeedCurve = 0.025;
+    public static final double kSpeedCurve = 0.04;
 }

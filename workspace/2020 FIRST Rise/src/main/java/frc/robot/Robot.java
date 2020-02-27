@@ -27,9 +27,8 @@ public class Robot extends TimedRobot {
     private boolean aligning;
     private double vTranslational;
     private double vRotational;
-    private int timer;
     private CameraServer m_cameraServer;
-    private boolean currentlyDriving;
+    private String drivingStatus;
 
     @Override
     public void robotInit() {
@@ -53,8 +52,9 @@ public class Robot extends TimedRobot {
         aligning = true;
         vTranslational = 0;
         vRotational = 0;
-        currentlyDriving = true;
+        drivingStatus = "Driving";
         m_cameraServer.getInstance().startAutomaticCapture("Front Camera", 0);
+        m_cameraServer.getInstance().startAutomaticCapture("Back Camera", 1);
     }
 
     @Override
@@ -76,10 +76,10 @@ public class Robot extends TimedRobot {
         m_ball.mainMethod();
         m_wheel.mainMethod();
         m_climber.mainMethod();
-        m_ball.screwSpeed(-1*controllerShooter.getRawAxis(1));
-        align();
-        //Controls
-        if (currentlyDriving){
+
+        // CONTROLS
+        if (drivingStatus.equals("Driving")){
+            m_ball.screwSpeed(-1*controllerShooter.getRawAxis(1));
             if(vTranslational < controllerDriver.getRawAxis(1))
                 vTranslational += Constants.kSpeedCurve;
             if(vTranslational > controllerDriver.getRawAxis(1))
@@ -88,20 +88,26 @@ public class Robot extends TimedRobot {
                 vRotational += Constants.kSpeedCurve;
             if(vRotational > controllerDriver.getRawAxis(2))
                 vRotational -= Constants.kSpeedCurve;
-        }
-        else{
+        } else if (drivingStatus.equals("Shooting")){
             vTranslational = 0;
-            vRotational = (controllerShooter.getRawAxis(0)/5); 
+            vRotational = (controllerShooter.getRawAxis(0)/5);
+            m_ball.screwSpeed(-1*controllerShooter.getRawAxis(1)); 
+        } else if (drivingStatus.equals("Climber")){
+            vTranslational = (controllerShooter.getRawAxis(0)/5);
+            vRotational = (controllerShooter.getRawAxis(0)/5);
+            if (controllerDriver.getRawButton(6)){
+                m_climber.extending();
+            }
+            else if (controllerDriver.getRawButton(7)){
+                m_climber.contracting();
+            }
+            else{
+                m_climber.stop();
+            }
         }
         m_drive.arcadeDrive(-vRotational, vTranslational);
 
-        if (controllerDriver.getPOV() == 0){
-            m_climber.extending();
-        } else if (controllerDriver.getPOV() == 180){
-            m_climber.contracting();
-        } else {
-            m_climber.stop();
-        }
+        // BUTTONS
         if (controllerDriver.getRawButtonPressed(Constants.bPositionControl)){
             m_wheel.positionControl();
         }
@@ -110,6 +116,9 @@ public class Robot extends TimedRobot {
         }
         if (controllerDriver.getRawButtonPressed(Constants.bIntakeToggle)){
             m_ball.toggleIntake();
+        }
+        if (controllerDriver.getRawButtonPressed(Constants.bSpitOut)) {
+            m_ball.toggleSpit();
         }
         if (controllerShooter.getRawButtonPressed(1)){
             m_ball.resetShooter();
@@ -123,14 +132,15 @@ public class Robot extends TimedRobot {
         if (controllerShooter.getRawButtonPressed(3)){
             m_ball.killShooter();
         }
-        if (controllerShooter.getRawButtonPressed(2)){
-            currentlyDriving = false;
+        if (controllerShooter.getRawButtonPressed(11)){
+            drivingStatus = "Shooting";
         }
-        if (controllerDriver.getRawButtonPressed(10)){
-            currentlyDriving = true;
+        if (controllerShooter.getRawButtonPressed(10)){
+            drivingStatus = "Climbing";
         }
-        if (controllerDriver.getRawButtonPressed(Constants.bSpitOut))
-            m_ball.spit();
+        if (controllerDriver.getRawButtonPressed(Constants.bDriving)){
+            drivingStatus = "Driving";
+        }
         if (controllerDriver.getRawButton(Constants.bAlignRobot)) {
             align();
             if (!aligning)

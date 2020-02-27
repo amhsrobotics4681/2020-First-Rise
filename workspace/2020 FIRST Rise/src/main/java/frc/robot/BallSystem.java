@@ -29,6 +29,7 @@ public class BallSystem {
     public void ballSystemInit() {
         switchEnd = -1;
         m_intake = new Victor(Constants.PWM_BallIntake);
+        m_intake.setInverted(true);
         m_indexer = new Victor(Constants.PWM_BallIndexer);
         m_shooterLeft = new Victor(Constants.PWM_BallShooterL); 
         m_shooterRight = new Victor(Constants.PWM_BallShooterR);
@@ -49,18 +50,27 @@ public class BallSystem {
     public void toggleIndexer(){
         indexerOn = !indexerOn;
     }
+    public void toggleSpit() {
+        spitting = !spitting;
+        intakeOn = false;
+    }
+    public void toggleIntake() {
+        intakeOn = !intakeOn;
+        spitting = false;
+    }
 
     public void mainMethod() {
         //System.out.println(!m_intakeSwitch.get());
         //System.out.println(!m_intakeSwitch2.get());
         if (intakeOn) {
             m_intake.set(Constants.kIntakeSpeed);
+        } else if (spitting) {
+            m_intake.set(Constants.kSpitSpeed);
         } else {
-            if (!spitting)
-                m_intake.set(0);
+            m_intake.set(0);
         }
         // INDEXER CODE
-        if (currentlyShooting && timer > 20){
+        if (currentlyShooting && timer > 50){
             m_indexer.set(Constants.kEjectionSpeed);
         }   
         else if (!m_intakeSwitch.get()){
@@ -88,14 +98,6 @@ public class BallSystem {
         timer ++;
     }
 
-    public void spit() { //it's a toggle
-        spitting = !spitting;
-        if (spitting)
-            m_intake.set(.5);
-        else
-            m_intake.set(0);
-        }
-
     public void resetShooter(){ //Resets timer and engages shooting system
         timer = 0;
         m_shooterLeft.set(Constants.kShooterSpeed);
@@ -107,9 +109,5 @@ public class BallSystem {
         m_shooterLeft.set(0);
         m_shooterRight.set(0);
         m_indexer.set(0);
-    }
-    public void toggleIntake(){
-        if (!spitting)
-            intakeOn = !intakeOn;
     }
 }

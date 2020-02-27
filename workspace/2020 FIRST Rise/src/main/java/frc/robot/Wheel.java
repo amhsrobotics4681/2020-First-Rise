@@ -40,9 +40,6 @@ public class Wheel {
         m_colorMatcher.addColorMatch(kYellow);
         m_motor = new Victor(Constants.PWM_Wheel); 
         currentColor = getColor();
-        targetColor = DriverStation.getInstance().getGameSpecificMessage();
-        //targetColor = targetColor.substring(0,1);
-        adjustColor();
     }
         
     //Gets the color that is currently being detected
@@ -81,6 +78,9 @@ public class Wheel {
         System.out.println("Position");
         System.out.println(targetColor);
         m_motor.set(Constants.kPositionSpeed);
+        targetColor = DriverStation.getInstance().getGameSpecificMessage();
+        targetColor = targetColor.substring(0,1);
+        adjustColor();
     }
     public void toggleWheel(){
         status = "Stationary";
