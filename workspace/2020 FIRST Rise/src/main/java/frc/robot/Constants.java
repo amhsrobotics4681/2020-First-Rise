@@ -54,7 +54,7 @@ public class Constants {
     public static final int bDriving = buttonStart;
     
 // Speed declarations
-    public static final double kIntakeSpeed = 0.5; //neg
+    public static final double kIntakeSpeed = .75; //neg
     public static final double kSpitSpeed = -0.9;
     public static final double kIndexSpeed = -0.7; //neg
     public static final double kEjectionSpeed = -0.7; //neg

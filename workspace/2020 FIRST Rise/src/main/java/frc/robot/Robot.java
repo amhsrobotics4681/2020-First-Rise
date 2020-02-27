@@ -53,8 +53,8 @@ public class Robot extends TimedRobot {
         vTranslational = 0;
         vRotational = 0;
         drivingStatus = "Driving";
-        m_cameraServer.getInstance().startAutomaticCapture("Front Camera", 0);
-        m_cameraServer.getInstance().startAutomaticCapture("Back Camera", 1);
+        m_cameraServer.getInstance().startAutomaticCapture("Shooting Camera", 0);
+        m_cameraServer.getInstance().startAutomaticCapture("Collecting Camera", 1);
     }
 
     @Override
@@ -72,6 +72,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
+        System.out.println(drivingStatus);
         //System.out.println(getDistance());
         m_ball.mainMethod();
         m_wheel.mainMethod();
@@ -88,25 +89,26 @@ public class Robot extends TimedRobot {
                 vRotational += Constants.kSpeedCurve;
             if(vRotational > controllerDriver.getRawAxis(2))
                 vRotational -= Constants.kSpeedCurve;
-        } else if (drivingStatus.equals("Shooting")){
+        }if (drivingStatus.equals("Shooting")){
             vTranslational = 0;
-            vRotational = (controllerShooter.getRawAxis(0)/5);
+            vRotational = (controllerShooter.getRawAxis(0)/2);
             m_ball.screwSpeed(-1*controllerShooter.getRawAxis(1)); 
-        } else if (drivingStatus.equals("Climber")){
-            vTranslational = (controllerShooter.getRawAxis(0)/5);
-            vRotational = (controllerShooter.getRawAxis(0)/5);
-            if (controllerDriver.getRawButton(6)){
+        }if (drivingStatus.equals("Climbing")){
+            vTranslational = (controllerShooter.getRawAxis(1)/2);
+            vRotational = (controllerShooter.getRawAxis(0)/2);
+            if (controllerShooter.getRawButton(6)){
                 m_climber.extending();
+                System.out.println("Extending");
             }
-            else if (controllerDriver.getRawButton(7)){
+            else if (controllerShooter.getRawButton(7)){
                 m_climber.contracting();
+                System.out.println("C");
             }
             else{
                 m_climber.stop();
             }
         }
         m_drive.arcadeDrive(-vRotational, vTranslational);
-
         // BUTTONS
         if (controllerDriver.getRawButtonPressed(Constants.bPositionControl)){
             m_wheel.positionControl();
@@ -126,7 +128,7 @@ public class Robot extends TimedRobot {
         if (controllerDriver.getRawButtonPressed(Constants.bToggleWheel)){
             m_wheel.toggleWheel();
         }
-        if (controllerShooter.getRawButtonPressed(3)){
+        if (controllerShooter.getRawButtonPressed(2)){
             m_ball.killShooter();
         }
         if (controllerShooter.getRawButtonPressed(11)){
