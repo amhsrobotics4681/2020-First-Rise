@@ -15,19 +15,15 @@ public class BallSystem {
     DigitalInput m_intakeSwitch;
     DigitalInput m_intakeSwitch2;
     private int timer;
-    private int switchEnd;
     int maxTime;
     boolean intakeSwitchPressed;
     boolean currentlyShooting;
     boolean intakeOn;
-    boolean indexerOn;
     boolean spitting = false;
     boolean switchPressed;
     boolean currentlySpinning;
-    boolean toggleOn;
 
     public void ballSystemInit() {
-        switchEnd = -1;
         m_intake = new Victor(Constants.PWM_BallIntake);
         m_intake.setInverted(true);
         m_indexer = new Victor(Constants.PWM_BallIndexer);
@@ -42,14 +38,11 @@ public class BallSystem {
         currentlyShooting = true;
         currentlySpinning = false;
         intakeOn = false;
-        toggleOn = false;
     }
     public void screwSpeed(double speed){
         m_screw.set(speed);
     }
-    public void toggleIndexer(){
-        indexerOn = !indexerOn;
-    }
+
     public void toggleSpit() {
         spitting = !spitting;
         intakeOn = false;
@@ -82,11 +75,7 @@ public class BallSystem {
                 m_indexer.set(0);
                 currentlySpinning = false;
             }
-        }
-        else if (toggleOn){
-            m_indexer.set(Constants.kIndexSpeed);
-        }
-        else {
+        } else {
             m_indexer.set(0);
         }
         //Shooter code

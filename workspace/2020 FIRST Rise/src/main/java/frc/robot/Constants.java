@@ -46,7 +46,6 @@ public class Constants {
     public static final int bPositionControl = buttonX; 
     public static final int bRotationControl = buttonY; 
     public static final int bIntakeToggle = buttonA;
-    public static final int bIndexToggle = buttonB;
     public static final int bResetShooter = triggerR;//Remote 2
     public static final int bAlignRobot = buttonBack;
     public static final int bToggleWheel = bumperR;

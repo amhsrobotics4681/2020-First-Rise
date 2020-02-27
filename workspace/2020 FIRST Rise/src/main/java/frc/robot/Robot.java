@@ -126,9 +126,6 @@ public class Robot extends TimedRobot {
         if (controllerDriver.getRawButtonPressed(Constants.bToggleWheel)){
             m_wheel.toggleWheel();
         }
-        if (controllerDriver.getRawButtonPressed(Constants.bIndexToggle)){
-            m_ball.toggleIndexer();
-        }
         if (controllerShooter.getRawButtonPressed(3)){
             m_ball.killShooter();
         }
