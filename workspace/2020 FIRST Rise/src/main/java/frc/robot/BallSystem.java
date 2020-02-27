@@ -22,6 +22,7 @@ public class BallSystem {
     boolean spitting = false;
     boolean switchPressed;
     boolean currentlySpinning;
+    int currentBallCount;
 
     public void ballSystemInit() {
         m_intake = new Victor(Constants.PWM_BallIntake);
@@ -38,9 +39,13 @@ public class BallSystem {
         currentlyShooting = true;
         currentlySpinning = false;
         intakeOn = false;
+        currentBallCount = 0;
     }
     public void screwSpeed(double speed){
         m_screw.set(speed);
+    }
+    public int ballCount(){
+        return currentBallCount;
     }
 
     public void toggleSpit() {
@@ -67,6 +72,9 @@ public class BallSystem {
             m_indexer.set(Constants.kEjectionSpeed);
         }   
         else if (!m_intakeSwitch.get()){
+            if (!currentlySpinning){
+                currentBallCount ++;
+            }
             currentlySpinning = true;
             m_indexer.set(Constants.kIndexSpeed);
         }
@@ -91,7 +99,7 @@ public class BallSystem {
         timer = 0;
         m_shooterLeft.set(Constants.kShooterSpeed);
         m_shooterRight.set(Constants.kShooterSpeed);
-        //m_indexer.set(Constants.kEjectionSpeed);
+        currentBallCount = 0;
         currentlyShooting = true;
     }
     public void killShooter(){

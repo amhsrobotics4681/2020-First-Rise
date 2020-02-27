@@ -74,6 +74,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         System.out.println(drivingStatus);
         //System.out.println(getDistance());
+        System.out.println("Ball Count: " + m_ball.ballCount()+", Distance: " + getDistance());
         m_ball.mainMethod();
         m_wheel.mainMethod();
         m_climber.mainMethod();
