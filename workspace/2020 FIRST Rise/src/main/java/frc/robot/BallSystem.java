@@ -22,6 +22,7 @@ public class BallSystem {
     boolean spitting = false;
     boolean switchPressed;
     boolean currentlySpinning;
+    boolean intakeDead;
     int currentBallCount;
 
     public void ballSystemInit() {
@@ -39,6 +40,7 @@ public class BallSystem {
         currentlyShooting = true;
         currentlySpinning = false;
         intakeOn = false;
+        intakeDead = false;
         currentBallCount = 0;
     }
     public void screwSpeed(double speed){
@@ -60,9 +62,12 @@ public class BallSystem {
     public void mainMethod() {
         //System.out.println(!m_intakeSwitch.get());
         //System.out.println(!m_intakeSwitch2.get());
-        if (intakeOn) {
+        if (intakeDead){
+            m_intake.set(0);
+        }
+        else if (intakeOn){
             m_intake.set(Constants.kIntakeSpeed);
-        } else if (spitting) {
+        } else if (spitting){
             m_intake.set(Constants.kSpitSpeed);
         } else {
             m_intake.set(0);
@@ -106,5 +111,11 @@ public class BallSystem {
         m_shooterLeft.set(0);
         m_shooterRight.set(0);
         m_indexer.set(0);
+    }
+    public void killIntake(){
+        intakeDead = true;
+    }
+    public void reviveIntake(){
+        intakeDead = false;
     }
 }

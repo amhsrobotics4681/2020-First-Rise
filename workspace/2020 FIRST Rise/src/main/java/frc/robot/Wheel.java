@@ -82,7 +82,7 @@ public class Wheel {
         targetColor = targetColor.substring(0,1);
         adjustColor();
     }
-    public void toggleWheel(){
+    public void stopWheel(){
         status = "Stationary";
         m_motor.set(0);
     }
