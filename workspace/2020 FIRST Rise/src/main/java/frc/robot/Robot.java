@@ -67,7 +67,8 @@ public class Robot extends TimedRobot {
             m_ball.resetShooter();
             autoShoot = true;
         }
-        if (!m_ball.currentlyShooting && getDistance()<180) m_drive.arcadeDrive(-1, 0);
+        //if (!m_ball.currentlyShooting && getDistance()<180)
+        m_drive.arcadeDrive(0,-0.2);
     } 
     
     @Override

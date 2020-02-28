@@ -34,7 +34,7 @@ public class BallSystem {
         m_intakeSwitch = new DigitalInput(Constants.DIO_BallCounter);
         m_intakeSwitch2 = new DigitalInput(Constants.DIO_BallCounter2);
         m_screw = new Victor(Constants.PWM_Screw);
-        timer = 300;
+        timer = 0;
         maxTime = 200; // = seconds * 50
         intakeSwitchPressed = false;
         currentlyShooting = true;
@@ -73,7 +73,7 @@ public class BallSystem {
             m_intake.set(0);
         }
         // INDEXER CODE
-        if (currentlyShooting && timer > 50){
+        if (currentlyShooting && (timer > 50)){
             m_indexer.set(Constants.kEjectionSpeed);
         }   
         else if (!m_intakeSwitch.get()){

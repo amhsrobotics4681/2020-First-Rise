@@ -46,7 +46,6 @@ public class Climber {
         YOU WILL BREAK THE ROBOT
         I AM WATCHING YOU
         -SP*/
-        System.out.println(m_servo.getAngle());
         if (status.equals("Stationary")){
             m_pulley.set(0);
             m_servo.setAngle(180);
