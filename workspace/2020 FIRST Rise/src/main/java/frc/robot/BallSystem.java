@@ -14,6 +14,7 @@ public class BallSystem {
     Victor m_intake, m_indexer, m_shooterLeft, m_shooterRight, m_screw;
     DigitalInput m_intakeSwitch;
     DigitalInput m_intakeSwitch2;
+    DigitalInput m_screwStop;
     private int timer;
     int maxTime;
     boolean intakeSwitchPressed;
@@ -34,18 +35,25 @@ public class BallSystem {
         m_intakeSwitch = new DigitalInput(Constants.DIO_BallCounter);
         m_intakeSwitch2 = new DigitalInput(Constants.DIO_BallCounter2);
         m_screw = new Victor(Constants.PWM_Screw);
+        m_screwStop = new DigitalInput(Constants.DIO_ScrewSwitch);
         timer = 0;
         maxTime = 200; // = seconds * 50
         intakeSwitchPressed = false;
-        currentlyShooting = true;
+        currentlyShooting = false;
         currentlySpinning = false;
         intakeOn = false;
         intakeDead = false;
         currentBallCount = 0;
     }
-    public void screwSpeed(double speed){
-        m_screw.set(speed);
+    public void screwSpeed(double speed) {
+        // if switch pressed and leaning back, stop screw
+        if (m_screwStop.get() && (speed < 0)) {
+            m_screw.set(0);
+        } else {
+            m_screw.set(speed);
+        }
     }
+
     public int ballCount(){
         return currentBallCount;
     }
@@ -60,8 +68,6 @@ public class BallSystem {
     }
 
     public void mainMethod() {
-        //System.out.println(!m_intakeSwitch.get());
-        //System.out.println(!m_intakeSwitch2.get());
         if (intakeDead){
             m_intake.set(0);
         }
@@ -75,10 +81,15 @@ public class BallSystem {
         // INDEXER CODE
         if (currentlyShooting && (timer > 50)){
             m_indexer.set(Constants.kEjectionSpeed);
-        }   
-        else if (!m_intakeSwitch.get()){
+        }
+        else if (spitting){
+            m_indexer.set(-Constants.kIndexSpeed);
+        }
+        else if (m_intakeSwitch.get()){
+            
             if (!currentlySpinning){
                 currentBallCount ++;
+                System.out.println("Pressed");
             }
             currentlySpinning = true;
             m_indexer.set(Constants.kIndexSpeed);
@@ -104,6 +115,13 @@ public class BallSystem {
         timer = 0;
         m_shooterLeft.set(Constants.kShooterSpeed);
         m_shooterRight.set(Constants.kShooterSpeed);
+        currentBallCount = 0;
+        currentlyShooting = true;
+    }
+    public void fullShooter(){
+        timer = 0;
+        m_shooterRight.set(1);
+        m_shooterLeft.set(1);
         currentBallCount = 0;
         currentlyShooting = true;
     }

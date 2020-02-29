@@ -28,6 +28,7 @@ public class Robot extends TimedRobot {
     private boolean aligning;
     private double vTranslational;
     private double vRotational;
+    private int autoTimer;
     private CameraServer m_cameraServer;
     private String drivingStatus;
 
@@ -56,19 +57,27 @@ public class Robot extends TimedRobot {
         drivingStatus = "Driving";
         m_cameraServer.getInstance().startAutomaticCapture("Shooting Camera", 0);
         m_cameraServer.getInstance().startAutomaticCapture("Collecting Camera", 1);
+    }
+
+    @Override
+    public void autonomousInit() {
+        autoTimer = 0;
         autoShoot = false;
     }
 
     @Override
     public void autonomousPeriodic() {
-        //align();
         m_ball.mainMethod();
         if (!autoShoot) { 
             m_ball.resetShooter();
             autoShoot = true;
         }
-        //if (!m_ball.currentlyShooting && getDistance()<180)
-        m_drive.arcadeDrive(0,-0.2);
+        if (autoTimer > 200 && autoTimer < 350) {
+            m_drive.arcadeDrive(0,-0.7);
+        } else {
+            m_drive.arcadeDrive(0,0);
+        }
+        autoTimer ++;
     } 
     
     @Override
@@ -131,6 +140,9 @@ public class Robot extends TimedRobot {
         if (controllerDriver.getRawButtonPressed(Constants.bToggleWheel)){
             m_wheel.stopWheel();
         }
+        if (controllerShooter.getRawButtonPressed(3)){
+            m_ball.fullShooter();
+        }
         if (controllerShooter.getRawButtonPressed(2)){
             m_ball.killShooter();
         }
@@ -140,6 +152,7 @@ public class Robot extends TimedRobot {
         }
         if (controllerShooter.getRawButtonPressed(10)){
             drivingStatus = "Climbing";
+            m_ball.killIntake();
         }
         if (controllerDriver.getRawButtonPressed(Constants.bDriving)){
             drivingStatus = "Driving";

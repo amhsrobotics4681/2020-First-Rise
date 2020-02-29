@@ -1,9 +1,0 @@
-[
-  {
-    "artifact": "frcJava (in project ServoTest)",
-    "target": "roborio",
-    "debugfile": "frcJava_roborio.debugconfig",
-    "project": "ServoTest",
-    "language": "java"
-  }
-]

@@ -26,7 +26,7 @@ public class Constants {
     public static final int DIO_BallCounter2 = 2;
     public static final int DIO_LIDAR = 1;
     public static final int LidarError = 21;//Distance from shooting point to lidar
-    public static final int DIO_ClimberSwitch = 3;
+    public static final int DIO_ScrewSwitch = 3;
 
 //Buttons
     private static final int buttonX = 1;
@@ -57,11 +57,11 @@ public class Constants {
     public static final double kIntakeSpeed = .75; //neg
     public static final double kSpitSpeed = -0.9;
     public static final double kIndexSpeed = -0.7; //neg
-    public static final double kEjectionSpeed = -0.7; //neg
+    public static final double kEjectionSpeed = -0.5; //neg
     public static final double kShooterSpeed = .8; //neg
     public static final double kAutonomousShooterSpeed = .6;
     public static final double kRotationSpeed = 0.5;
-    public static final double kPositionSpeed = 0.5;
+    public static final double kPositionSpeed = 0.2;
     public static final double kPulleySpeed = 0.4;
     public static final double kAligningSpeed = 0.4;
     public static final double kSpeedCurve = 0.04;
