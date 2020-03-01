@@ -9,6 +9,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import com.analog.adis16470.frc.ADIS16470_IMU;
+import com.analog.adis16470.frc.ADIS16470_IMU.IMUAxis;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Counter;
@@ -31,6 +34,7 @@ public class Robot extends TimedRobot {
     private int autoTimer;
     private CameraServer m_cameraServer;
     private String drivingStatus;
+    private ADIS16470_IMU m_gyro;
 
     @Override
     public void robotInit() {
@@ -55,6 +59,7 @@ public class Robot extends TimedRobot {
         vTranslational = 0;
         vRotational = 0;
         drivingStatus = "Driving";
+        m_gyro = new ADIS16470_IMU();
         m_cameraServer.getInstance().startAutomaticCapture("Shooting Camera", 0);
         m_cameraServer.getInstance().startAutomaticCapture("Collecting Camera", 1);
     }
@@ -63,21 +68,43 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         autoTimer = 0;
         autoShoot = false;
+        m_gyro.setYawAxis(IMUAxis.kY);
+        m_ball.toggleIntake();
     }
 
     @Override
     public void autonomousPeriodic() {
         m_ball.mainMethod();
+        autoTimer++;
         if (!autoShoot) { 
             m_ball.resetShooter();
             autoShoot = true;
         }
+        // Strategy 1
+        /*
         if (autoTimer > 200 && autoTimer < 350) {
-            m_drive.arcadeDrive(0,-0.7);
+            m_drive.arcadeDrive(0,0.7);
         } else {
             m_drive.arcadeDrive(0,0);
         }
-        autoTimer ++;
+        */
+        //Strategy 2
+        System.out.println(m_gyro.getAngle());
+        System.out.println(autoTimer);
+        if (autoTimer > 280) {
+            if ((m_gyro.getAngle()) < 180) {
+                m_drive.arcadeDrive(-0.7, 0);
+                System.out.println("driving ... vroom vroom");
+            } else {
+                if (autoTimer < 500) {
+                    m_drive.arcadeDrive(0, -0.8);
+                } else if (autoTimer < 700) {
+                    m_drive.arcadeDrive(0, -0.65);
+                }
+            }
+        } else {
+            m_drive.arcadeDrive(0,0);
+        }
     } 
     
     @Override
@@ -87,7 +114,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        System.out.println("Ball Count: " + m_ball.ballCount()+", Distance: " + (int) getDistance() + ", Color: " + m_wheel.getColor());
+        //System.out.println("Ball Count: " + m_ball.ballCount()+", Distance: " + (int) getDistance() + ", Color: " + m_wheel.getColor());
         m_ball.mainMethod();
         m_wheel.mainMethod();
         m_climber.mainMethod();
@@ -105,7 +132,7 @@ public class Robot extends TimedRobot {
                 vRotational -= Constants.kSpeedCurve;
         } else if (drivingStatus.equals("Shooting")) {
             vTranslational = 0;
-            vRotational = (controllerShooter.getRawAxis(0)/2);
+            vRotational = (controllerShooter.getRawAxis(0));
             m_ball.screwSpeed(-1*controllerShooter.getRawAxis(1)); 
         } else if (drivingStatus.equals("Climbing")) {
             vTranslational = (controllerShooter.getRawAxis(1)/2);
@@ -120,7 +147,7 @@ public class Robot extends TimedRobot {
                 m_climber.stop();
             }
         }
-        m_drive.arcadeDrive(-vRotational, vTranslational);
+        m_drive.arcadeDrive(-vRotational*0.8, vTranslational);
         // BUTTONS
         if (controllerDriver.getRawButtonPressed(Constants.bPositionControl)){
             m_wheel.positionControl();
