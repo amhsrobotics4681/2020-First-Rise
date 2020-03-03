@@ -76,6 +76,7 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         m_ball.mainMethod();
         autoTimer++;
+        System.out.println(autoTimer);
         if (!autoShoot) { 
             m_ball.resetShooter();
             autoShoot = true;
@@ -88,19 +89,23 @@ public class Robot extends TimedRobot {
             m_drive.arcadeDrive(0,0);
         }
         */
-        //Strategy 2
-        System.out.println(m_gyro.getAngle());
-        System.out.println(autoTimer);
-        if (autoTimer > 280) {
+
+        /** STRATEGY 2
+         * Until timer is 280, don't move. then turn 180
+         * and forward until timer is 500
+         * Then turn a tiny bit more and forward over balls
+         */
+        if (autoTimer > 500) {
+            if (m_gyro.getAngle() < 187) {
+                m_drive.arcadeDrive(-0.7, 0);
+            } else {
+                m_drive.arcadeDrive(0, -0.5);
+            }
+        } else if (autoTimer > 280) {
             if ((m_gyro.getAngle()) < 180) {
                 m_drive.arcadeDrive(-0.7, 0);
-                System.out.println("driving ... vroom vroom");
             } else {
-                if (autoTimer < 500) {
-                    m_drive.arcadeDrive(0, -0.8);
-                } else if (autoTimer < 700) {
-                    m_drive.arcadeDrive(0, -0.65);
-                }
+                m_drive.arcadeDrive(0, -0.8);
             }
         } else {
             m_drive.arcadeDrive(0,0);
@@ -109,6 +114,7 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopInit() {
+        m_ball.toggleSpit();
         m_ball.toggleIntake();
     }
 
