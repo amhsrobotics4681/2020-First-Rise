@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
     private int autoTimer;
     private CameraServer m_cameraServer;
     private String drivingStatus;
+    private String autoStrategy;
     private ADIS16470_IMU m_gyro;
 
     @Override
@@ -70,6 +71,11 @@ public class Robot extends TimedRobot {
         autoShoot = false;
         m_gyro.setYawAxis(IMUAxis.kY);
         m_ball.toggleIntake();
+        autoStrategy = "Aventador";
+        //Urus: Shoot 3 balls then drive forward off the line (Works in all positions)
+        //Diablo: Shoot 3 balls, turn around, then drve forwards off the line (works in all positions)
+        //Aventador: Shoot 3 balls, turn around, drive to collect 3 balls in trench (works on right side) (Does not require Limelight)
+        //Veneno: Shoots 3 balls, turns around, drive to collect 3 balls in trench and then shoots (right side) (requires limelight)
     }
 
     @Override
@@ -81,35 +87,54 @@ public class Robot extends TimedRobot {
             m_ball.resetShooter();
             autoShoot = true;
         }
-        // Strategy 1
-        /*
-        if (autoTimer > 200 && autoTimer < 350) {
-            m_drive.arcadeDrive(0,0.7);
-        } else {
-            m_drive.arcadeDrive(0,0);
+        if (autoStrategy.equals("Urus")){
+            if (autoTimer > 200 && autoTimer < 350) {
+                m_drive.arcadeDrive(0,0.7);
+            } else {
+                m_drive.arcadeDrive(0,0);
+            }
         }
-        */
-
-        /** STRATEGY 2
+        else if (autoStrategy.equals("Diablo")){
+            if (autoTimer > 250 && autoTimer < 450){
+                if ((m_gyro.getAngle()) < 180) {
+                    m_drive.arcadeDrive(-0.7, 0);
+                } else {
+                    m_drive.arcadeDrive(0, -0.8);
+                }
+            }
+            else { 
+                m_drive.arcadeDrive(0,0);
+            }
+        }
+        /** STRATEGY 3
          * Until timer is 280, don't move. then turn 180
          * and forward until timer is 500
          * Then turn a tiny bit more and forward over balls
          */
-        if (autoTimer > 500) {
-            if (m_gyro.getAngle() < 187) {
-                m_drive.arcadeDrive(-0.7, 0);
+        else if (autoStrategy.equals("Aventador")){    
+            if (autoTimer > 500) {
+                if (m_gyro.getAngle() < 187) {
+                    m_drive.arcadeDrive(-0.7, 0);
+                } else {
+                    m_drive.arcadeDrive(0, -0.5);
+                }
+            } else if (autoTimer > 280) {
+                if ((m_gyro.getAngle()) < 180) {
+                    m_drive.arcadeDrive(-0.7, 0);
+                } else {
+                    m_drive.arcadeDrive(0, -0.8);
+                }
             } else {
-                m_drive.arcadeDrive(0, -0.5);
+                m_drive.arcadeDrive(0,0);
             }
-        } else if (autoTimer > 280) {
-            if ((m_gyro.getAngle()) < 180) {
-                m_drive.arcadeDrive(-0.7, 0);
-            } else {
-                m_drive.arcadeDrive(0, -0.8);
-            }
-        } else {
-            m_drive.arcadeDrive(0,0);
         }
+        else if (autoStrategy.equals("Veneno")){
+            //finish this one, Requires limelight
+        }
+        else{
+            autoStrategy = "Urus";
+        }
+
     } 
     
     @Override
