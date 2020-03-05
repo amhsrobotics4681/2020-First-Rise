@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import com.analog.adis16470.frc.ADIS16470_IMU;
 import com.analog.adis16470.frc.ADIS16470_IMU.IMUAxis;
-
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Counter;
@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
         autoShoot = false;
         m_gyro.setYawAxis(IMUAxis.kY);
         m_ball.toggleIntake();
-        autoStrategy = "Aventador";
+        autoStrategy = DriverStation.getInstance().getGameSpecificMessage();
         //Urus: Shoot 3 balls then drive forward off the line (Works in all positions)
         //Diablo: Shoot 3 balls, turn around, then drve forwards off the line (works in all positions)
         //Aventador: Shoot 3 balls, turn around, drive to collect 3 balls in trench (works on right side) (Does not require Limelight)
