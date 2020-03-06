@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
     private Joystick controllerDriver;
@@ -35,6 +37,7 @@ public class Robot extends TimedRobot {
     private CameraServer m_cameraServer;
     private String drivingStatus;
     private String autoStrategy;
+    private SendableChooser<String> m_chooser = new SendableChooser<>();
     private ADIS16470_IMU m_gyro;
 
     @Override
@@ -56,10 +59,14 @@ public class Robot extends TimedRobot {
         counter.setMaxPeriod(1.0);
         counter.setSemiPeriodMode(true);
         counter.reset();
-        aligning = true;
         vTranslational = 0;
         vRotational = 0;
         drivingStatus = "Driving";
+        m_chooser.setDefaultOption("Shoot, Fd", "Urus");
+        m_chooser.addOption("Shoot, Turn, Fd", "Diablo");
+        m_chooser.addOption("Shoot, Collect", "Aventador");
+        m_chooser.addOption("Shoot, Collect, Shoot", "Veneno");
+        SmartDashboard.putData("Auto Choices", m_chooser);
         m_gyro = new ADIS16470_IMU();
         m_cameraServer.getInstance().startAutomaticCapture("Shooting Camera", 0);
         m_cameraServer.getInstance().startAutomaticCapture("Collecting Camera", 1);
@@ -69,9 +76,10 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         autoTimer = 0;
         autoShoot = false;
+        aligning = true;
         m_gyro.setYawAxis(IMUAxis.kY);
         m_ball.toggleIntake();
-        autoStrategy = DriverStation.getInstance().getGameSpecificMessage();
+        autoStrategy = m_chooser.getSelected();
         //Urus: Shoot 3 balls then drive forward off the line (Works in all positions)
         //Diablo: Shoot 3 balls, turn around, then drve forwards off the line (works in all positions)
         //Aventador: Shoot 3 balls, turn around, drive to collect 3 balls in trench (works on right side) (Does not require Limelight)
@@ -87,14 +95,14 @@ public class Robot extends TimedRobot {
             m_ball.resetShooter();
             autoShoot = true;
         }
+        
         if (autoStrategy.equals("Urus")){
             if (autoTimer > 200 && autoTimer < 350) {
-                m_drive.arcadeDrive(0,0.7);
+                m_drive.arcadeDrive(0, -0.7);
             } else {
                 m_drive.arcadeDrive(0,0);
             }
-        }
-        else if (autoStrategy.equals("Diablo")){
+        } else if (autoStrategy.equals("Diablo")){
             if (autoTimer > 250 && autoTimer < 450){
                 if ((m_gyro.getAngle()) < 180) {
                     m_drive.arcadeDrive(-0.7, 0);
@@ -105,13 +113,7 @@ public class Robot extends TimedRobot {
             else { 
                 m_drive.arcadeDrive(0,0);
             }
-        }
-        /** STRATEGY 3
-         * Until timer is 280, don't move. then turn 180
-         * and forward until timer is 500
-         * Then turn a tiny bit more and forward over balls
-         */
-        else if (autoStrategy.equals("Aventador")){    
+        } else if (autoStrategy.equals("Aventador")){    
             if (autoTimer > 500) {
                 if (m_gyro.getAngle() < 187) {
                     m_drive.arcadeDrive(-0.7, 0);
@@ -127,14 +129,33 @@ public class Robot extends TimedRobot {
             } else {
                 m_drive.arcadeDrive(0,0);
             }
-        }
-        else if (autoStrategy.equals("Veneno")){
-            //finish this one, Requires limelight
-        }
-        else{
+        } else if (autoStrategy.equals("Veneno")){
+            if (autoTimer > 670) {
+                if (m_gyro.getAngle() > 20) {
+                    m_drive.arcadeDrive(1.0, 0);
+                } else {
+                    align();
+                }
+                if (!aligning)
+                    m_ball.resetShooter();
+            if (autoTimer > 440) {
+                if (m_gyro.getAngle() < 190) {
+                    m_drive.arcadeDrive(-0.7, 0);
+                } else {
+                    m_drive.arcadeDrive(0, -0.55);
+                }
+            } else if (autoTimer > 230) {
+                if ((m_gyro.getAngle()) < 180) {
+                    m_drive.arcadeDrive(-0.7, 0);
+                } else {
+                    m_drive.arcadeDrive(0, -1.0);
+                }
+            } else {
+                m_drive.arcadeDrive(0,0);
+            }
+        } else {
             autoStrategy = "Urus";
         }
-
     } 
     
     @Override
@@ -178,7 +199,10 @@ public class Robot extends TimedRobot {
                 m_climber.stop();
             }
         }
-        m_drive.arcadeDrive(-vRotational*0.8, vTranslational);
+        m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);
+        // ^ false means inputs aren't squared. may need to get used to new drive style
+        // basically arcadeDrive(0, -0,5) gives 25% power, but (0, -0.5, false) gives 50% power
+        
         // BUTTONS
         if (controllerDriver.getRawButtonPressed(Constants.bPositionControl)){
             m_wheel.positionControl();
