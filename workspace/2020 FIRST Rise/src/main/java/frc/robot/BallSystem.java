@@ -9,9 +9,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PWMTalonSRX;
 
 public class BallSystem {
-    Victor m_intake, m_indexer, m_shooterLeft, m_shooterRight, m_screw;
+    Victor m_intake, m_indexer, m_shooterLeft, m_shooterRight;
+    PWMTalonSRX m_screw;
     DigitalInput m_intakeSwitch;
     DigitalInput m_intakeSwitch2;
     DigitalInput m_screwStop;
@@ -34,7 +36,7 @@ public class BallSystem {
         m_shooterRight = new Victor(Constants.PWM_BallShooterR);
         m_intakeSwitch = new DigitalInput(Constants.DIO_BallCounter);
         m_intakeSwitch2 = new DigitalInput(Constants.DIO_BallCounter2);
-        m_screw = new Victor(Constants.PWM_Screw);
+        m_screw = new PWMTalonSRX(Constants.PWM_Screw);
         m_screwStop = new DigitalInput(Constants.DIO_ScrewSwitch);
         timer = 0;
         maxTime = 200; // = seconds * 50
@@ -68,6 +70,7 @@ public class BallSystem {
     }
 
     public void mainMethod() {
+        System.out.println(m_screw.get());
         if (intakeDead){
             m_intake.set(0);
         }

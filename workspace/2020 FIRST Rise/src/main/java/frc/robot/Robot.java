@@ -138,7 +138,7 @@ public class Robot extends TimedRobot {
                 }
                 if (!aligning)
                     m_ball.resetShooter();
-            if (autoTimer > 440) {
+            } else if (autoTimer > 440) {
                 if (m_gyro.getAngle() < 190) {
                     m_drive.arcadeDrive(-0.7, 0);
                 } else {
@@ -183,9 +183,14 @@ public class Robot extends TimedRobot {
             if(vRotational > controllerDriver.getRawAxis(2))
                 vRotational -= Constants.kSpeedCurve;
         } else if (drivingStatus.equals("Shooting")) {
+            if (Math.abs(controllerShooter.getRawAxis(1)) > .2){
+                m_ball.screwSpeed(-1*controllerShooter.getRawAxis(1));
+            }
+            else{
+                m_ball.screwSpeed(0);
+            }
             vTranslational = 0;
-            vRotational = (controllerShooter.getRawAxis(0));
-            m_ball.screwSpeed(-1*controllerShooter.getRawAxis(1)); 
+            vRotational = (controllerShooter.getRawAxis(0)/2); 
         } else if (drivingStatus.equals("Climbing")) {
             vTranslational = (controllerShooter.getRawAxis(1)/2);
             vRotational = (controllerShooter.getRawAxis(0)/2);
