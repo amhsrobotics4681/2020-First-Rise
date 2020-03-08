@@ -8,6 +8,8 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Servo;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Climber {
     private Victor m_pulley;
@@ -15,10 +17,14 @@ public class Climber {
     private String status;
     private boolean rotatingServo;
     private int counter;
+    private TalonSRX m_climber;
+    private int targetHeight;
+    public int mode;
 
     public void climberInit() {
         m_pulley = new Victor(Constants.PWM_ClimberPulley); //fill in PWM port
         m_servo = new Servo(Constants.PWM_Servo);
+        m_climber = new TalonSRX(Constants.PWM_Climber);
         status="";
         m_servo.setAngle(180);
         rotatingServo = false;
@@ -62,6 +68,27 @@ public class Climber {
             m_servo.setAngle(180);
         }
     counter += 1;
+    }
+
+
+
+    public void LowClimb(){
+        targetHeight = Constants.LowClimberHeight;
+        rising();
+    }
+    public void RegularClimb(){
+        targetHeight = Constants.ClimberHeight;
+        rising();
+    }
+    public void HighClimb(){
+        targetHeight = Constants.HighClimberHeight;
+        rising();
+    }
+    public void rising(){
+
+        //Disengage ratchet
+        //Start with set negative speed for a count of 25
+        //Then go to position of 
     }
 
 }

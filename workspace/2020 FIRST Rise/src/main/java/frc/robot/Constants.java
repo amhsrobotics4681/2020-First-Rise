@@ -18,9 +18,17 @@ public class Constants {
     public static final int PWM_BallShooterR = 5;
     public static final int PWM_Wheel = 8; 
     public static final int PWM_ClimberPulley = 6;
+    public static final int PWM_Climber = 20;
     public static final int PWM_Screw = 9;
     public static final int PWM_Servo = 7;
 
+
+
+
+//Climber
+    public static final int LowClimberHeight = 400000;
+    public static final int ClimberHeight = 600000;
+    public static final int HighClimberHeight = 800000;
 //DIO's
     public static final int DIO_BallCounter = 0;
     public static final int DIO_BallCounter2 = 2;
