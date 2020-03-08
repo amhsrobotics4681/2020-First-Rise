@@ -26,9 +26,9 @@ public class Constants {
 
 
 //Climber
-    public static final int LowClimberHeight = 400000;
-    public static final int ClimberHeight = 600000;
-    public static final int HighClimberHeight = 800000;
+    public static final int LowClimberHeight = 400000; //absolutely arbitraty, need to find actual values
+    public static final int ClimberHeight = 600000; //absolutely arbitraty, need to find actual values
+    public static final int HighClimberHeight = 800000; //absolutely arbitraty, need to find actual values
 //DIO's
     public static final int DIO_BallCounter = 0;
     public static final int DIO_BallCounter2 = 2;
