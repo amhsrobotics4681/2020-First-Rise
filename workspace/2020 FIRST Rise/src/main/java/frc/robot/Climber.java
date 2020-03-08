@@ -17,11 +17,14 @@ public class Climber {
     private String status;
     private boolean rotatingServo;
     private int counter;
+    //Everything below here is for encoder climber
     private TalonSRX m_climber;
     private int targetHeight;
     public int mode;
     public final double maxClimberSpeed = .7;
-    public final double climberSpeedMultiplier = .00003;
+    public final double climberSpeedMultiplier = .00003;//arbitrary, find actual value
+    public final int climberPullingIncrement = 40000;//arbitrary, find actual value
+    public final int differenceMargin = 4000; //arbitrary, find actual value
     public double currentClimberSpeed;
     public int difference;
     public boolean finishedClimbing;
@@ -84,19 +87,20 @@ public class Climber {
         status = "Rising";
         targetHeight = Constants.LowClimberHeight;
         counter = 0;
-        rising();
     }
     public void RegularClimb(){
         status = "rising";
         targetHeight = Constants.ClimberHeight;
         counter = 0;
-        rising();
     }
     public void HighClimb(){
         status = "rising";
         targetHeight = Constants.HighClimberHeight;
         counter = 0;
-        rising();
+    }
+    public void startPulling(){
+        status = "pulling";
+        targetHeight = m_climber.getSelectedSensorPosition() - climberPullingIncrement;
     }
     /*Benefit of rising method:
         Person only needs to push one button and it takes you to proper height
@@ -110,8 +114,14 @@ public class Climber {
         }
         else{
             difference = (targetHeight - m_climber.getSelectedSensorPosition());
-            if (difference < 4000){
+            if (difference < differenceMargin){
                 currentClimberSpeed = 0;
+            }
+            else if (difference < -differenceMargin){
+                currentClimberSpeed = climberSpeedMultiplier*(difference);
+                if (Math.abs(currentClimberSpeed) > maxClimberSpeed) {
+                    currentClimberSpeed = -maxClimberSpeed;
+                }
             }
             else {
                 currentClimberSpeed = climberSpeedMultiplier*(difference);
@@ -122,5 +132,33 @@ public class Climber {
             m_climber.set(ControlMode.PercentOutput, currentClimberSpeed);
         }
     }
-
+    public void pulling(){
+        //tricky thing with this one is you never know how much you are going to need to pull
+        //Maybe make this pull you up 40,000 rotations every time pressed
+        //That way, if you are on the bar and the bar lowers to your side, you can pull and rise another 40,000
+        m_servo.setAngle(180);
+        difference = m_climber.getSelectedSensorPosition() - targetHeight;
+        if (difference < differenceMargin){
+            currentClimberSpeed = 0;
+        }
+        else if (difference < -differenceMargin){
+            currentClimberSpeed = climberSpeedMultiplier*(difference);
+                if (currentClimberSpeed > maxClimberSpeed) {
+                    currentClimberSpeed = maxClimberSpeed;
+                }
+        }
+        else {
+            currentClimberSpeed = climberSpeedMultiplier*(-difference);
+            if (Math.abs(currentClimberSpeed) > maxClimberSpeed) {
+                currentClimberSpeed = -maxClimberSpeed;
+            }
+        }
+        m_climber.set(ControlMode.PercentOutput, currentClimberSpeed);
+    }
+    /*Simplified main method
+    if rise
+        rising()
+    if pull
+        pulling();
+    */
 }
