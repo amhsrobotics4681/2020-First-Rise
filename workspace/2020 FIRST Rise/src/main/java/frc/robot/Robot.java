@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.*;
 
 public class Robot extends TimedRobot {
     private Joystick controllerDriver;
@@ -39,6 +40,9 @@ public class Robot extends TimedRobot {
     private String autoStrategy;
     private SendableChooser<String> m_chooser = new SendableChooser<>();
     private ADIS16470_IMU m_gyro;
+    private boolean targetDetected;
+    private double limeLightDriveCommand;
+    private double limeLightSteerCommand;
 
     @Override
     public void robotInit() {
@@ -70,6 +74,7 @@ public class Robot extends TimedRobot {
         m_gyro = new ADIS16470_IMU();
         m_cameraServer.getInstance().startAutomaticCapture("Shooting Camera", 0);
         m_cameraServer.getInstance().startAutomaticCapture("Collecting Camera", 1);
+        targetDetected = false;
     }
 
     @Override
@@ -265,4 +270,34 @@ public class Robot extends TimedRobot {
         // if location of tape is positive, rotate right; aligning = true;
         // else, set aligning to false. we're done
     }
+    public void Update_Limelight_Tracking(){
+        // These numbers must be tuned for your Robot!  Be careful!
+        final double STEER_K = 0.03;                    // how hard to turn toward the target
+        final double DRIVE_K = 0.26;                    // how hard to drive fwd toward the target
+        final double DESIRED_TARGET_AREA = 13.0;        // Area of the target when the robot reaches the wall
+        final double MAX_DRIVE = 0.7;                   // Simple speed limit so we don't drive too fast
+        double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+        double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+        double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+        double ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+        if (tv < 1.0){
+          targetDetected = false;
+          limeLightDriveCommand = 0.0;
+          limeLightSteerCommand = 0.0;
+          return;
+        }
+        //Everything below only happens if there is a target in view
+        targetDetected = true;
+        // Start with proportional steering
+        double steer_cmd = tx * STEER_K;
+        limeLightSteerCommand = steer_cmd;
+        // try to drive forward until the target area reaches our desired area
+        double drive_cmd = (DESIRED_TARGET_AREA - ta) * DRIVE_K;
+        // don't let the robot drive too fast into the goal
+        if (drive_cmd > MAX_DRIVE)
+        {
+          drive_cmd = MAX_DRIVE;
+        }
+        limeLightDriveCommand = drive_cmd;
+  }
 }
