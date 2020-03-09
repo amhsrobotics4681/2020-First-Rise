@@ -128,7 +128,9 @@ public class Robot extends TimedRobot {
             } else {
                 m_drive.arcadeDrive(0,0);
             }
-        } else if (autoStrategy.equals("Veneno")){
+        } 
+        //WE ARE NOT ACTUALLY ADJUSTING SCREW HEIGHT, NEED TO FIX
+        else if (autoStrategy.equals("Veneno")){
             if (autoTimer > 670) {
                 if (m_gyro.getAngle() > 20) { // will use limelight target exists boolean
                     m_drive.arcadeDrive(1.0, 0);
@@ -243,6 +245,7 @@ public class Robot extends TimedRobot {
             drivingStatus = "Loading";
             NetworkTableInstance.getDefault().getTable("limeLight").getEntry("ledMode").setNumber(3);
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
+            loadingStationLimeLight();
             m_ball.reviveIntake();//I know this could be redundant but it takes up negliglbe processing power and elimantes stupid mistake
 
         }
@@ -267,5 +270,14 @@ public class Robot extends TimedRobot {
         if (Math.abs(tx) > 1) {
             aligning = false;
         } else { aligning = true; }
+  }
+  public void loadingStationLimeLight(){
+    double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+        if (tv==1)
+            m_drive.arcadeDrive(0.64*Math.atan(0.2*tx), 0.64*Math.atan(0.2*ty));
+        else
+            m_drive.arcadeDrive(0.0,.5);
   }
 }
