@@ -50,7 +50,7 @@ public class BallSystem {
         m_screw.setSelectedSensorPosition(0);
     }
 
-    public void adjustScrew() {
+    public void adjustScrew() {//If too far, go back. If too close, go forward
         if (m_screwStop.get()) {
             m_screw.set(ControlMode.PercentOutput, 0);
             screwAtElevation = true;
@@ -59,15 +59,15 @@ public class BallSystem {
             screwAtElevation = false;
         } else if (m_screw.getSelectedSensorPosition() > (encoderTarget + 1500)) {
             m_screw.set(ControlMode.PercentOutput, -1);
-            screwAtElevation = true;
+            screwAtElevation = false;
         } else { screwAtElevation = true; }
     }
 
-    public void convertElevation(int distance) {
+    public void convertElevation(int distance) {//If less than 10 or more than 30 feet, go to base position
         if (distance < 120) {
             encoderTarget = 0;
         } else if (distance > 360) {
-            encoderTarget = 0; // arbitrary, TBD
+            encoderTarget = 0;  // arbitrary, TBD
         } else {
             encoderTarget = 60000+250*distance-Math.abs(750*distance-180000);
             // arbitrary formula, very much TBD
@@ -78,7 +78,7 @@ public class BallSystem {
         return currentBallCount;
     }
 
-    public void toggleSpit() {
+    public void toggleSpit() {//Toggles spitting (which is reversing intake and indexer)
         spitting = !spitting;
         intakeOn = false;
     }
@@ -137,20 +137,20 @@ public class BallSystem {
         intakeOn = false; spitting = false;
     }
 
-    public void fullShooter() {
+    public void fullShooter() {//Same as resetShooter but instead shoots at max capacity
         timer = 0;
         m_shooterRight.set(1);
         m_shooterLeft.set(1);
         currentBallCount = 0;
         currentlyShooting = true;
     }
-    public void killShooter(){
+    public void killShooter(){//Shuts off Shooter regardless of current status
         timer = maxTime;
     }
-    public void killIntake(){
+    public void killIntake(){//Shuts off Intake regardless of current status
         intakeOn = false;
     }
-    public void reviveIntake(){
+    public void reviveIntake(){//Turns on Intake regardless of current status
         intakeOn = true;
     }
 }

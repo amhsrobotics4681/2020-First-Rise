@@ -173,7 +173,7 @@ public class Robot extends TimedRobot {
         m_climber.mainMethod();
 
         // CONTROLS
-        if (drivingStatus.equals("Driving")) {
+        if (drivingStatus.equals("Driving")) {//Incramental Acceleration to prevent falling over
             if(vTranslational < controllerDriver.getRawAxis(1))
                 vTranslational += Constants.kSpeedCurve;
             if(vTranslational > controllerDriver.getRawAxis(1))
@@ -182,7 +182,7 @@ public class Robot extends TimedRobot {
                 vRotational += Constants.kSpeedCurve;
             if(vRotational > controllerDriver.getRawAxis(2))
                 vRotational -= Constants.kSpeedCurve;
-        } else if (drivingStatus.equals("Shooting")) {
+        } else if (drivingStatus.equals("Shooting")) {//Starts autodriving, adjusts screw
             Update_Limelight_Tracking();
             m_ball.convertElevation((int) getDistance());
             m_ball.adjustScrew();
@@ -190,7 +190,7 @@ public class Robot extends TimedRobot {
                 // yeah, forget setter/getter functions
                 m_ball.resetShooter();
             }
-        } else if (drivingStatus.equals("Climbing")) {
+        } else if (drivingStatus.equals("Climbing")) {//Controls shift to other remote and everything is dialed down to half power
             vTranslational = (controllerShooter.getRawAxis(1)/2);
             vRotational = (controllerShooter.getRawAxis(0)/2);
             if (controllerShooter.getRawButton(6)) {
@@ -211,22 +211,22 @@ public class Robot extends TimedRobot {
             m_wheel.rotationControl();
         }
         if (controllerDriver.getRawButtonPressed(Constants.bIntakeToggle)) {
-            m_ball.toggleIntake();
+            m_ball.toggleIntake();//Turns intake on or off
         }
         if (controllerDriver.getRawButtonPressed(Constants.bSpitOut)) {
-            m_ball.toggleSpit();
+            m_ball.toggleSpit();//Turns reverse mode on or off
         }
         if (controllerDriver.getRawButtonPressed(Constants.bToggleWheel)) {
-            m_wheel.stopWheel();
+            m_wheel.stopWheel();//Stops position or rotational regardless of current status
         }
         if (controllerShooter.getRawButtonPressed(3)) {
-            m_ball.fullShooter();
+            m_ball.fullShooter();//Shoots full power
         }
         if (controllerShooter.getRawButtonPressed(2)) {
-            m_ball.killShooter();
+            m_ball.killShooter();//Stops shooter regardless of status
         }
         if (controllerShooter.getRawButtonPressed(1)) {
-            drivingStatus = "Shooting";
+            drivingStatus = "Shooting";//Switches to shooting mode, controlled in main method
             m_ball.killIntake();
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
@@ -251,7 +251,7 @@ public class Robot extends TimedRobot {
         }
     }
 
-    private double getDistance() {
+    private double getDistance() {//Returns distance from front of the robot to wall
         return (counter.getPeriod() * 100000 / 2.54)-Constants.LidarError;
         // getPeriod returns cm / µs, then --> sec --> in
     }
