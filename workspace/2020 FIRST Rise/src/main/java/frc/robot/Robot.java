@@ -163,6 +163,7 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         m_ball.toggleSpit();
         m_ball.toggleIntake();
+        
     }
 
     @Override
@@ -174,6 +175,7 @@ public class Robot extends TimedRobot {
 
         // CONTROLS
         if (drivingStatus.equals("Driving")) {//Incramental Acceleration to prevent falling over
+            m_ball.screwSpeed(-controllerDriver.getRawAxis(3));
             if(vTranslational < controllerDriver.getRawAxis(1))
                 vTranslational += Constants.kSpeedCurve;
             if(vTranslational > controllerDriver.getRawAxis(1))
@@ -204,6 +206,8 @@ public class Robot extends TimedRobot {
         m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);
         
         // BUTTONS
+        if (controllerDriver.getRawButtonPressed(11))
+            m_ball.resetScrew();
         if (controllerDriver.getRawButtonPressed(Constants.bPositionControl)) {
             m_wheel.positionControl();
         }
@@ -241,7 +245,7 @@ public class Robot extends TimedRobot {
             drivingStatus = "Driving";
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
         }
-        if (controllerDriver.getRawButtonPressed(42)){//Change 42 to an actual number once you figure out what button
+        if (controllerDriver.getRawButtonPressed(12)){//Change 42 to an actual number once you figure out what button
             drivingStatus = "Loading";
             NetworkTableInstance.getDefault().getTable("limeLight").getEntry("ledMode").setNumber(3);
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
@@ -263,13 +267,14 @@ public class Robot extends TimedRobot {
         double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
         //double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
         if (tv==1)
-            m_drive.arcadeDrive(0.64*Math.atan(0.2*tx), 0);
+            m_drive.arcadeDrive(-0.64*Math.atan(0.2*tx), 0);
         else
-            m_drive.arcadeDrive(-controllerShooter.getRawAxis(0)/2,
-                                controllerShooter.getRawAxis(1)/2);
-        if (Math.abs(tx) > 1) {
+            m_drive.arcadeDrive(0.5, 0);
+        if (Math.abs(tx) > 5) {
             aligning = false;
         } else { aligning = true; }
+        System.out.println(tx);
+        //System.out.println(tv);
   }
   public void loadingStationLimeLight(){
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);

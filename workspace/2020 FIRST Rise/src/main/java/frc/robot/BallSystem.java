@@ -49,15 +49,20 @@ public class BallSystem {
         encoderTarget = 0;
         m_screw.setSelectedSensorPosition(0);
     }
-
+    public void screwSpeed(double speed) {
+        m_screw.set(ControlMode.PercentOutput, speed);
+    }
+    public void resetScrew() {
+        m_screw.setSelectedSensorPosition(0);
+    }
     public void adjustScrew() {//If too far, go back. If too close, go forward
         if (m_screwStop.get()) {
             m_screw.set(ControlMode.PercentOutput, 0);
             screwAtElevation = true;
-        } else if (m_screw.getSelectedSensorPosition() < (encoderTarget - 1500)) {
+        } else if (m_screw.getSelectedSensorPosition() < (encoderTarget - 3000)) {
             m_screw.set(ControlMode.PercentOutput, 1);
             screwAtElevation = false;
-        } else if (m_screw.getSelectedSensorPosition() > (encoderTarget + 1500)) {
+        } else if (m_screw.getSelectedSensorPosition() > (encoderTarget + 3000)) {
             m_screw.set(ControlMode.PercentOutput, -1);
             screwAtElevation = false;
         } else { screwAtElevation = true; }
