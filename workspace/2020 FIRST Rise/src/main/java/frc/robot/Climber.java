@@ -89,17 +89,17 @@ public class Climber {
         counter = 0;
     }
     public void RegularClimb(){
-        status = "rising";
+        status = "Rising";
         targetHeight = Constants.ClimberHeight;
         counter = 0;
     }
     public void HighClimb(){
-        status = "rising";
+        status = "Rising";
         targetHeight = Constants.HighClimberHeight;
         counter = 0;
     }
     public void startPulling(){
-        status = "pulling";
+        status = "Pulling";
         targetHeight = m_climber.getSelectedSensorPosition() - climberPullingIncrement;
     }
     /*Benefit of rising method:
@@ -116,6 +116,7 @@ public class Climber {
             difference = (targetHeight - m_climber.getSelectedSensorPosition());
             if (difference < differenceMargin){
                 currentClimberSpeed = 0;
+                status = "Stopped";
             }
             else if (difference < -differenceMargin){
                 currentClimberSpeed = climberSpeedMultiplier*(difference);
@@ -136,10 +137,11 @@ public class Climber {
         //tricky thing with this one is you never know how much you are going to need to pull
         //Maybe make this pull you up 40,000 rotations every time pressed
         //That way, if you are on the bar and the bar lowers to your side, you can pull and rise another 40,000
-        m_servo.setAngle(180);
+        m_servo.setAngle(135);
         difference = m_climber.getSelectedSensorPosition() - targetHeight;
         if (difference < differenceMargin){
             currentClimberSpeed = 0;
+            status = "Stopped";
         }
         else if (difference < -differenceMargin){
             currentClimberSpeed = climberSpeedMultiplier*(difference);
@@ -155,10 +157,15 @@ public class Climber {
         }
         m_climber.set(ControlMode.PercentOutput, currentClimberSpeed);
     }
-    /*Simplified main method
-    if rise
-        rising()
-    if pull
-        pulling();
-    */
+    public void encoderMainMethod(){//Disengages ratchet at any moving point for safety of oscilation
+        if (status.equals("Rising")){
+            rising();
+        }
+        else if (status.equals("Pulling")){
+            pulling();
+        }
+        else if (status.equals("Stopped")){
+            m_servo.setAngle(180);
+        }
+    }
 }
