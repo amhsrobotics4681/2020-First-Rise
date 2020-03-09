@@ -227,6 +227,7 @@ public class Robot extends TimedRobot {
             drivingStatus = "Shooting";
             m_ball.killIntake();
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
         }
         if (controllerShooter.getRawButton(6) || controllerShooter.getRawButton(7)){
             drivingStatus = "Climbing";
@@ -237,6 +238,13 @@ public class Robot extends TimedRobot {
             if (!drivingStatus.equals("Driving")) m_ball.toggleIntake();
             drivingStatus = "Driving";
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+        }
+        if (controllerDriver.getRawButtonPressed(42)){//Change 42 to an actual number once you figure out what button
+            drivingStatus = "Loading";
+            NetworkTableInstance.getDefault().getTable("limeLight").getEntry("ledMode").setNumber(3);
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
+            m_ball.reviveIntake();//I know this could be redundant but it takes up negliglbe processing power and elimantes stupid mistake
+
         }
     }
 

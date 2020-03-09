@@ -150,4 +150,7 @@ public class BallSystem {
     public void killIntake(){
         intakeOn = false;
     }
+    public void reviveIntake(){
+        intakeOn = true;
+    }
 }
