@@ -18,12 +18,11 @@ public class Constants {
     public static final int PWM_BallShooterR = 5;
     public static final int PWM_Wheel = 8; 
     public static final int PWM_ClimberPulley = 6;
-    public static final int PWM_Climber = 20;
-    public static final int PWM_Screw = 9;
     public static final int PWM_Servo = 7;
 
-
-
+//CAN's
+    public static final int CAN_Climber = 20;
+    public static final int CAN_Screw = 10;
 
 //Climber
     public static final int LowClimberHeight = 400000; //absolutely arbitraty, need to find actual values
@@ -62,11 +61,11 @@ public class Constants {
     public static final int bDriving = buttonStart;
     
 // Speed declarations
-    public static final double kIntakeSpeed = .75; //neg
-    public static final double kSpitSpeed = -0.9;
+    public static final double kIntakeSpeed = .75;
+    public static final double kSpitSpeed = -0.9; //neg
     public static final double kIndexSpeed = -0.7; //neg
     public static final double kEjectionSpeed = -0.5; //neg
-    public static final double kShooterSpeed = .8; //neg
+    public static final double kShooterSpeed = .8;
     public static final double kAutonomousShooterSpeed = .6;
     public static final double kRotationSpeed = 0.5;
     public static final double kPositionSpeed = 0.2;

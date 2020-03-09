@@ -32,7 +32,7 @@ public class Climber {
     public void climberInit() {
         m_pulley = new Victor(Constants.PWM_ClimberPulley); //fill in PWM port
         m_servo = new Servo(Constants.PWM_Servo);
-        m_climber = new TalonSRX(Constants.PWM_Climber);
+        m_climber = new TalonSRX(Constants.CAN_Climber);
         status="";
         m_servo.setAngle(180);
         rotatingServo = false;

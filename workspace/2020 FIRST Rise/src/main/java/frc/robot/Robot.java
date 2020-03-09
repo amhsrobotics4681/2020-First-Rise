@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import com.analog.adis16470.frc.ADIS16470_IMU;
 import com.analog.adis16470.frc.ADIS16470_IMU.IMUAxis;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Counter;
@@ -40,9 +39,6 @@ public class Robot extends TimedRobot {
     private String autoStrategy;
     private SendableChooser<String> m_chooser = new SendableChooser<>();
     private ADIS16470_IMU m_gyro;
-    private boolean targetDetected;
-    private double limeLightDriveCommand;
-    private double limeLightSteerCommand;
 
     @Override
     public void robotInit() {
@@ -74,7 +70,6 @@ public class Robot extends TimedRobot {
         m_gyro = new ADIS16470_IMU();
         m_cameraServer.getInstance().startAutomaticCapture("Shooting Camera", 0);
         m_cameraServer.getInstance().startAutomaticCapture("Collecting Camera", 1);
-        targetDetected = false;
     }
 
     @Override
@@ -95,7 +90,6 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         m_ball.mainMethod();
         autoTimer++;
-        System.out.println(autoTimer);
         if (!autoShoot) { 
             m_ball.resetShooter();
             autoShoot = true;
@@ -136,10 +130,10 @@ public class Robot extends TimedRobot {
             }
         } else if (autoStrategy.equals("Veneno")){
             if (autoTimer > 670) {
-                if (m_gyro.getAngle() > 20) {
+                if (m_gyro.getAngle() > 20) { // will use limelight target exists boolean
                     m_drive.arcadeDrive(1.0, 0);
                 } else {
-                    align();
+                    Update_Limelight_Tracking(); // need to tune above gyro code : check drift
                 }
                 if (!aligning)
                     m_ball.resetShooter();
@@ -178,7 +172,6 @@ public class Robot extends TimedRobot {
 
         // CONTROLS
         if (drivingStatus.equals("Driving")) {
-            m_ball.screwSpeed(-1*controllerShooter.getRawAxis(1));
             if(vTranslational < controllerDriver.getRawAxis(1))
                 vTranslational += Constants.kSpeedCurve;
             if(vTranslational > controllerDriver.getRawAxis(1))
@@ -188,74 +181,62 @@ public class Robot extends TimedRobot {
             if(vRotational > controllerDriver.getRawAxis(2))
                 vRotational -= Constants.kSpeedCurve;
         } else if (drivingStatus.equals("Shooting")) {
-            if (Math.abs(controllerShooter.getRawAxis(1)) > .2){
-                m_ball.screwSpeed(-1*controllerShooter.getRawAxis(1));
+            Update_Limelight_Tracking();
+            m_ball.convertElevation((int) getDistance());
+            m_ball.adjustScrew();
+            if (!aligning && m_ball.screwAtElevation) {
+                // yeah, forget setter/getter functions
+                m_ball.resetShooter();
             }
-            else{
-                m_ball.screwSpeed(0);
-            }
-            vTranslational = 0;
-            vRotational = (controllerShooter.getRawAxis(0)/2); 
         } else if (drivingStatus.equals("Climbing")) {
             vTranslational = (controllerShooter.getRawAxis(1)/2);
             vRotational = (controllerShooter.getRawAxis(0)/2);
             if (controllerShooter.getRawButton(6)) {
                 m_climber.extending();
-                //System.out.println("Extending");
             } else if (controllerShooter.getRawButton(7)) {
                 m_climber.contracting();
-                //System.out.println("Contracting");
             } else {
                 m_climber.stop();
             }
         }
         m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);
-        // ^ false means inputs aren't squared. may need to get used to new drive style
-        // basically arcadeDrive(0, -0,5) gives 25% power, but (0, -0.5, false) gives 50% power
         
         // BUTTONS
-        if (controllerDriver.getRawButtonPressed(Constants.bPositionControl)){
+        if (controllerDriver.getRawButtonPressed(Constants.bPositionControl)) {
             m_wheel.positionControl();
         }
-        if (controllerDriver.getRawButtonPressed(Constants.bRotationControl)){
+        if (controllerDriver.getRawButtonPressed(Constants.bRotationControl)) {
             m_wheel.rotationControl();
         }
-        if (controllerDriver.getRawButtonPressed(Constants.bIntakeToggle)){
+        if (controllerDriver.getRawButtonPressed(Constants.bIntakeToggle)) {
             m_ball.toggleIntake();
         }
         if (controllerDriver.getRawButtonPressed(Constants.bSpitOut)) {
             m_ball.toggleSpit();
         }
-        if (controllerShooter.getRawButtonPressed(1)){
-            m_ball.resetShooter();
-        }
-        if (controllerDriver.getRawButtonPressed(Constants.bToggleWheel)){
+        if (controllerDriver.getRawButtonPressed(Constants.bToggleWheel)) {
             m_wheel.stopWheel();
         }
-        if (controllerShooter.getRawButtonPressed(3)){
+        if (controllerShooter.getRawButtonPressed(3)) {
             m_ball.fullShooter();
         }
-        if (controllerShooter.getRawButtonPressed(2)){
+        if (controllerShooter.getRawButtonPressed(2)) {
             m_ball.killShooter();
         }
-        if (controllerShooter.getRawButtonPressed(11)){
+        if (controllerShooter.getRawButtonPressed(1)) {
             drivingStatus = "Shooting";
             m_ball.killIntake();
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
         }
-        if (controllerShooter.getRawButtonPressed(10)){
+        if (controllerShooter.getRawButton(6) || controllerShooter.getRawButton(7)){
             drivingStatus = "Climbing";
             m_ball.killIntake();
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
         }
         if (controllerDriver.getRawButtonPressed(Constants.bDriving)){
+            if (!drivingStatus.equals("Driving")) m_ball.toggleIntake();
             drivingStatus = "Driving";
-            m_ball.reviveIntake();
-        }
-        if (controllerDriver.getRawButton(Constants.bAlignRobot)) {
-            align();
-            if (!aligning)
-                m_ball.resetShooter();
-        } else {
-            aligning = false;
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
         }
     }
 
@@ -264,40 +245,19 @@ public class Robot extends TimedRobot {
         // getPeriod returns cm / µs, then --> sec --> in
     }
 
-    private void align() {
-        aligning = true;
-        // if location of tape is negative, rotate left; aligning = true;
-        // if location of tape is positive, rotate right; aligning = true;
-        // else, set aligning to false. we're done
-    }
-    public void Update_Limelight_Tracking(){
-        // These numbers must be tuned for your Robot!  Be careful!
-        final double STEER_K = 0.03;                    // how hard to turn toward the target
-        final double DRIVE_K = 0.26;                    // how hard to drive fwd toward the target
-        final double DESIRED_TARGET_AREA = 13.0;        // Area of the target when the robot reaches the wall
-        final double MAX_DRIVE = 0.7;                   // Simple speed limit so we don't drive too fast
-        double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+    public void Update_Limelight_Tracking() {
+        // will have to consider the following for pipelines
+        /// NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(<val>);
         double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-        double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-        double ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
-        if (tv < 1.0){
-          targetDetected = false;
-          limeLightDriveCommand = 0.0;
-          limeLightSteerCommand = 0.0;
-          return;
-        }
-        //Everything below only happens if there is a target in view
-        targetDetected = true;
-        // Start with proportional steering
-        double steer_cmd = tx * STEER_K;
-        limeLightSteerCommand = steer_cmd;
-        // try to drive forward until the target area reaches our desired area
-        double drive_cmd = (DESIRED_TARGET_AREA - ta) * DRIVE_K;
-        // don't let the robot drive too fast into the goal
-        if (drive_cmd > MAX_DRIVE)
-        {
-          drive_cmd = MAX_DRIVE;
-        }
-        limeLightDriveCommand = drive_cmd;
+        double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+        //double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+        if (tv==1)
+            m_drive.arcadeDrive(0.64*Math.atan(0.2*tx), 0);
+        else
+            m_drive.arcadeDrive(-controllerShooter.getRawAxis(0)/2,
+                                controllerShooter.getRawAxis(1)/2);
+        if (Math.abs(tx) > 1) {
+            aligning = false;
+        } else { aligning = true; }
   }
 }

@@ -9,24 +9,26 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.PWMTalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class BallSystem {
     Victor m_intake, m_indexer, m_shooterLeft, m_shooterRight;
-    PWMTalonSRX m_screw;
+    TalonSRX m_screw;
     DigitalInput m_intakeSwitch;
     DigitalInput m_intakeSwitch2;
     DigitalInput m_screwStop;
     private int timer;
-    int maxTime;
+    private final int maxTime = 200;
     boolean intakeSwitchPressed;
     boolean currentlyShooting;
     boolean intakeOn;
     boolean spitting = false;
     boolean switchPressed;
     boolean currentlySpinning;
-    boolean intakeDead;
+    boolean screwAtElevation = true;
     int currentBallCount;
+    int encoderTarget;
 
     public void ballSystemInit() {
         m_intake = new Victor(Constants.PWM_BallIntake);
@@ -34,25 +36,41 @@ public class BallSystem {
         m_indexer = new Victor(Constants.PWM_BallIndexer);
         m_shooterLeft = new Victor(Constants.PWM_BallShooterL); 
         m_shooterRight = new Victor(Constants.PWM_BallShooterR);
+        m_screw = new TalonSRX(Constants.CAN_Screw);
         m_intakeSwitch = new DigitalInput(Constants.DIO_BallCounter);
         m_intakeSwitch2 = new DigitalInput(Constants.DIO_BallCounter2);
-        m_screw = new PWMTalonSRX(Constants.PWM_Screw);
         m_screwStop = new DigitalInput(Constants.DIO_ScrewSwitch);
         timer = 0;
-        maxTime = 200; // = seconds * 50
         intakeSwitchPressed = false;
         currentlyShooting = false;
         currentlySpinning = false;
         intakeOn = false;
-        intakeDead = false;
         currentBallCount = 0;
+        encoderTarget = 0;
+        m_screw.setSelectedSensorPosition(0);
     }
-    public void screwSpeed(double speed) {
-        // if switch pressed and leaning back, stop screw
-        if (m_screwStop.get() && (speed < 0)) {
-            m_screw.set(0);
+
+    public void adjustScrew() {
+        if (m_screwStop.get()) {
+            m_screw.set(ControlMode.PercentOutput, 0);
+            screwAtElevation = true;
+        } else if (m_screw.getSelectedSensorPosition() < (encoderTarget - 1500)) {
+            m_screw.set(ControlMode.PercentOutput, 1);
+            screwAtElevation = false;
+        } else if (m_screw.getSelectedSensorPosition() > (encoderTarget + 1500)) {
+            m_screw.set(ControlMode.PercentOutput, -1);
+            screwAtElevation = true;
+        } else { screwAtElevation = true; }
+    }
+
+    public void convertElevation(int distance) {
+        if (distance < 120) {
+            encoderTarget = 0;
+        } else if (distance > 360) {
+            encoderTarget = 0; // arbitrary, TBD
         } else {
-            m_screw.set(speed);
+            encoderTarget = 60000+250*distance-Math.abs(750*distance-180000);
+            // arbitrary formula, very much TBD
         }
     }
 
@@ -70,11 +88,8 @@ public class BallSystem {
     }
 
     public void mainMethod() {
-        System.out.println(m_screw.get());
-        if (intakeDead){
-            m_intake.set(0);
-        }
-        else if (intakeOn){
+        //System.out.println(m_screw.getSelectedSensorPosition());
+        if (intakeOn){
             m_intake.set(Constants.kIntakeSpeed);
         } else if (spitting){
             m_intake.set(Constants.kSpitSpeed);
@@ -88,11 +103,9 @@ public class BallSystem {
         else if (spitting){
             m_indexer.set(-Constants.kIndexSpeed);
         }
-        else if (m_intakeSwitch.get()){
-            
+        else if (m_intakeSwitch.get()){          
             if (!currentlySpinning){
                 currentBallCount ++;
-                System.out.println("Pressed");
             }
             currentlySpinning = true;
             m_indexer.set(Constants.kIndexSpeed);
@@ -105,6 +118,7 @@ public class BallSystem {
         } else {
             m_indexer.set(0);
         }
+
         //Shooter code
         if(timer > maxTime) {
             m_shooterLeft.set(0);
@@ -120,8 +134,10 @@ public class BallSystem {
         m_shooterRight.set(Constants.kShooterSpeed);
         currentBallCount = 0;
         currentlyShooting = true;
+        intakeOn = false; spitting = false;
     }
-    public void fullShooter(){
+
+    public void fullShooter() {
         timer = 0;
         m_shooterRight.set(1);
         m_shooterLeft.set(1);
@@ -129,14 +145,9 @@ public class BallSystem {
         currentlyShooting = true;
     }
     public void killShooter(){
-        m_shooterLeft.set(0);
-        m_shooterRight.set(0);
-        m_indexer.set(0);
+        timer = maxTime;
     }
     public void killIntake(){
-        intakeDead = true;
-    }
-    public void reviveIntake(){
-        intakeDead = false;
+        intakeOn = false;
     }
 }
