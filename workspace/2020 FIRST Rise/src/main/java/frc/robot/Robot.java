@@ -79,7 +79,11 @@ public class Robot extends TimedRobot {
         aligning = true;
         m_gyro.setYawAxis(IMUAxis.kY);
         m_ball.toggleIntake();
+        m_ball.reviveIntake();
         autoStrategy = m_chooser.getSelected();
+        autoStrategy = "Veneno";
+        m_drive.arcadeDrive(0, 0);
+        m_drive.setSafetyEnabled(false);
         //Urus: Shoot 3 balls then drive forward off the line (Works in all positions)
         //Diablo: Shoot 3 balls, turn around, then drve forwards off the line (works in all positions)
         //Aventador: Shoot 3 balls, turn around, drive to collect 3 balls in trench (works on right side) (Does not require Limelight)
@@ -94,12 +98,13 @@ public class Robot extends TimedRobot {
             m_ball.resetShooter();
             autoShoot = true;
         }
-        
+        System.out.println(autoTimer);
         if (autoStrategy.equals("Urus")){
             if (autoTimer > 200 && autoTimer < 350) {
                 m_drive.arcadeDrive(0, -0.7);
             } else {
                 m_drive.arcadeDrive(0,0);
+                System.out.println("yo wassup");
             }
         } else if (autoStrategy.equals("Diablo")){
             if (autoTimer > 250 && autoTimer < 450){
@@ -266,11 +271,13 @@ public class Robot extends TimedRobot {
         double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
         double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
         //double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-        if (tv==1)
-            m_drive.arcadeDrive(-0.64*Math.atan(0.2*tx), 0);
-        else
+        if (tv==1) {
+            m_drive.arcadeDrive(-tx/29, 0, false);
+            System.out.println(-tx/29);
+        } else {
             m_drive.arcadeDrive(0.5, 0);
-        if (Math.abs(tx) > 5) {
+        }
+        if (Math.abs(tx) < 5 && tv==1) {
             aligning = false;
         } else { aligning = true; }
         System.out.println(tx);

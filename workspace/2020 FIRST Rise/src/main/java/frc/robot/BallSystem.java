@@ -56,7 +56,7 @@ public class BallSystem {
         m_screw.setSelectedSensorPosition(0);
     }
     public void adjustScrew() {//If too far, go back. If too close, go forward
-        if (m_screwStop.get()) {
+        /*if (m_screwStop.get()) {
             m_screw.set(ControlMode.PercentOutput, 0);
             screwAtElevation = true;
         } else if (m_screw.getSelectedSensorPosition() < (encoderTarget - 3000)) {
@@ -65,7 +65,8 @@ public class BallSystem {
         } else if (m_screw.getSelectedSensorPosition() > (encoderTarget + 3000)) {
             m_screw.set(ControlMode.PercentOutput, -1);
             screwAtElevation = false;
-        } else { screwAtElevation = true; }
+        } else { screwAtElevation = true; }*/
+        screwAtElevation = true;
     }
 
     public void convertElevation(int distance) {//If less than 10 or more than 30 feet, go to base position
@@ -94,7 +95,9 @@ public class BallSystem {
 
     public void mainMethod() {
         //System.out.println(m_screw.getSelectedSensorPosition());
-        if (intakeOn){
+        if (currentlyShooting) {
+            m_intake.set(0);
+        } else if (intakeOn){
             m_intake.set(Constants.kIntakeSpeed);
         } else if (spitting){
             m_intake.set(Constants.kSpitSpeed);
@@ -139,7 +142,7 @@ public class BallSystem {
         m_shooterRight.set(Constants.kShooterSpeed);
         currentBallCount = 0;
         currentlyShooting = true;
-        intakeOn = false; spitting = false;
+        //intakeOn = false; spitting = false;
     }
 
     public void fullShooter() {//Same as resetShooter but instead shoots at max capacity
