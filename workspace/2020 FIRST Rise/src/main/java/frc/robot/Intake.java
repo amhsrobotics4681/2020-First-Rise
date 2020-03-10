@@ -9,7 +9,7 @@ public class Intake {
     private DigitalInput m_intakeSwitchBack;
     private boolean intakeOn;
     private boolean spitting;
-    private boolean currentlySpinning;
+    private boolean indexCurrentlySpinning;
     private int currentBallCount;
     
     
@@ -21,7 +21,7 @@ public class Intake {
         intakeOn = false;
 
     }
-    public void spit(){
+    public void toggleSpit(){
         intakeOn = false;
         spitting = !spitting;
     }
@@ -46,22 +46,19 @@ public class Intake {
             m_intake.set(Constants.kSpitSpeed);
         }
         if (m_intakeSwitchFront.get()){          
-            if (!currentlySpinning){
+            if (!indexCurrentlySpinning){
                 currentBallCount ++;
             }
-            currentlySpinning = true;
+            indexCurrentlySpinning = true;
         }
-        else if (currentlySpinning){
+        else if (indexCurrentlySpinning){
             if (m_intakeSwitchBack.get()){
-                currentlySpinning = false;
+                indexCurrentlySpinning = false;
             }
         }
-        if (currentlySpinning){
-            //Add method to tell index to turn on
-        }
-        else {
-            //Add method to tell index to turn off, if not shooting
-        }
+    }
+    public boolean getIndexSpinning(){
+        return indexCurrentlySpinning;
     }
 }
 

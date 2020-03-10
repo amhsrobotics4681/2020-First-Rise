@@ -39,6 +39,8 @@ public class Robot extends TimedRobot {
     private String autoStrategy;
     private SendableChooser<String> m_chooser = new SendableChooser<>();
     private ADIS16470_IMU m_gyro;
+    private Index m_index;
+    private Intake m_intake;
 
     @Override
     public void robotInit() {
@@ -50,6 +52,10 @@ public class Robot extends TimedRobot {
         m_wheel.wheelInit();
         m_ball = new BallSystem();
         m_ball.ballSystemInit();
+        m_index = new Index();
+        m_index.indexInit();
+        m_intake = new Intake();
+        m_intake.intakeInit();
         m_left = new Victor(Constants.PWM_TreadsLeft);
         m_right = new Victor(Constants.PWM_TreadsRight);
         m_right.setInverted(false);
