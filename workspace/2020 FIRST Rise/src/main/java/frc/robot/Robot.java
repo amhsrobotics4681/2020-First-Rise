@@ -192,6 +192,8 @@ public class Robot extends TimedRobot {
 
         // CONTROLS
         if (drivingStatus.equals("Driving")) {//Incramental Acceleration to prevent falling over
+            m_shooter.killShooter();
+            System.out.println("Shooter killed");
             m_screw.screwSpeed(-controllerDriver.getRawAxis(3));
             if(vTranslational < controllerDriver.getRawAxis(1))
                 vTranslational += Constants.kSpeedCurve;
@@ -207,7 +209,9 @@ public class Robot extends TimedRobot {
             m_screw.adjustScrew();//Actually moves the screw
             if (!aligning && m_screw.screwAtElevation) {
                 // yeah, forget setter/getter functions
+                System.out.println("Starts shooting");
                 m_shooter.resetShooter();
+                System.out.println(m_shooter.getIndexSpinning());
                 m_intake.resetBallCount();
             }
         } else if (drivingStatus.equals("Climbing")) {//Controls shift to other remote and everything is dialed down to half power
@@ -235,6 +239,7 @@ public class Robot extends TimedRobot {
             m_wheel.rotationControl();//Color Wheel spin 3-5 times
         }
         if (controllerDriver.getRawButtonPressed(Constants.bIntakeToggle)) {
+            System.out.println("Intake Toggle");
             m_intake.toggleIntake();//Turns intake on or off
         }   
         if (controllerDriver.getRawButtonPressed(Constants.bSpitOut)) {
@@ -297,23 +302,25 @@ public class Robot extends TimedRobot {
             aligning = false;
         } else { aligning = true; }
         System.out.println(tx);*/
-        if (tv==1){
-            m_drive.arcadeDrive(-0.54*Math.atan(0.5*tx), 0); //0.64*Math.atan(0.2*ty));
+        /*if (tv==1){
+            if (tx > 3 || tx < -3)
+                m_drive.arcadeDrive(-0.54*Math.atan(0.5*tx), 0, false); //0.64*Math.atan(0.2*ty));
         }else{
             m_drive.arcadeDrive(.5,0.0, false);
-        }if (tv > 0 && tx < 5 && tx > -5){
+        }if (tv > 0 && tx < 3 && tx > -3){
             aligning = false;
         }else{
             aligning = true;
-        }
+        }*/
+        m_drive.arcadeDrive(-1,0);
   }
   public void loadingStationLimeLight(){
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);//Change in x from cross hair
     double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);//Change in y from cross hair
     double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);//if tv == 0, no target found, if tv == 1, target found
-        if (tv==1)
-            m_drive.arcadeDrive(0.64*Math.atan(0.2*tx), 0.64*Math.atan(0.2*ty));
-        else
-            m_drive.arcadeDrive(0.0,.5);
+    if (tv==1)
+        m_drive.arcadeDrive(0.64*Math.atan(0.2*tx), 0.64*Math.atan(0.2*ty));
+    else
+        m_drive.arcadeDrive(0.0,.5);
   }
 }

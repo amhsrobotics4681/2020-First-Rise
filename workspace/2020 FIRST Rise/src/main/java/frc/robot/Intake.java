@@ -51,6 +51,9 @@ public class Intake {
         else if (spitting){
             m_intake.set(Constants.kSpitSpeed);
         }
+        else {
+            m_intake.set(0);
+        }
         if (m_intakeSwitchFront.get()){          
             if (!indexCurrentlySpinning){
                 currentBallCount ++;
@@ -62,6 +65,7 @@ public class Intake {
                 indexCurrentlySpinning = false;
             }
         }
+        
     }
     public boolean getIndexSpinning(){//Returns whether or not intake needs it for the indexer
         return indexCurrentlySpinning;

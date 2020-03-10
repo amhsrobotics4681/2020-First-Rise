@@ -34,6 +34,8 @@ public class Shooter {
     }
     public void killShooter(){//Shuts off Shooter regardless of current status
         timer = maxTime;
+        m_shooterRight.set(0);
+        m_shooterLeft.set(0);
     }
     public boolean getIndexSpinning(){//Getter method for the indexer
         return indexCurrentlyOn;

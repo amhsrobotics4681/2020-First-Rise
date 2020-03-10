@@ -35,6 +35,10 @@ public class Robot extends TimedRobot {
     Victor m_indexer = new Victor(2);
     Victor m_shooter = new Victor(4);
     Victor m_s = new Victor(5);
+    int P,I,D = 1;
+    double previousError = 0;
+    double integral, previous_error, setpoint = 0;
+    double error;
 
   @Override
   public void robotInit() {
@@ -65,13 +69,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
     if (j.getRawButton(2)) {
-        if (tv==1)
-            m_drive.arcadeDrive(-0.54*Math.atan(0.5*tx), 0); //0.64*Math.atan(0.2*ty));
-        else
+        if (tv==1){
+        System.out.println(PID());    
+        m_drive.arcadeDrive(PID()*.03, 0); //0.64*Math.atan(0.2*ty));
+        } else
             m_drive.arcadeDrive(.5,0.0);
     } else {
         m_drive.arcadeDrive(j.getRawAxis(0), 0);
@@ -100,5 +103,13 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
-
+  public double PID(){
+    double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);  
+    error = (setpoint - tx)*.6;
+    previousError = error;
+    integral += error*.02;
+    System.out.println("Error " + error + " Integral " + integral);
+    return (error + integral);
+  }
 }
