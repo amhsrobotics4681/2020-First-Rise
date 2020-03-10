@@ -42,6 +42,7 @@ public class Robot extends TimedRobot {
     private Index m_index;
     private Intake m_intake;
     private Shooter m_shooter;
+    private Screw m_screw;
 
     @Override
     public void robotInit() {
@@ -57,6 +58,10 @@ public class Robot extends TimedRobot {
         m_index.indexInit();
         m_intake = new Intake();
         m_intake.intakeInit();
+        m_shooter = new Shooter();
+        m_shooter.shooterInit();
+        m_screw = new Screw();
+        m_screw.screwInit();
         m_left = new Victor(Constants.PWM_TreadsLeft);
         m_right = new Victor(Constants.PWM_TreadsRight);
         m_right.setInverted(false);
