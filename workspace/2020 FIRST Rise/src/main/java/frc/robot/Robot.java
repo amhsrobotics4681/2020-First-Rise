@@ -218,6 +218,7 @@ public class Robot extends TimedRobot {
                 m_climber.stop();
             }
         }
+        
         m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);
         
         // BUTTONS
