@@ -270,8 +270,8 @@ public class Robot extends TimedRobot {
         /// NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(<val>);
         double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
         double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-        //double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-        if (tv==1) {
+        double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+        /*if (tv==1) {
             m_drive.arcadeDrive(-tx/29, 0, false);
             System.out.println(-tx/29);
         } else {
@@ -280,8 +280,16 @@ public class Robot extends TimedRobot {
         if (Math.abs(tx) < 5 && tv==1) {
             aligning = false;
         } else { aligning = true; }
-        System.out.println(tx);
-        //System.out.println(tv);
+        System.out.println(tx);*/
+        if (tv==1){
+            m_drive.arcadeDrive(-0.54*Math.atan(0.5*tx), 0); //0.64*Math.atan(0.2*ty));
+        }else{
+            m_drive.arcadeDrive(.5,0.0, false);
+        }if (tx < 5 && tx > -5){
+            aligning = true;
+        }else{
+            aligning = false;
+        }
   }
   public void loadingStationLimeLight(){
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
