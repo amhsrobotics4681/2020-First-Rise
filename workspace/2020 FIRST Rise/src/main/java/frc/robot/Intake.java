@@ -19,6 +19,9 @@ public class Intake {
         m_intakeSwitchFront = new DigitalInput(Constants.DIO_BallCounter);
         m_intakeSwitchBack = new DigitalInput(Constants.DIO_BallCounter2);
         intakeOn = false;
+        spitting = false;
+        currentBallCount = 0;
+        indexCurrentlySpinning = false;
 
     }
     public void toggleSpit(){
@@ -38,7 +41,10 @@ public class Intake {
     public int getBallCount(){
         return currentBallCount;
     }
-    public void intakeMainMethod(){
+    public void resetBallCount(){
+        currentBallCount = 0;
+    }
+    public void mainMethod(){
         if (intakeOn){
             m_intake.set(Constants.kIntakeSpeed);
         }

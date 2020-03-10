@@ -28,7 +28,7 @@ public class Index {
     public void reviveIndex(){//Turns on Intake regardless of current status
         indexOn = true;
     }
-    public void indexMainMethod(boolean intakeIndexSpinning, boolean shooterIndexSpinning){
+    public void mainMethod(boolean intakeIndexSpinning, boolean shooterIndexSpinning){
         if (shooterIndexSpinning){
             m_index.set(Constants.kEjectionSpeed);
         }

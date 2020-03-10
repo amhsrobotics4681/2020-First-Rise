@@ -41,6 +41,7 @@ public class Robot extends TimedRobot {
     private ADIS16470_IMU m_gyro;
     private Index m_index;
     private Intake m_intake;
+    private Shooter m_shooter;
 
     @Override
     public void robotInit() {
@@ -181,6 +182,9 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         //System.out.println("Ball Count: " + m_ball.ballCount()+", Distance: " + (int) getDistance() + ", Color: " + m_wheel.getColor());
         m_ball.mainMethod();
+        m_intake.mainMethod();
+        m_shooter.mainMethod();
+        m_index.mainMethod(m_intake.getIndexSpinning(), m_shooter.getIndexSpinning());
         m_wheel.mainMethod();
         m_climber.mainMethod();
 
