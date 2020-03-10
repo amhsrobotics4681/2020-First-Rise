@@ -24,11 +24,11 @@ public class Intake {
         indexCurrentlySpinning = false;
 
     }
-    public void toggleSpit(){
+    public void toggleSpit(){//Sends balls out the front. WOrks in tandem with index
         intakeOn = false;
         spitting = !spitting;
     }
-    public void toggleIntake() {
+    public void toggleIntake() {//Duh, anyone should be able to get this one
         intakeOn = !intakeOn;
         spitting = false;
     }
@@ -38,13 +38,13 @@ public class Intake {
     public void reviveIntake(){//Turns on Intake regardless of current status
         intakeOn = true;
     }
-    public int getBallCount(){
+    public int getBallCount(){//returns current ball total as integer
         return currentBallCount;
     }
-    public void resetBallCount(){
+    public void resetBallCount(){//Once again, rather obvious
         currentBallCount = 0;
     }
-    public void mainMethod(){
+    public void mainMethod(){//Line of priority: Intakeon, Spitting, switches
         if (intakeOn){
             m_intake.set(Constants.kIntakeSpeed);
         }
@@ -63,7 +63,7 @@ public class Intake {
             }
         }
     }
-    public boolean getIndexSpinning(){
+    public boolean getIndexSpinning(){//Returns whether or not intake needs it for the indexer
         return indexCurrentlySpinning;
     }
 }

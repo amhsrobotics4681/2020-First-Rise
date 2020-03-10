@@ -35,19 +35,19 @@ public class Shooter {
     public void killShooter(){//Shuts off Shooter regardless of current status
         timer = maxTime;
     }
-    public boolean getIndexSpinning(){
+    public boolean getIndexSpinning(){//Getter method for the indexer
         return indexCurrentlyOn;
     }
-    public void mainMethod(){
+    public void mainMethod(){//waits one second before turning the indexer on so shooter can come to speed
         if (currentlyShooting){
-            if (timer > 50){
+            if (timer > 50){//timer increases every .02 seconds, therefore 50*.02 == 1 seconds
                 indexCurrentlyOn = true;
             }
-            else{
+            else{//if shooter still speeding up, keep indexer off
                 indexCurrentlyOn = false;
             }
         }
-        if (timer > maxTime){
+        if (timer > maxTime){//after shooting for 4 seconds, turn the motors off
             m_shooterRight.set(0);
             m_shooterLeft.set(0);
             currentlyShooting = false;

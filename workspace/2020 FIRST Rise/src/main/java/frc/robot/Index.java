@@ -15,10 +15,10 @@ public class Index {
     }
 
     public void toggleSpit(){
-        indexOn = false;
+        indexOn = false;//Sends balls back out the front. Works in tandem with intake
         currentlySpitting = !currentlySpitting;
     }
-    public void toggleIndex() {
+    public void toggleIndex() {//Toggles whether on or off
         indexOn = !indexOn;
         currentlySpitting = false;
     }
@@ -28,7 +28,7 @@ public class Index {
     public void reviveIndex(){//Turns on Intake regardless of current status
         indexOn = true;
     }
-    public void mainMethod(boolean intakeIndexSpinning, boolean shooterIndexSpinning){
+    public void mainMethod(boolean intakeIndexSpinning, boolean shooterIndexSpinning){//Takes into account whether intake or shooter needs it. If not, turns off
         if (shooterIndexSpinning){
             m_index.set(Constants.kEjectionSpeed);
         }

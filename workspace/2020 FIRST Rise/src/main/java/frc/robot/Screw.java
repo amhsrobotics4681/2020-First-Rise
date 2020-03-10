@@ -12,12 +12,12 @@ public class Screw {
 
     public void screwInit(){
         m_screw = new TalonSRX(Constants.CAN_Screw);
-        m_screwStop = new DigitalInput(Constants.DIO_ScrewSwitch);
+        m_screwStop = new DigitalInput(Constants.DIO_ScrewSwitch);//used to determine if screw is all the way back just in case so we dont lock it up
         encoderTarget = 0;
         m_screw.setSelectedSensorPosition(0);
     }
 
-    public void screwSpeed(double speed) {
+    public void screwSpeed(double speed) {//Moves screw at whatever power input is provided byu the joystick
         m_screw.set(ControlMode.PercentOutput, speed);
     }
     public void resetScrew() {

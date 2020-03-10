@@ -186,7 +186,7 @@ public class Robot extends TimedRobot {
         //System.out.println("Ball Count: " + m_ball.ballCount()+", Distance: " + (int) getDistance() + ", Color: " + m_wheel.getColor());
         m_intake.mainMethod();
         m_shooter.mainMethod();
-        m_index.mainMethod(m_intake.getIndexSpinning(), m_shooter.getIndexSpinning());
+        m_index.mainMethod(m_intake.getIndexSpinning(), m_shooter.getIndexSpinning());//Indexer only turns off if shooter and intake dont need it
         m_wheel.mainMethod();
         m_climber.mainMethod();
 
@@ -203,35 +203,36 @@ public class Robot extends TimedRobot {
                 vRotational -= Constants.kSpeedCurve;
         } else if (drivingStatus.equals("Shooting")) {//Starts autodriving, adjusts screw
             Update_Limelight_Tracking();
-            m_screw.convertElevation((int) getDistance());
-            m_screw.adjustScrew();
+            m_screw.convertElevation((int) getDistance());//Method converts distance to target into required angle of screw
+            m_screw.adjustScrew();//Actually moves the screw
             if (!aligning && m_screw.screwAtElevation) {
                 // yeah, forget setter/getter functions
                 m_shooter.resetShooter();
+                m_intake.resetBallCount();
             }
         } else if (drivingStatus.equals("Climbing")) {//Controls shift to other remote and everything is dialed down to half power
             vTranslational = (controllerShooter.getRawAxis(1)/2);
             vRotational = (controllerShooter.getRawAxis(0)/2);
             if (controllerShooter.getRawButton(6)) {
-                m_climber.extending();
+                m_climber.extending();//Brings arms up
             } else if (controllerShooter.getRawButton(7)) {
-                m_climber.contracting();
+                m_climber.contracting();//Pulls arms back down, which pulls the robot up if it is hooked upon the bar
             } else {
                 m_climber.stop();
             }
         }
         
-        m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);
+        m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);//Drives the robot based on whatever input by either driving/shooting/climbing mode
         
         // BUTTONS
         if (controllerDriver.getRawButtonPressed(11))
-            m_screw.resetScrew();
+            m_screw.resetScrew();//Sets whatever current position the screw is as 0 on encoder (for testing purposes only)
 
         if (controllerDriver.getRawButtonPressed(Constants.bPositionControl)) {
-            m_wheel.positionControl();
+            m_wheel.positionControl();//Color wheel go to set position
         }
         if (controllerDriver.getRawButtonPressed(Constants.bRotationControl)) {
-            m_wheel.rotationControl();
+            m_wheel.rotationControl();//Color Wheel spin 3-5 times
         }
         if (controllerDriver.getRawButtonPressed(Constants.bIntakeToggle)) {
             m_intake.toggleIntake();//Turns intake on or off
@@ -252,23 +253,23 @@ public class Robot extends TimedRobot {
         if (controllerShooter.getRawButtonPressed(1)) {
             drivingStatus = "Shooting";//Switches to shooting mode, controlled in main method
             m_intake.killIntake();
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);//Turns LED light on for Limelight
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);//Makes sure pipeline is set to shooting target
         }
         if (controllerShooter.getRawButton(6) || controllerShooter.getRawButton(7)){
             drivingStatus = "Climbing";
-            m_intake.killIntake();
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+            m_intake.killIntake();//Stops intake for climbing
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);//Turns light off. No need for it while climbing
         }
         if (controllerDriver.getRawButtonPressed(Constants.bDriving)){
             if (!drivingStatus.equals("Driving")) m_intake.toggleIntake();
             drivingStatus = "Driving";
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
         }
-        if (controllerDriver.getRawButtonPressed(12)){//Change 42 to an actual number once you figure out what button
+        if (controllerDriver.getRawButtonPressed(12)){//Method has not currently been tested
             drivingStatus = "Loading";
-            NetworkTableInstance.getDefault().getTable("limeLight").getEntry("ledMode").setNumber(3);
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
+            NetworkTableInstance.getDefault().getTable("limeLight").getEntry("ledMode").setNumber(3);//Turns lights on
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);//Switches to targeting of loading station
             loadingStationLimeLight();
             m_intake.reviveIntake();//I know this could be redundant but it takes up negliglbe processing power and elimantes stupid mistake
 
@@ -307,9 +308,9 @@ public class Robot extends TimedRobot {
         }
   }
   public void loadingStationLimeLight(){
-    double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-    double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+    double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);//Change in x from cross hair
+    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);//Change in y from cross hair
+    double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);//if tv == 0, no target found, if tv == 1, target found
         if (tv==1)
             m_drive.arcadeDrive(0.64*Math.atan(0.2*tx), 0.64*Math.atan(0.2*ty));
         else
