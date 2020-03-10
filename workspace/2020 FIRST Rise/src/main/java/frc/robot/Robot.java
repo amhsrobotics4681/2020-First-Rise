@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
                 m_drive.arcadeDrive(0, -0.7);
             } else {
                 m_drive.arcadeDrive(0,0);
-                System.out.println("yo wassup");
+                System.out.println("yo wassup");//For debugging purposes
             }
         } else if (autoStrategy.equals("Diablo")){
             if (autoTimer > 250 && autoTimer < 450){
@@ -300,10 +300,10 @@ public class Robot extends TimedRobot {
             m_drive.arcadeDrive(-0.54*Math.atan(0.5*tx), 0); //0.64*Math.atan(0.2*ty));
         }else{
             m_drive.arcadeDrive(.5,0.0, false);
-        }if (tx < 5 && tx > -5){
-            aligning = true;
-        }else{
+        }if (tv > 0 && tx < 5 && tx > -5){
             aligning = false;
+        }else{
+            aligning = true;
         }
   }
   public void loadingStationLimeLight(){
