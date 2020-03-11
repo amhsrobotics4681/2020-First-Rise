@@ -7,7 +7,6 @@ public class Index {
     boolean currentlySpitting;
     boolean indexOn;
     
-    
     public void indexInit(){
         m_index = new Victor(Constants.PWM_BallIndexer);
         currentlySpitting = false;

@@ -22,8 +22,8 @@ public class Intake {
         spitting = false;
         currentBallCount = 0;
         indexCurrentlySpinning = false;
-
     }
+    
     public void toggleSpit(){//Sends balls out the front. WOrks in tandem with index
         intakeOn = false;
         spitting = !spitting;

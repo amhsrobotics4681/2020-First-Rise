@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.networktables.*;
 
 public class Robot extends TimedRobot {
     private Joystick controllerDriver, controllerShooter;
@@ -26,7 +25,7 @@ public class Robot extends TimedRobot {
     private double vTranslational, vRotational;
     private String drivingStatus, autoStrategy;
     private SendableChooser<String> m_chooser = new SendableChooser<>();
-    private int autoTimer;
+    private int timer;
     private double integral, error,setpoint, derivative, previousError = 0;
     private boolean aligning, isShooting;
 
@@ -39,6 +38,7 @@ public class Robot extends TimedRobot {
     private Counter counter;
     private CameraServer m_cameraServer;
     private ADIS16470_IMU m_gyro;
+    private Limelight m_limelight;
 
     @Override
     public void robotInit() {
@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        autoTimer = 0;
+        timer = 0;
         aligning = true;
         m_gyro.setYawAxis(IMUAxis.kY);
         m_intake.reviveIntake();
@@ -96,15 +96,15 @@ public class Robot extends TimedRobot {
         m_intake.mainMethod();
         m_shooter.mainMethod();
         m_index.mainMethod(m_intake.getIndexSpinning(), m_shooter.getIndexSpinning());
-        autoTimer++;
-        if (autoTimer==1)
+        timer++;
+        if (timer==1)
             m_shooter.resetShooter();
-        if (autoTimer < 200)
+        if (timer < 200)
             m_drive.arcadeDrive(0, 0);
         
         switch (autoStrategy) {
             case "Veneno":
-                if (autoTimer > 640) {
+                if (timer > 640) {
                     if (m_gyro.getAngle() < 20) {
                         Update_Limelight_Tracking();
                     } else {
@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
                         m_shooter.resetShooter();
                 }
             case "Aventador":
-                if (autoTimer > 400 && autoTimer < 600) {
+                if (timer > 400 && timer < 600) {
                     if (m_gyro.getAngle() < 190) {
                         m_drive.arcadeDrive(-0.7, 0);
                     } else {
@@ -122,7 +122,7 @@ public class Robot extends TimedRobot {
                     }
                 }
             case "Diablo":
-                if (autoTimer > 250 && autoTimer < 400) {
+                if (timer > 250 && timer < 400) {
                     if ((m_gyro.getAngle()) < 180) {
                         m_drive.arcadeDrive(-0.7, 0);
                     } else {
@@ -132,7 +132,7 @@ public class Robot extends TimedRobot {
                 break;
             case "Urus":
             default:
-                if (autoTimer > 200 && autoTimer < 350)
+                if (timer > 200 && timer < 350)
                     m_drive.arcadeDrive(0, -0.7);
                 break;
         }
@@ -141,16 +141,17 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         m_intake.reviveIntake();
+        timer = 0;
     }
 
     @Override
     public void teleopPeriodic() {
-        //System.out.println("Ball Count: " + m_ball.ballCount()+", Distance: " + (int) getDistance() + ", Color: " + m_wheel.getColor());
         m_intake.mainMethod();
         m_shooter.mainMethod();
-        m_index.mainMethod(m_intake.getIndexSpinning(), m_shooter.getIndexSpinning());//Indexer only turns off if shooter and intake dont need it
+        m_index.mainMethod(m_intake.getIndexSpinning(), m_shooter.getIndexSpinning());
         m_wheel.mainMethod();
         m_climber.mainMethod();
+        timer++;
 
         // CONTROLS
         if (drivingStatus.equals("Driving")) {//Incramental Acceleration to prevent falling over
@@ -169,14 +170,10 @@ public class Robot extends TimedRobot {
             Update_Limelight_Tracking();
             m_screw.convertElevation((int) getDistance());//Method converts distance to target into required angle of screw
             m_screw.adjustScrew();//Actually moves the screw
-            if (!aligning && m_screw.screwAtElevation) {
-                // yeah, forget setter/getter functions
-                if (isShooting == false){
+            if (!aligning && m_screw.screwAtElevation && !isShooting && (timer>20)) {
                     m_shooter.resetShooter();
                     isShooting = true;
-                }
-                System.out.println("Index should be spinning from shooter: " + m_shooter.getIndexSpinning());
-                m_intake.resetBallCount();
+                    m_intake.resetBallCount();
             }
         } else if (drivingStatus.equals("Climbing")) {//Controls shift to other remote and everything is dialed down to half power
             vTranslational = (controllerShooter.getRawAxis(1)/2);
@@ -222,26 +219,27 @@ public class Robot extends TimedRobot {
         if (controllerShooter.getRawButtonPressed(1)) {
             drivingStatus = "Shooting";//Switches to shooting mode, controlled in main method
             m_intake.killIntake();
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);//Turns LED light on for Limelight
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);//Makes sure pipeline is set to shooting target
+            m_limelight.setLED(true);
+            m_limelight.setPipeline(0);
+            timer = 0;
         }
         if (controllerShooter.getRawButton(6) || controllerShooter.getRawButton(7)){
             drivingStatus = "Climbing";
             m_intake.killIntake();//Stops intake for climbing
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);//Turns light off. No need for it while climbing
+            m_limelight.setLED(false);
         }
         if (controllerDriver.getRawButtonPressed(Constants.bDriving)){
-            if (!drivingStatus.equals("Driving")) m_intake.toggleIntake();
+            if (!drivingStatus.equals("Driving"))
+                m_intake.toggleIntake();
             drivingStatus = "Driving";
             m_index.killIndex();
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+            m_limelight.setLED(false);
         }
         if (controllerDriver.getRawButtonPressed(12)){//Method has not currently been tested
             drivingStatus = "Loading";
-            NetworkTableInstance.getDefault().getTable("limeLight").getEntry("ledMode").setNumber(3);//Turns lights on
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);//Switches to targeting of loading station
+            m_limelight.setLED(true);
             loadingStationLimeLight();
-            m_intake.reviveIntake();//I know this could be redundant but it takes up negliglbe processing power and elimantes stupid mistake
+            m_intake.reviveIntake();
 
         }
     }
@@ -252,35 +250,23 @@ public class Robot extends TimedRobot {
     }
 
     public void Update_Limelight_Tracking() {
-        // will have to consider the following for pipelines
-        /// NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(<val>);
-        double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-        double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);//Change in x from cross hair
-        if (tv == 1){
+        if (m_limelight.getValidTarget()){
             m_drive.arcadeDrive(PID()*0.03, 0);
         }
         else {
             m_drive.arcadeDrive(.5,0);
         }
-        if (Math.abs(tx) < 3.5){
-            aligning = false;
-        }
-        else 
-            aligning = true;
-                
+        aligning = Math.abs(m_limelight.getX()) < 3.5;                
     }
+
   public void loadingStationLimeLight(){
-    double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);//Change in x from cross hair
-    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);//Change in y from cross hair
-    double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);//if tv == 0, no target found, if tv == 1, target found
-    if (tv==1)
-        m_drive.arcadeDrive(0.64*Math.atan(0.2*tx), 0.64*Math.atan(0.2*ty));
+    if (m_limelight.getValidTarget())
+        m_drive.arcadeDrive(0.64*Math.atan(0.2*m_limelight.getX()), 0);
     else
         m_drive.arcadeDrive(0.0,.5);
   }
   public double PID(){
-    double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-    error = (setpoint - tx)*.4;
+    error = (setpoint - m_limelight.getX())*.4;
     integral += error*.02;
     derivative = (previousError - error)/.1;
     previousError = error;

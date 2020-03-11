@@ -1,6 +1,6 @@
 package frc.robot;
+
 import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Shooter {
     private Victor m_shooterLeft;
@@ -9,8 +9,6 @@ public class Shooter {
     private boolean currentlyShooting;
     private boolean indexCurrentlyOn;
     private final int maxTime = 200;
-    
-    
     
     public void shooterInit(){
         m_shooterLeft = new Victor(Constants.PWM_BallShooterL); 
@@ -24,7 +22,6 @@ public class Shooter {
         m_shooterLeft.set(Constants.kShooterSpeed);
         m_shooterRight.set(Constants.kShooterSpeed);
         currentlyShooting = true;
-        //intakeOn = false; spitting = false;
     }
     public void fullShooter() {//Same as resetShooter but instead shoots at max capacity
         timer = 0;
@@ -41,15 +38,12 @@ public class Shooter {
         return indexCurrentlyOn;
     }
     public void mainMethod(){//waits one second before turning the indexer on so shooter can come to speed
-        System.out.println("Shooter timer" + timer);
         if (currentlyShooting){
-            if (timer > 50){//timer increases every .02 seconds, therefore 50*.02 == 1 seconds
+            if (timer > 50) {//timer increases every .02 seconds, therefore 50*.02 == 1 seconds
                 indexCurrentlyOn = true;
-                System.out.println("indexer: " + indexCurrentlyOn);
             }
-            else{//if shooter still speeding up, keep indexer off
-                indexCurrentlyOn = false;
-            }
+        } else {
+            indexCurrentlyOn = false;
         }
         if (timer > maxTime){//after shooting for 4 seconds, turn the motors off
             m_shooterRight.set(0);
@@ -57,8 +51,6 @@ public class Shooter {
             currentlyShooting = false;
             indexCurrentlyOn = false;
         }
-        if (!currentlyShooting)
-            indexCurrentlyOn = false;
-    timer ++;
+        timer ++;
     }
 }
