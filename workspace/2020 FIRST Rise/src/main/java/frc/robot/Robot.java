@@ -42,6 +42,7 @@ public class Robot extends TimedRobot {
     private Intake m_intake;
     private Shooter m_shooter;
     private Screw m_screw;
+    private double integral, error,setpoint, derivative, previousError = 0;
 
     @Override
     public void robotInit() {
@@ -225,8 +226,8 @@ public class Robot extends TimedRobot {
                 m_climber.stop();
             }
         }
-        
-        m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);//Drives the robot based on whatever input by either driving/shooting/climbing mode
+        if (drivingStatus.equals("Climbing") || drivingStatus.equals("Driving"))
+            m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);//Drives the robot based on whatever input by either driving/shooting/climbing mode
         
         // BUTTONS
         if (controllerDriver.getRawButtonPressed(11))
@@ -269,6 +270,7 @@ public class Robot extends TimedRobot {
         if (controllerDriver.getRawButtonPressed(Constants.bDriving)){
             if (!drivingStatus.equals("Driving")) m_intake.toggleIntake();
             drivingStatus = "Driving";
+            m_index.killIndex();
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
         }
         if (controllerDriver.getRawButtonPressed(12)){//Method has not currently been tested
@@ -289,31 +291,15 @@ public class Robot extends TimedRobot {
     public void Update_Limelight_Tracking() {
         // will have to consider the following for pipelines
         /// NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(<val>);
-        double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
         double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-        double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-        /*if (tv==1) {
-            m_drive.arcadeDrive(-tx/29, 0, false);
-            System.out.println(-tx/29);
-        } else {
-            m_drive.arcadeDrive(0.5, 0);
+        if (tv == 1){
+            m_drive.arcadeDrive(PID(), 0);
         }
-        if (Math.abs(tx) < 5 && tv==1) {
-            aligning = false;
-        } else { aligning = true; }
-        System.out.println(tx);*/
-        /*if (tv==1){
-            if (tx > 3 || tx < -3)
-                m_drive.arcadeDrive(-0.54*Math.atan(0.5*tx), 0, false); //0.64*Math.atan(0.2*ty));
-        }else{
-            m_drive.arcadeDrive(.5,0.0, false);
-        }if (tv > 0 && tx < 3 && tx > -3){
-            aligning = false;
-        }else{
-            aligning = true;
-        }*/
-        m_drive.arcadeDrive(-1,0);
-  }
+        else {
+            m_drive.arcadeDrive(.5,0);
+        }
+            
+    }
   public void loadingStationLimeLight(){
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);//Change in x from cross hair
     double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);//Change in y from cross hair
@@ -322,5 +308,14 @@ public class Robot extends TimedRobot {
         m_drive.arcadeDrive(0.64*Math.atan(0.2*tx), 0.64*Math.atan(0.2*ty));
     else
         m_drive.arcadeDrive(0.0,.5);
+  }
+  public double PID(){
+    double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    error = (setpoint - tx)*.4;
+    integral += error*.02;
+    derivative = (previousError - error)/.1;
+    previousError = error;
+    System.out.println("Error " + error + " Integral " + integral);
+    return (error + integral + derivative);
   }
 }

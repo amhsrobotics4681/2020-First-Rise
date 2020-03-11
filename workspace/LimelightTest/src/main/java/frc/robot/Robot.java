@@ -37,7 +37,8 @@ public class Robot extends TimedRobot {
     Victor m_s = new Victor(5);
     int P,I,D = 1;
     double previousError = 0;
-    double integral, previous_error, setpoint = 0;
+    double integral, previous_error, setpoint, derivative = 0;
+
     double error;
 
   @Override
@@ -73,7 +74,7 @@ public class Robot extends TimedRobot {
     if (j.getRawButton(2)) {
         if (tv==1){
         System.out.println(PID());    
-        m_drive.arcadeDrive(PID()*.03, 0); //0.64*Math.atan(0.2*ty));
+        m_drive.arcadeDrive(PID()*.05, 0); //0.64*Math.atan(0.2*ty));
         } else
             m_drive.arcadeDrive(.5,0.0);
     } else {
@@ -87,8 +88,8 @@ public class Robot extends TimedRobot {
         m_indexer.set(0);
     }
     if (j.getRawButton(6)) {
-        m_shooter.set(1);
-        m_s.set(1);
+        m_shooter.set(.8);
+        m_s.set(.8);
     } else {
         m_shooter.set(0);
         m_s.set(0);
@@ -106,10 +107,11 @@ public class Robot extends TimedRobot {
   public double PID(){
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
     double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);  
-    error = (setpoint - tx)*.6;
-    previousError = error;
+    error = (setpoint - tx)*.4;
     integral += error*.02;
+    derivative = (previousError - error)/.1;
+    previousError = error;
     System.out.println("Error " + error + " Integral " + integral);
-    return (error + integral);
+    return (error + integral + derivative);
   }
 }
