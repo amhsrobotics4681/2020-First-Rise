@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
     private SendableChooser<String> m_chooser = new SendableChooser<>();
     private int autoTimer;
     private double integral, error,setpoint, derivative, previousError = 0;
-    private boolean aligning;
+    private boolean aligning, isShooting;
 
     private Index m_index;
     private Intake m_intake;
@@ -155,6 +155,7 @@ public class Robot extends TimedRobot {
         // CONTROLS
         if (drivingStatus.equals("Driving")) {//Incramental Acceleration to prevent falling over
             m_shooter.killShooter();
+            isShooting = false;
             m_screw.screwSpeed(-controllerDriver.getRawAxis(3));
             if(vTranslational < controllerDriver.getRawAxis(1))
                 vTranslational += Constants.kSpeedCurve;
@@ -170,8 +171,11 @@ public class Robot extends TimedRobot {
             m_screw.adjustScrew();//Actually moves the screw
             if (!aligning && m_screw.screwAtElevation) {
                 // yeah, forget setter/getter functions
-                m_shooter.resetShooter();
-                System.out.println(m_shooter.getIndexSpinning());
+                if (isShooting == false){
+                    m_shooter.resetShooter();
+                    isShooting = true;
+                }
+                System.out.println("Index should be spinning from shooter: " + m_shooter.getIndexSpinning());
                 m_intake.resetBallCount();
             }
         } else if (drivingStatus.equals("Climbing")) {//Controls shift to other remote and everything is dialed down to half power
@@ -258,10 +262,8 @@ public class Robot extends TimedRobot {
         else {
             m_drive.arcadeDrive(.5,0);
         }
-        System.out.println("Tx: " + tx);
-        if (Math.abs(tx) < 5){
+        if (Math.abs(tx) < 3.5){
             aligning = false;
-            System.out.println("Aligning: " + aligning);
         }
         else 
             aligning = true;
