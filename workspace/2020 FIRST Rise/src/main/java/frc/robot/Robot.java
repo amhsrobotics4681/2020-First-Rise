@@ -194,7 +194,6 @@ public class Robot extends TimedRobot {
         // CONTROLS
         if (drivingStatus.equals("Driving")) {//Incramental Acceleration to prevent falling over
             m_shooter.killShooter();
-            System.out.println("Shooter killed");
             m_screw.screwSpeed(-controllerDriver.getRawAxis(3));
             if(vTranslational < controllerDriver.getRawAxis(1))
                 vTranslational += Constants.kSpeedCurve;
@@ -210,7 +209,6 @@ public class Robot extends TimedRobot {
             m_screw.adjustScrew();//Actually moves the screw
             if (!aligning && m_screw.screwAtElevation) {
                 // yeah, forget setter/getter functions
-                System.out.println("Starts shooting");
                 m_shooter.resetShooter();
                 System.out.println(m_shooter.getIndexSpinning());
                 m_intake.resetBallCount();
@@ -292,13 +290,21 @@ public class Robot extends TimedRobot {
         // will have to consider the following for pipelines
         /// NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(<val>);
         double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+        double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);//Change in x from cross hair
         if (tv == 1){
-            m_drive.arcadeDrive(PID(), 0);
+            m_drive.arcadeDrive(PID()*0.03, 0);
         }
         else {
             m_drive.arcadeDrive(.5,0);
         }
-            
+        System.out.println("Tx: " + tx);
+        if (Math.abs(tx) < 5){
+            aligning = false;
+            System.out.println("Aligning: " + aligning);
+        }
+        else 
+            aligning = true;
+                
     }
   public void loadingStationLimeLight(){
     double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);//Change in x from cross hair
@@ -315,7 +321,7 @@ public class Robot extends TimedRobot {
     integral += error*.02;
     derivative = (previousError - error)/.1;
     previousError = error;
-    System.out.println("Error " + error + " Integral " + integral);
+    //FSystem.out.println("Error " + error + " Integral " + integral);
     return (error + integral + derivative);
   }
 }

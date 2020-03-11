@@ -44,6 +44,7 @@ public class Shooter {
         if (currentlyShooting){
             if (timer > 50){//timer increases every .02 seconds, therefore 50*.02 == 1 seconds
                 indexCurrentlyOn = true;
+                System.out.println("indexer: " + indexCurrentlyOn);
             }
             else{//if shooter still speeding up, keep indexer off
                 indexCurrentlyOn = false;
