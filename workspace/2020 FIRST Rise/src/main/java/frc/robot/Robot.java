@@ -20,29 +20,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.*;
 
 public class Robot extends TimedRobot {
-    private Joystick controllerDriver;
-    private Joystick controllerShooter;
-    private Climber m_climber;
-    private Wheel m_wheel;
-    private Victor m_left;
-    private Victor m_right;
+    private Joystick controllerDriver, controllerShooter;
+    private Victor m_left, m_right;
     private DifferentialDrive m_drive;
-    private Counter counter;
-    private boolean autoShoot;
-    private boolean aligning;
-    private double vTranslational;
-    private double vRotational;
-    private int autoTimer;
-    private CameraServer m_cameraServer;
-    private String drivingStatus;
-    private String autoStrategy;
+    private double vTranslational, vRotational;
+    private String drivingStatus, autoStrategy;
     private SendableChooser<String> m_chooser = new SendableChooser<>();
-    private ADIS16470_IMU m_gyro;
+    private int autoTimer;
+    private double integral, error,setpoint, derivative, previousError = 0;
+    private boolean aligning;
+
     private Index m_index;
     private Intake m_intake;
     private Shooter m_shooter;
     private Screw m_screw;
-    private double integral, error,setpoint, derivative, previousError = 0;
+    private Climber m_climber;
+    private Wheel m_wheel;
+    private Counter counter;
+    private CameraServer m_cameraServer;
+    private ADIS16470_IMU m_gyro;
 
     @Override
     public void robotInit() {
@@ -85,14 +81,10 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         autoTimer = 0;
-        autoShoot = false;
         aligning = true;
         m_gyro.setYawAxis(IMUAxis.kY);
         m_intake.reviveIntake();
         autoStrategy = m_chooser.getSelected();
-        autoStrategy = "Veneno";
-        m_drive.arcadeDrive(0, 0);
-        m_drive.setSafetyEnabled(false);
         //Urus: Shoot 3 balls then drive forward off the line (Works in all positions)
         //Diablo: Shoot 3 balls, turn around, then drve forwards off the line (works in all positions)
         //Aventador: Shoot 3 balls, turn around, drive to collect 3 balls in trench (works on right side) (Does not require Limelight)
@@ -105,81 +97,50 @@ public class Robot extends TimedRobot {
         m_shooter.mainMethod();
         m_index.mainMethod(m_intake.getIndexSpinning(), m_shooter.getIndexSpinning());
         autoTimer++;
-        if (!autoShoot) { 
+        if (autoTimer==1)
             m_shooter.resetShooter();
-            autoShoot = true;
-        }
-        System.out.println(autoTimer);
-        if (autoStrategy.equals("Urus")){
-            if (autoTimer > 200 && autoTimer < 350) {
-                m_drive.arcadeDrive(0, -0.7);
-            } else {
-                m_drive.arcadeDrive(0,0);
-                System.out.println("yo wassup");//For debugging purposes
-            }
-        } else if (autoStrategy.equals("Diablo")){
-            if (autoTimer > 250 && autoTimer < 450){
-                if ((m_gyro.getAngle()) < 180) {
-                    m_drive.arcadeDrive(-0.7, 0);
-                } else {
-                    m_drive.arcadeDrive(0, -0.8);
+        if (autoTimer < 200)
+            m_drive.arcadeDrive(0, 0);
+        
+        switch (autoStrategy) {
+            case "Veneno":
+                if (autoTimer > 640) {
+                    if (m_gyro.getAngle() < 20) {
+                        Update_Limelight_Tracking();
+                    } else {
+                        m_drive.arcadeDrive(1.0, 0);
+                    }
+                    if (!aligning)
+                        m_shooter.resetShooter();
                 }
-            }
-            else { 
-                m_drive.arcadeDrive(0,0);
-            }
-        } else if (autoStrategy.equals("Aventador")){    
-            if (autoTimer > 500) {
-                if (m_gyro.getAngle() < 187) {
-                    m_drive.arcadeDrive(-0.7, 0);
-                } else {
-                    m_drive.arcadeDrive(0, -0.5);
+            case "Aventador":
+                if (autoTimer > 400 && autoTimer < 600) {
+                    if (m_gyro.getAngle() < 190) {
+                        m_drive.arcadeDrive(-0.7, 0);
+                    } else {
+                        m_drive.arcadeDrive(0, -0.45);
+                    }
                 }
-            } else if (autoTimer > 280) {
-                if ((m_gyro.getAngle()) < 180) {
-                    m_drive.arcadeDrive(-0.7, 0);
-                } else {
-                    m_drive.arcadeDrive(0, -0.8);
+            case "Diablo":
+                if (autoTimer > 250 && autoTimer < 400) {
+                    if ((m_gyro.getAngle()) < 180) {
+                        m_drive.arcadeDrive(-0.7, 0);
+                    } else {
+                        m_drive.arcadeDrive(0, -1.0);
+                    }
                 }
-            } else {
-                m_drive.arcadeDrive(0,0);
-            }
-        } 
-        //WE ARE NOT ACTUALLY ADJUSTING SCREW HEIGHT, NEED TO FIX
-        else if (autoStrategy.equals("Veneno")){
-            if (autoTimer > 670) {
-                if (m_gyro.getAngle() > 20) { // will use limelight target exists boolean
-                    m_drive.arcadeDrive(1.0, 0);
-                } else {
-                    Update_Limelight_Tracking(); // need to tune above gyro code : check drift
-                }
-                if (!aligning)
-                    m_shooter.resetShooter();
-            } else if (autoTimer > 440) {
-                if (m_gyro.getAngle() < 190) {
-                    m_drive.arcadeDrive(-0.7, 0);
-                } else {
-                    m_drive.arcadeDrive(0, -0.55);
-                }
-            } else if (autoTimer > 230) {
-                if ((m_gyro.getAngle()) < 180) {
-                    m_drive.arcadeDrive(-0.7, 0);
-                } else {
-                    m_drive.arcadeDrive(0, -1.0);
-                }
-            } else {
-                m_drive.arcadeDrive(0,0);
-            }
-        } else {
-            autoStrategy = "Urus";
+                break;
+            case "Urus":
+            default:
+                if (autoTimer > 200 && autoTimer < 350)
+                    m_drive.arcadeDrive(0, -0.7);
+                break;
         }
     } 
     
     @Override
     public void teleopInit() {
         m_intake.reviveIntake();
-
-        
     }
 
     @Override
