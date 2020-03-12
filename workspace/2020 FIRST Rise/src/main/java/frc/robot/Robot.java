@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import com.analog.adis16470.frc.ADIS16470_IMU;
 import com.analog.adis16470.frc.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.MotorSafety;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -56,6 +57,7 @@ public class Robot extends TimedRobot {
         m_shooter.shooterInit();
         m_screw = new Screw();
         m_screw.screwInit();
+        m_limelight = new Limelight();
         m_left = new Victor(Constants.PWM_TreadsLeft);
         m_right = new Victor(Constants.PWM_TreadsRight);
         m_right.setInverted(false);
@@ -85,6 +87,7 @@ public class Robot extends TimedRobot {
         m_gyro.setYawAxis(IMUAxis.kY);
         m_intake.reviveIntake();
         autoStrategy = m_chooser.getSelected();
+        m_drive.setSafetyEnabled(false);
         //Urus: Shoot 3 balls then drive forward off the line (Works in all positions)
         //Diablo: Shoot 3 balls, turn around, then drve forwards off the line (works in all positions)
         //Aventador: Shoot 3 balls, turn around, drive to collect 3 balls in trench (works on right side) (Does not require Limelight)
@@ -93,19 +96,19 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
+        if (timer <= 200) {
+            m_drive.arcadeDrive(0, 0);
+        }
         m_intake.mainMethod();
         m_shooter.mainMethod();
         m_index.mainMethod(m_intake.getIndexSpinning(), m_shooter.getIndexSpinning());
         timer++;
         if (timer==1)
             m_shooter.resetShooter();
-        if (timer < 200)
-            m_drive.arcadeDrive(0, 0);
-        
         switch (autoStrategy) {
             case "Veneno":
                 if (timer > 640) {
-                    if (m_gyro.getAngle() < 20) {
+                    if (m_gyro.getAngle() > 20) {
                         Update_Limelight_Tracking();
                     } else {
                         m_drive.arcadeDrive(1.0, 0);
@@ -114,15 +117,15 @@ public class Robot extends TimedRobot {
                         m_shooter.resetShooter();
                 }
             case "Aventador":
-                if (timer > 400 && timer < 600) {
+                if (timer > 440 && timer < 610) {
                     if (m_gyro.getAngle() < 190) {
                         m_drive.arcadeDrive(-0.7, 0);
                     } else {
-                        m_drive.arcadeDrive(0, -0.45);
+                        m_drive.arcadeDrive(0, -0.5);
                     }
                 }
             case "Diablo":
-                if (timer > 250 && timer < 400) {
+                if (timer > 250 && timer < 440) {
                     if ((m_gyro.getAngle()) < 180) {
                         m_drive.arcadeDrive(-0.7, 0);
                     } else {
@@ -134,6 +137,8 @@ public class Robot extends TimedRobot {
             default:
                 if (timer > 200 && timer < 350)
                     m_drive.arcadeDrive(0, -0.7);
+                else
+                    m_drive.arcadeDrive(0, 0);
                 break;
         }
     } 
