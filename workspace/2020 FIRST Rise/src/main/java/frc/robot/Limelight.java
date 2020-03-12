@@ -6,7 +6,7 @@ public class Limelight {
     public double getX() {
         return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
     }
-    public boolean getValidTarget() {
+    public boolean hasValidTarget() {
         return (NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0) > 0);
     }
     public double getY() {
@@ -20,5 +20,8 @@ public class Limelight {
     }
     public void setPipeline(int pipeline) {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
+    }
+    public boolean isAligned() {
+        return (Math.abs(getX()) < 3.5); // within 3.5 deg of target
     }
 }

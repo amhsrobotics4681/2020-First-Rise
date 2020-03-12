@@ -102,11 +102,15 @@ public class Climber {
         status = "Pulling";
         targetHeight = m_climber.getSelectedSensorPosition() - climberPullingIncrement;
     }
-    /*Benefit of rising method:
-        Person only needs to push one button and it takes you to proper height
-        With encoder, we dont need to worry about falling
-        Proportion control will keep at right height until retracting
-        */
+        /** Benefit of rising method:
+         * Person only needs to push one button and it takes you to proper height
+         * With encoder, we dont need to worry about falling
+         * Proportion control will keep at right height until retracting
+         */
+        /** Your Honor, may I respond? (Yes)
+         * If we use an encoder, limit it to detecting the max height for the climber
+         * Less complex code, and we don't have to worry too much about buttons and math
+         */
     public void rising(){
         m_servo.setAngle(135);
         if (counter<25){

@@ -29,8 +29,8 @@ public class Constants {
     public static final int ClimberHeight = 600000; //absolutely arbitraty, need to find actual values
     public static final int HighClimberHeight = 800000; //absolutely arbitraty, need to find actual values
 //DIO's
-    public static final int DIO_BallCounter = 0;
-    public static final int DIO_BallCounter2 = 2;
+    public static final int DIO_BallSwitchFront = 0;
+    public static final int DIO_BallSwitchBack = 2;
     public static final int DIO_LIDAR = 1;
     public static final int LidarError = 21;//Distance from shooting point to lidar
     public static final int DIO_ScrewSwitch = 3;
@@ -55,7 +55,7 @@ public class Constants {
     public static final int bIntakeToggle = buttonA;
     public static final int bResetShooter = triggerR;//Remote 2
     public static final int bAlignRobot = buttonBack;
-    public static final int bToggleWheel = bumperR;
+    public static final int bStopWheel = bumperR;
     public static final int bKillShooter = bumperL;//remote 2
     public static final int bSpitOut = triggerL;
     public static final int bDriving = buttonStart;

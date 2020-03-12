@@ -15,8 +15,10 @@ public class Screw {
         encoderTarget = 0;
         m_screw.setSelectedSensorPosition(0);
     }
-
-    public void screwSpeed(double speed) {//Moves screw at whatever power input is provided byu the joystick
+    public int getPosition() {
+        return m_screw.getSelectedSensorPosition();
+    }
+    public void setSpeed(double speed) { // speed E[-1.0, 1.0]
         m_screw.set(ControlMode.PercentOutput, speed);
     }
     public void resetScrew() {

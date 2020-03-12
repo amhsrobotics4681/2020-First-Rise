@@ -1,48 +1,46 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Index {
     private Victor m_index;
-    boolean currentlySpitting;
-    boolean indexOn;
+    private DigitalInput m_switchFront;
+    private DigitalInput m_switchBack;
+    private boolean currentlySpitting, currentlyEjecting;
     
     public void indexInit(){
         m_index = new Victor(Constants.PWM_BallIndexer);
+        m_switchFront = new DigitalInput(Constants.DIO_BallSwitchFront);
+        m_switchBack = new DigitalInput(Constants.DIO_BallSwitchBack);
         currentlySpitting = false;
-        indexOn = false;
+        currentlyEjecting = false;
     }
 
-    public void toggleSpit(){
-        indexOn = false;//Sends balls back out the front. Works in tandem with intake
-        currentlySpitting = !currentlySpitting;
+    public void setSpitting(boolean state) {
+        currentlySpitting = state;
     }
-    public void toggleIndex() {//Toggles whether on or off
-        indexOn = !indexOn;
-        currentlySpitting = false;
+    public boolean getSpitting() {
+        return currentlySpitting;
     }
-    public void killIndex(){//Shuts off Intake regardless of current status
-        indexOn = false;
+    public void setEjecting(boolean state) {
+        currentlyEjecting = state;
     }
-    public void reviveIndex(){//Turns on Intake regardless of current status
-        indexOn = true;
+    public boolean getEjecting() {
+        return currentlyEjecting;
     }
-    public void mainMethod(boolean intakeIndexSpinning, boolean shooterIndexSpinning){//Takes into account whether intake or shooter needs it. If not, turns off
-        if (shooterIndexSpinning){
+
+    public void mainMethod(){
+        if (currentlyEjecting) {
             m_index.set(Constants.kEjectionSpeed);
-        }
-        else if (intakeIndexSpinning){
-            m_index.set(Constants.kIndexSpeed);
-        }
-        else if (indexOn){
-            m_index.set(Constants.kIndexSpeed);
-        }
-        else if (currentlySpitting){
+        } else if (currentlySpitting) {
             m_index.set(Constants.kSpitSpeed);
-        }
-        else{
+        } else if (m_switchFront.get()) {
+            m_index.set(Constants.kIndexSpeed);
+        } else if (m_switchBack.get()){
             m_index.set(0);
         }
+        
     }
 
 }
