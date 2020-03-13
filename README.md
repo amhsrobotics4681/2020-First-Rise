@@ -28,7 +28,8 @@ We will aim for the outer port, spin the control panel, and climb.
 We provide a team contribution of 35 to 65 points per match.
 
 ### Communication
-Find us on Twitter! (We don't check it anymore)  
+Find us on Instagram at amhs4681!
+Find us on Youtube at Murphy's Law Robotics!
 Find us on The Blue Alliance!  
 Email us at amhsrobotics4681@gmail.com! (Replies within a week during season)  
-Do we have an Instagram?  
+Find us on Twitter! (We don't check it anymore)  
