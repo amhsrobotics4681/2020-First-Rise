@@ -43,24 +43,21 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         controllerDriver = new Joystick(0);
         controllerShooter = new Joystick(1);
-        m_climber = new Climber();
-        m_climber.climberInit();
-        m_wheel = new Wheel();
-        m_wheel.wheelInit();
-        m_index = new Index();
-        m_index.indexInit();
-        m_intake = new Intake();
-        m_intake.intakeInit();
-        m_shooter = new Shooter();
-        m_shooter.shooterInit();
-        m_screw = new Screw();
-        m_screw.screwInit();
-        m_limelight = new Limelight();
         m_left = new Victor(Constants.PWM_TreadsLeft);
         m_right = new Victor(Constants.PWM_TreadsRight);
         m_right.setInverted(false);
         m_left.setInverted(true);
         m_drive = new DifferentialDrive(m_left, m_right);
+
+        m_climber = new Climber();
+        m_wheel = new Wheel();
+        m_index = new Index();
+        m_intake = new Intake();
+        m_shooter = new Shooter();
+        m_screw = new Screw();
+        m_gyro = new ADIS16470_IMU();
+        m_limelight = new Limelight();
+        
         counter = new Counter(Constants.DIO_LIDAR);
         counter.setMaxPeriod(1.0);
         counter.setSemiPeriodMode(true);
@@ -70,7 +67,6 @@ public class Robot extends TimedRobot {
         m_chooser.addOption("Shoot, Collect", "Aventador");
         m_chooser.addOption("Shoot, Collect, Shoot", "Veneno");
         SmartDashboard.putData("Auto Choices", m_chooser);
-        m_gyro = new ADIS16470_IMU();
         CameraServer.getInstance().startAutomaticCapture("Shooting Camera", 0);
         CameraServer.getInstance().startAutomaticCapture("Collecting Camera", 1);
     }
@@ -90,28 +86,26 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
+        timer++;
         m_index.mainMethod();
         m_shooter.standardShooting();
-        if (timer <= 200)
+        if (timer <= 220)
             m_drive.arcadeDrive(0, 0);
 
         switch (autoStrategy) {
             case "Veneno":
                 if (timer > 640) {
-                    if (m_gyro.getAngle() < 20) { // if turned left enough: use limelight; else turn;
-                        limelight_Shooting();
-                    } else {
-                        m_drive.arcadeDrive(1.0, 0);
-                    }
-                    if (aligned)
+                    limelight_Shooting();
+                    if (aligned) {
                         m_shooter.standardShooting();
-                    m_index.setEjecting(m_shooter.getEjecting());
+                        m_index.setEjecting(m_shooter.getEjecting());
+                    }
                     break;
                 }
             case "Aventador":
-                if (timer >= 440) {
+                if (timer > 440) {
                     if (timer > 610) {
-                        m_drive.arcadeDrive(0, 0);
+                        m_drive.arcadeDrive(0.6, 0);
                     } else if (m_gyro.getAngle() < 190) {
                         m_drive.arcadeDrive(-0.7, 0);
                     } else {
@@ -121,7 +115,7 @@ public class Robot extends TimedRobot {
                     break;
                 }
             case "Diablo":
-                if (timer > 250 && timer < 440) {
+                if (timer > 220 && timer < 440) {
                     if ((m_gyro.getAngle()) < 180) {
                         m_drive.arcadeDrive(-0.7, 0);
                     } else {
@@ -133,7 +127,7 @@ public class Robot extends TimedRobot {
                 break;
             case "Urus":
             default:
-                if (timer > 200 && timer < 350)
+                if (timer > 220 && timer < 350)
                     m_drive.arcadeDrive(0, -0.7);
                 else
                     m_drive.arcadeDrive(0, 0);
@@ -147,7 +141,6 @@ public class Robot extends TimedRobot {
         drivingStatus = "Driving";
         m_limelight.setLED(false);
         m_index.setEjecting(false);
-        m_shooter.resetTimer();
     }
 
     @Override
@@ -202,7 +195,7 @@ public class Robot extends TimedRobot {
             m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);
         
         // BUTTONS
-        if (controllerDriver.getRawButtonPressed(11))
+        if (controllerDriver.getRawButtonPressed(Constants.bResetScrew))
             m_screw.resetScrew(); // set current screw position as 0 on encoder (for testing purposes only)
 
         if (controllerDriver.getRawButtonPressed(Constants.bPositionControl)) {
@@ -218,7 +211,7 @@ public class Robot extends TimedRobot {
             m_intake.setIntake(!m_intake.getIntake());
             m_index.setSpitting(false);
         }   
-        if (controllerDriver.getRawButtonPressed(Constants.bSpitOut)) {
+        if (controllerDriver.getRawButtonPressed(Constants.bSpitToggle)) {
             m_index.setSpitting(!m_index.getSpitting());
             m_intake.setSpitting(!m_intake.getSpitting());
         }
@@ -232,12 +225,14 @@ public class Robot extends TimedRobot {
             m_intake.setIntake(false);
             m_limelight.setLED(true);
             m_limelight.setPipeline(0);
+            m_shooter.resetTimer();
         }
         if (controllerShooter.getRawButtonPressed(1)) {
             drivingStatus = "Shooting";//Switches to shooting mode, controlled in main method
             m_intake.setIntake(false);
             m_limelight.setLED(true);
             m_limelight.setPipeline(0);
+            m_shooter.resetTimer();
         }
         if (controllerShooter.getRawButton(6) || controllerShooter.getRawButton(7)){
             drivingStatus = "Climbing";
@@ -249,9 +244,8 @@ public class Robot extends TimedRobot {
             m_intake.setIntake(true);
             m_index.setEjecting(false);
             m_limelight.setLED(false);
-            m_shooter.resetTimer();
         }
-        if (controllerDriver.getRawButtonPressed(12)){//Method has not currently been tested
+        if (controllerDriver.getRawButtonPressed(Constants.bLoading)){//Method has not currently been tested
             drivingStatus = "Loading";
             m_limelight.setLED(true);
             limelight_Loading();
@@ -269,16 +263,13 @@ public class Robot extends TimedRobot {
         if (m_limelight.hasValidTarget()) {
             m_drive.arcadeDrive(PID()*0.03, 0);
         } else {
-            m_drive.arcadeDrive(.5,0);
+            m_drive.arcadeDrive(.5,0); // when in doubt, aim right
         }
         aligned = m_limelight.isAligned();                
     }
 
-    public void limelight_Loading() {
-        if (m_limelight.hasValidTarget())
-            m_drive.arcadeDrive(0.64*Math.atan(0.2*m_limelight.getX()), 0);
-        else
-            m_drive.arcadeDrive(0.0,.5);
+    public void limelight_Loading() { // will align us in 2 ft semicircle around vision target
+        m_drive.arcadeDrive(PID()*0.03, (getDistance()-24)/24);
     }
 
     public double PID(){

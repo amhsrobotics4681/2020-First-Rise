@@ -49,17 +49,17 @@ public class Constants {
     private static final int stickL = 11;
     private static final int stickR = 12;
 
-//Button outputs
+//Button outputs - controllerDriver
     public static final int bPositionControl = buttonX; 
     public static final int bRotationControl = buttonY; 
-    public static final int bIntakeToggle = buttonA;
-    public static final int bResetShooter = triggerR;//Remote 2
-    public static final int bAlignRobot = buttonBack;
     public static final int bStopWheel = bumperR;
-    public static final int bKillShooter = bumperL;//remote 2
-    public static final int bSpitOut = triggerL;
+    public static final int bIntakeToggle = buttonA;
+    public static final int bSpitToggle = buttonB;    
+    public static final int bAlignRobot = buttonBack;
     public static final int bDriving = buttonStart;
-    
+    public static final int bResetScrew = stickR;
+    public static final int bLoading = bumperL;
+
 // Speed declarations
     public static final double kIntakeSpeed = .75;
     public static final double kSpitSpeed = -0.9; //neg

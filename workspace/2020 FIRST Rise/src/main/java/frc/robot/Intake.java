@@ -7,7 +7,7 @@ public class Intake {
     private boolean intakeOn;
     private boolean spitting;   
     
-    public void intakeInit(){
+    public Intake(){
         m_intake = new Victor(Constants.PWM_BallIntake);
         m_intake.setInverted(true);
         intakeOn = false;

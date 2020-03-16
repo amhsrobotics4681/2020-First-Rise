@@ -29,7 +29,7 @@ public class Climber {
     public int difference;
     public boolean finishedClimbing;
 
-    public void climberInit() {
+    public Climber() {
         m_pulley = new Victor(Constants.PWM_ClimberPulley); //fill in PWM port
         m_servo = new Servo(Constants.PWM_Servo);
         m_climber = new TalonSRX(Constants.CAN_Climber);
@@ -40,7 +40,7 @@ public class Climber {
         finishedClimbing = false;
     }
     public void extending() {
-        status = "Climbing";
+        status = "Extending";
         if (!rotatingServo){
             rotatingServo = true;
             counter = 0;
@@ -64,7 +64,7 @@ public class Climber {
         if (status.equals("Stationary")){
             m_pulley.set(0);
             m_servo.setAngle(180);
-        } else if (status.equals("Climbing")){
+        } else if (status.equals("Extending")){
             m_servo.setAngle(135);
             if (counter < 25){
                 m_pulley.set(-.5*(Constants.kPulleySpeed));//Goes down until enough weight removed to pull servo

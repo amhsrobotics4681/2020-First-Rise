@@ -9,7 +9,7 @@ public class Index {
     private DigitalInput m_switchBack;
     private boolean currentlySpitting, currentlyEjecting;
     
-    public void indexInit(){
+    public Index(){
         m_index = new Victor(Constants.PWM_BallIndexer);
         m_switchFront = new DigitalInput(Constants.DIO_BallSwitchFront);
         m_switchBack = new DigitalInput(Constants.DIO_BallSwitchBack);

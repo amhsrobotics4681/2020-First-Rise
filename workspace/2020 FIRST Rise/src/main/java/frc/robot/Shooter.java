@@ -9,7 +9,7 @@ public class Shooter {
     private SpeedControllerGroup m_shooter;
     private int timer;
     
-    public void shooterInit(){
+    public Shooter() {
         m_shooterLeft = new Victor(Constants.PWM_BallShooterL); 
         m_shooterRight = new Victor(Constants.PWM_BallShooterR);
         m_shooter = new SpeedControllerGroup(m_shooterLeft, m_shooterRight);
@@ -39,6 +39,6 @@ public class Shooter {
     }
 
     public boolean getEjecting(){//Getter method for the indexer
-        return (timer > 40);
+        return (timer > 40 && timer < 200);
     }
 }

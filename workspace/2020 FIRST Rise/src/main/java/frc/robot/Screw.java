@@ -9,7 +9,7 @@ public class Screw {
     boolean screwAtElevation = true;
     int encoderTarget;
 
-    public void screwInit(){
+    public Screw(){
         m_screw = new TalonSRX(Constants.CAN_Screw);
         m_screwStop = new DigitalInput(Constants.DIO_ScrewSwitch);//used to determine if screw is all the way back just in case so we dont lock it up
         encoderTarget = 0;
