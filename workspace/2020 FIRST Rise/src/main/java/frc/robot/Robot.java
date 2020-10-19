@@ -164,6 +164,7 @@ public class Robot extends TimedRobot {
             limelight_Shooting();
             m_screw.setSpeed(-controllerShooter.getRawAxis(1)); // until numbers testing & regression formula
             if (aligned && m_screw.screwAtElevation) {
+                m_limelight.setLED(false);
                 m_shooter.standardShooting();
                 m_index.setEjecting(m_shooter.getEjecting());
             }
@@ -172,6 +173,7 @@ public class Robot extends TimedRobot {
             limelight_Shooting();
             m_screw.setSpeed(-controllerShooter.getRawAxis(1));
             if (aligned && m_screw.screwAtElevation) {
+                m_limelight.setLED(false);
                 m_shooter.fullShooting();
                 m_index.setEjecting(m_shooter.getEjecting());
             }

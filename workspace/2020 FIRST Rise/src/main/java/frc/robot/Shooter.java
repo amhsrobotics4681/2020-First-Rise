@@ -23,6 +23,7 @@ public class Shooter {
         else
             m_shooter.set(0);
     }
+
     public void fullShooting() {//Same as resetShooter but instead shoots at max capacity
         timer++;
         if (timer > 20 && timer < 200)
@@ -30,6 +31,7 @@ public class Shooter {
         else
             m_shooter.set(0);
     }
+    
     public void killShooter() {//Shuts off Shooter regardless of current status
         timer = 200;
     }
