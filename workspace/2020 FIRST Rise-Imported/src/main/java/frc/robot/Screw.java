@@ -15,7 +15,7 @@ public class Screw {
         encoderTarget = 0;
         m_screw.setSelectedSensorPosition(0);
     }
-    public int getPosition() {
+    public double getPosition() {
         return m_screw.getSelectedSensorPosition();
     }
     public void setSpeed(double speed) { // speed E[-1.0, 1.0]
