@@ -19,14 +19,14 @@ public class Climber {
     private int counter;
     //Everything below here is for encoder climber
     private TalonSRX m_climber;
-    private int targetHeight;
+    private double targetHeight;
     public int mode;
     public final double maxClimberSpeed = .7;
     public final double climberSpeedMultiplier = .00003;//arbitrary, find actual value
     public final int climberPullingIncrement = 40000;//arbitrary, find actual value
     public final int differenceMargin = 4000; //arbitrary, find actual value
     public double currentClimberSpeed;
-    public int difference;
+    public double difference;
     public boolean finishedClimbing;
 
     public Climber() {
