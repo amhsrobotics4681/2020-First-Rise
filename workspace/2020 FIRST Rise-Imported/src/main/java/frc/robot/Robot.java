@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        timer++;
+        /*timer++;
         m_index.mainMethod();
         m_shooter.standardShooting();
         if (timer <= 220)
@@ -132,7 +132,7 @@ public class Robot extends TimedRobot {
                 else
                     m_drive.arcadeDrive(0, 0);
                 break;
-        }
+        }*/
     } 
     
     @Override
@@ -161,13 +161,17 @@ public class Robot extends TimedRobot {
                 vRotational -= Constants.kSpeedCurve;
         }
         else if (drivingStatus.equals("Shooting")) {//Starts autodriving, adjusts screw
-            limelight_Shooting();
+            //limelight_Shooting(); Removed until we can tune the limelight and make sure it works
             m_screw.setSpeed(-controllerShooter.getRawAxis(1)); // until numbers testing & regression formula
-            if (aligned && m_screw.screwAtElevation) {
+            if(vRotational < controllerDriver.getRawAxis(2))
+                vRotational += Constants.kSpeedCurve;
+            if(vRotational > controllerDriver.getRawAxis(2))
+                vRotational -= Constants.kSpeedCurve;
+            /*if (aligned && m_screw.screwAtElevation) {
                 m_limelight.setLED(false);
                 m_shooter.standardShooting();
                 m_index.setEjecting(m_shooter.getEjecting());
-            }
+            }*/
         }
         else if (drivingStatus.equals("Full Shooting")) {//Starts autodriving, adjusts screw
             limelight_Shooting();
@@ -196,6 +200,10 @@ public class Robot extends TimedRobot {
         if (drivingStatus.equals("Driving") || drivingStatus.equals("Climbing"))
             m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);
         
+        //For manual shooting
+        if (drivingStatus.equals("Shooting"))
+            m_drive.arcadeDrive(-vRotational*0.1, 0, false);
+        
         // BUTTONS
         if (controllerDriver.getRawButtonPressed(Constants.bResetScrew))
             m_screw.resetScrew(); // set current screw position as 0 on encoder (for testing purposes only)
@@ -222,19 +230,19 @@ public class Robot extends TimedRobot {
         }
         
         // MODE SWITCHING
-        if (controllerShooter.getRawButtonPressed(3)) {
+        /*if (controllerShooter.getRawButtonPressed(3)) { Removed for safety, will re-implement later
             drivingStatus = "Full Shooting";
             m_intake.setIntake(false);
             m_limelight.setLED(true);
             m_limelight.setPipeline(0);
             m_shooter.resetTimer();
-        }
+        }*/
         if (controllerShooter.getRawButtonPressed(1)) {
             drivingStatus = "Shooting";//Switches to shooting mode, controlled in main method
-            m_intake.setIntake(false);
+            /*m_intake.setIntake(false); Temporarily removed
             m_limelight.setLED(true);
             m_limelight.setPipeline(0);
-            m_shooter.resetTimer();
+            m_shooter.resetTimer();*/
         }
         if (controllerShooter.getRawButton(6) || controllerShooter.getRawButton(7)){
             drivingStatus = "Climbing";
