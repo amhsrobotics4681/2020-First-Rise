@@ -206,14 +206,16 @@ public class Robot extends TimedRobot {
             m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);
         
         //For manual shooting
-        if (drivingStatus.equals("Shooting"))
+        if (drivingStatus.equals("Manual Shooting"))
             m_drive.arcadeDrive(-vRotational*0.1, 0, false);
         
         // BUTTONS
         if (controllerDriver.getRawButtonPressed(Constants.bResetScrew))
             m_screw.resetScrew(); // set current screw position as 0 on encoder (for testing purposes only)
 
-        if (controllerDriver.getRawButtonPressed(Constants.bPositionControl)) {
+        //Something is wrong with the wheel: It's not connected for some reason
+        //We'll comment this out to prevent a null pointer until we can fix a problem
+        /*if (controllerDriver.getRawButtonPressed(Constants.bPositionControl)) {
             m_wheel.positionControl();//Color wheel go to set position
         }
         if (controllerDriver.getRawButtonPressed(Constants.bRotationControl)) {
@@ -221,7 +223,7 @@ public class Robot extends TimedRobot {
         }
         if (controllerDriver.getRawButtonPressed(Constants.bStopWheel)) {
             m_wheel.stopWheel();
-        }
+        }*/
         if (controllerDriver.getRawButtonPressed(Constants.bIntakeToggle)) {
             m_intake.setIntake(!m_intake.getIntake());
             m_index.setSpitting(false);
