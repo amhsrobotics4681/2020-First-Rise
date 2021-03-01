@@ -86,6 +86,27 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
+        timer++;
+        //all timer numbers are guesstimates, will change with data
+        if(timer < 40){
+            if(vTranslational < 1)
+                vTranslational += Constants.kSpeedCurve;
+        } else if (timer >= 40 && timer < 60) {
+            if(vTranslational > 0){
+                vTranslational -= Constants.kSpeedCurve;
+            }
+            if(vRotational < 1){
+                vRotational += Constants.kSpeedCurve;
+            }
+        } else if (timer >= 60 && timer < 100){
+            if(vTranslational < 1){
+                vTranslational += Constants.kSpeedCurve;
+            }
+            if(vRotational > 0){
+                vRotational -= Constants.kSpeedCurve;
+            }
+        }
+        m_drive.arcadeDrive(vTranslational, vRotational, false);
         /*timer++;
         m_index.mainMethod();
         m_shooter.standardShooting();
@@ -145,6 +166,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
+        System.out.println(m_limelight.hasValidTarget());
         m_index.mainMethod();
         m_wheel.mainMethod();
         m_climber.mainMethod();

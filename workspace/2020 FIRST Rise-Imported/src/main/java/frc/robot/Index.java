@@ -8,6 +8,7 @@ public class Index {
     private DigitalInput m_switchFront;
     private DigitalInput m_switchBack;
     private boolean currentlySpitting, currentlyEjecting;
+    private boolean intaking;
     
     public Index(){
         m_index = new Victor(Constants.PWM_BallIndexer);
@@ -36,8 +37,12 @@ public class Index {
         } else if (currentlySpitting) {
             m_index.set(Constants.kSpitSpeed);
         } else if (m_switchFront.get()) {
+            intaking = true;
             m_index.set(Constants.kIndexSpeed);
         } else if (m_switchBack.get()){
+            intaking = false;
+            m_index.set(0);
+        } else if (!intaking){
             m_index.set(0);
         }
         
