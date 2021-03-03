@@ -88,25 +88,46 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         timer++;
         //all timer numbers are guesstimates, will change with data
-        if(timer < 40){
+        
+        //drive instructions
+        if(timer < 60){
             if(vTranslational < 1)
                 vTranslational += Constants.kSpeedCurve;
-        } else if (timer >= 40 && timer < 60) {
-            if(vTranslational > 0){
-                vTranslational -= Constants.kSpeedCurve;
-            }
-            if(vRotational < 1){
-                vRotational += Constants.kSpeedCurve;
-            }
-        } else if (timer >= 60 && timer < 100){
-            if(vTranslational < 1){
+        } else if (timer < 260) {
+            if(vTranslational < 0.75)
                 vTranslational += Constants.kSpeedCurve;
-            }
-            if(vRotational > 0){
-                vRotational -= Constants.kSpeedCurve;
-            }
+            if(vTranslational > 0.75)
+                vTranslational -= Constants.kSpeedCurve;
+        } else if (timer < 370) {
+            if(vTranslational < 1)
+                vTranslational += Constants.kSpeedCurve;
+        } else {
+            if(vTranslational > 0)
+                vTranslational -= Constants.kSpeedCurve;
+            if(vTranslational < 0)
+                vTranslational += Constants.kSpeedCurve;
         }
-        m_drive.arcadeDrive(vTranslational, vRotational, false);
+
+        //rotation instructions
+        if(timer >= 63 && timer < 80){
+            if(vRotational < 1)
+                vRotational += Constants.kSpeedCurve;
+        } else if (timer >= 150 && timer < 190) {
+            if(vRotational > -1)
+                vRotational -= Constants.kSpeedCurve;
+        } else if (timer >= 250 && timer < 270){
+            if(vRotational < 1)
+                vRotational += Constants.kSpeedCurve;
+        } else {
+            if(vRotational > 0)
+                vRotational -= Constants.kSpeedCurve;
+            if(vRotational < 0)
+                vRotational += Constants.kSpeedCurve;
+        }
+        m_drive.arcadeDrive(-vRotational, -vTranslational, false);
+
+
+
         /*timer++;
         m_index.mainMethod();
         m_shooter.standardShooting();
