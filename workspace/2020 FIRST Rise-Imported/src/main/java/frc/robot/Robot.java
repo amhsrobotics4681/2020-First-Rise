@@ -76,6 +76,7 @@ public class Robot extends TimedRobot {
         timer = 0;
         aligned = false;
         m_gyro.setYawAxis(IMUAxis.kY);
+        m_gyro.reset();
         autoStrategy = m_chooser.getSelected();
         m_drive.setSafetyEnabled(false);
         //Urus: Shoot 3 balls then drive forward off the line (Works in all positions)
@@ -87,18 +88,19 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         timer++;
+        System.out.println(m_gyro.getAngle());
         //all timer numbers are guesstimates, will change with data
         
         //drive instructions
-        if(timer < 60){
+        if(timer >= 2 && timer < 60){
             if(vTranslational < 1)
                 vTranslational += Constants.kSpeedCurve;
-        } else if (timer < 260) {
+        } else if (timer < 265) {
             if(vTranslational < 0.75)
                 vTranslational += Constants.kSpeedCurve;
             if(vTranslational > 0.75)
                 vTranslational -= Constants.kSpeedCurve;
-        } else if (timer < 370) {
+        } else if (timer < 360) {
             if(vTranslational < 1)
                 vTranslational += Constants.kSpeedCurve;
         } else {
@@ -109,13 +111,13 @@ public class Robot extends TimedRobot {
         }
 
         //rotation instructions
-        if(timer >= 63 && timer < 80){
+        if(timer >= 63 && m_gyro.getAngle() < 15 && timer < 150){ //(timer >= 63 && timer < 80)
             if(vRotational < 1)
                 vRotational += Constants.kSpeedCurve;
-        } else if (timer >= 150 && timer < 190) {
+        } else if (timer >= 150 && m_gyro.getAngle() > -15 && timer < 255) { //(timer >= 150 && timer < 193)
             if(vRotational > -1)
                 vRotational -= Constants.kSpeedCurve;
-        } else if (timer >= 250 && timer < 270){
+        } else if (timer >= 255 && m_gyro.getAngle() < -30 && timer < 300){ //(timer >= 255 && timer < 277)
             if(vRotational < 1)
                 vRotational += Constants.kSpeedCurve;
         } else {
@@ -337,6 +339,17 @@ public class Robot extends TimedRobot {
         m_drive.arcadeDrive(PID()*0.03, (getDistance()-24)/24);
     }
 
+    private void driveCurve(double speed, double rotation){
+        if(vTranslational < speed)
+            vTranslational += Constants.kSpeedCurve;
+        if(vTranslational > speed)
+            vTranslational -= Constants.kSpeedCurve;
+        if(vRotational < rotation)
+            vRotational += Constants.kSpeedCurve;
+        if(vRotational > rotation)
+            vRotational -= Constants.kSpeedCurve;
+    }
+
     public double PID(){
         error = (setpoint - m_limelight.getX())*.4;
         integral += error*.02;
@@ -344,5 +357,10 @@ public class Robot extends TimedRobot {
         previousError = error;
         //FSystem.out.println("Error " + error + " Integral " + integral);
         return (error + integral + derivative);
+    }
+
+    @Override
+    public void testPeriodic() {
+        System.out.println(m_gyro.getAngle());
     }
 }
