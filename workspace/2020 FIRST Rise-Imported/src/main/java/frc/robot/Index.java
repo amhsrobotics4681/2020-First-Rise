@@ -20,6 +20,8 @@ public class Index {
 
     public void setSpitting(boolean state) {
         currentlySpitting = state;
+        if(state)
+            intaking = false;
     }
     public boolean getSpitting() {
         return currentlySpitting;

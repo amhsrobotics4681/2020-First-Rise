@@ -28,6 +28,7 @@ public class Robot extends TimedRobot {
     private int timer;
     private double integral, error,setpoint, derivative, previousError = 0;
     private boolean aligned;
+    private boolean shooting = false;
 
     private Index m_index;
     private Intake m_intake;
@@ -252,7 +253,9 @@ public class Robot extends TimedRobot {
             if(vRotational > controllerShooter.getRawAxis(0))
                 vRotational -= Constants.kSpeedCurve;
             m_screw.setSpeed(-controllerShooter.getRawAxis(1));
-            if(controllerShooter.getRawButtonPressed(1)){
+            if(controllerShooter.getRawButtonPressed(1))
+                shooting = true;
+            if(shooting){
                 m_shooter.standardShooting();
                 m_index.setEjecting(m_shooter.getEjecting());
             }
@@ -328,6 +331,7 @@ public class Robot extends TimedRobot {
             drivingStatus = "Manual Shooting";
             m_intake.setIntake(false);
             m_shooter.resetTimer();
+            shooting = false;
         }
         /*if (controllerShooter.getRawButtonPressed(5)) { Removed for safety, will re-implement later
             drivingStatus = "Full Shooting";
