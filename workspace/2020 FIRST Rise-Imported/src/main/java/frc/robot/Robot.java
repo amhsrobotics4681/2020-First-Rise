@@ -87,11 +87,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
+
+        //Galactic Search Timer
         timer++;
         System.out.println(m_gyro.getAngle());
-        //all timer numbers are guesstimates, will change with data
         
-        //drive instructions
+        
+        //GALACTIC SEARCH LAYOUT PATH B - RED
+        /*
         if(timer >= 2 && timer < 60){
             if(vTranslational < 1)
                 vTranslational += Constants.kSpeedCurve;
@@ -126,11 +129,50 @@ public class Robot extends TimedRobot {
             if(vRotational < 0)
                 vRotational += Constants.kSpeedCurve;
         }
+        */
+
+        //GALACTIC SEARCH LAYOUT PATH B - RED
+        if(timer < 120){
+            if(vTranslational < 1)
+                vTranslational += Constants.kSpeedCurve;
+        } else if (timer < 370) {
+            if(vTranslational < 0.75)
+                vTranslational += Constants.kSpeedCurve;
+            if(vTranslational > 0.75)
+                vTranslational -= Constants.kSpeedCurve;
+        } else if (timer < 410) {
+            if(vTranslational < 1)
+                vTranslational += Constants.kSpeedCurve;
+        } else {
+            if(vTranslational > 0)
+                vTranslational -= Constants.kSpeedCurve;
+            if(vTranslational < 0)
+                vTranslational += Constants.kSpeedCurve;
+        }
+
+        //rotation instructions
+        if(timer >= 130 && m_gyro.getAngle() > -15 && timer < 180){ //(timer >= 63 && timer < 80)
+            if(vRotational > -1)
+                vRotational -= Constants.kSpeedCurve;
+        } else if (timer >= 240 && m_gyro.getAngle() < 15 && timer < 300) { //(timer >= 150 && timer < 193)
+            if(vRotational < 1)
+                vRotational += Constants.kSpeedCurve;
+        } else if (timer >= 340 && m_gyro.getAngle() > 30 && timer < 380){ //(timer >= 255 && timer < 277)
+            if(vRotational > -1)
+                vRotational -= Constants.kSpeedCurve;
+        } else {
+            if(vRotational > 0)
+                vRotational -= Constants.kSpeedCurve;
+            if(vRotational < 0)
+                vRotational += Constants.kSpeedCurve;
+        }
+
+        //Galactic Search Drive
         m_drive.arcadeDrive(-vRotational, -vTranslational, false);
 
 
-
-        /*timer++;
+        /* Normal autonomous code that we won't be using :(
+        timer++;
         m_index.mainMethod();
         m_shooter.standardShooting();
         if (timer <= 220)
@@ -319,6 +361,14 @@ public class Robot extends TimedRobot {
             m_intake.setIntake(true);
             m_limelight.setPipeline(1); // which means, don't press button or code breaks :-)
         }
+
+        //limelight LED testing
+        if(controllerDriver.getRawButtonPressed(7)){
+            m_limelight.setLED(true);
+        }
+        if(controllerDriver.getRawButtonPressed(8)){
+            m_limelight.setLED(false);
+        }
     }
 
     private double getDistance() {//Returns distance from front of the robot to wall
@@ -362,5 +412,10 @@ public class Robot extends TimedRobot {
     @Override
     public void testPeriodic() {
         System.out.println(m_gyro.getAngle());
+    }
+
+    @Override
+    public void disabledInit(){
+        m_limelight.setLED(false);
     }
 }

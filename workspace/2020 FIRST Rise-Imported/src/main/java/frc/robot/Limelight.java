@@ -15,7 +15,7 @@ public class Limelight {
     }
     public void setLED(boolean state) {
         LED_status = state ? 3 : 1; // 3 is on, 1 is off
-        NetworkTableInstance.getDefault().getTable("limeLight").getEntry("ledMode").setNumber(LED_status);
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(LED_status);
     }
     public void setPipeline(int pipeline) {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
