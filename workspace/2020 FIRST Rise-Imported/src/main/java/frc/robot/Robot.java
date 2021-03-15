@@ -232,7 +232,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        System.out.println(m_limelight.hasValidTarget());
+        System.out.println(controllerShooter.getRawAxis(0));
+        //System.out.println(m_limelight.hasValidTarget());
         m_index.mainMethod();
         m_wheel.mainMethod();
         m_climber.mainMethod();
@@ -297,7 +298,7 @@ public class Robot extends TimedRobot {
         
         //For manual shooting
         if (drivingStatus.equals("Manual Shooting"))
-            m_drive.arcadeDrive(-vRotational*0.1, 0, false);
+            m_drive.arcadeDrive(-vRotational*0.5, 0, false);
         
         // BUTTONS
         if (controllerDriver.getRawButtonPressed(Constants.bResetScrew))
