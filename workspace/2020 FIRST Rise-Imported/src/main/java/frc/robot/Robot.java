@@ -28,7 +28,6 @@ public class Robot extends TimedRobot {
     private int timer;
     private double integral, error,setpoint, derivative, previousError = 0;
     private boolean aligned;
-    private boolean shooting = false;
 
     private Index m_index;
     private Intake m_intake;
@@ -93,188 +92,91 @@ public class Robot extends TimedRobot {
         timer++;
         System.out.println(m_gyro.getAngle());
         
-        
-        //GALACTIC SEARCH LAYOUT PATH B - RED
-        /*
+        /*// GALACTIC SEARCH LAYOUT PATH B - RED
         if(timer >= 2 && timer < 60){
-            if(vTranslational < 1)
-                vTranslational += Constants.kSpeedCurve;
+            driveCurve(1, vRotational);
         } else if (timer < 265) {
-            if(vTranslational < 0.75)
-                vTranslational += Constants.kSpeedCurve;
-            if(vTranslational > 0.75)
-                vTranslational -= Constants.kSpeedCurve;
+            driveCurve(0.75, vRotational);
         } else if (timer < 360) {
-            if(vTranslational < 1)
-                vTranslational += Constants.kSpeedCurve;
+            driveCurve(1, vRotational);
         } else {
-            if(vTranslational > 0)
-                vTranslational -= Constants.kSpeedCurve;
-            if(vTranslational < 0)
-                vTranslational += Constants.kSpeedCurve;
+            driveCurve(0, vRotational);
         }
 
         //rotation instructions
         if(timer >= 63 && m_gyro.getAngle() < 15 && timer < 150){ //(timer >= 63 && timer < 80)
-            if(vRotational < 1)
-                vRotational += Constants.kSpeedCurve;
+            driveCurve(vTranslational, 1);
         } else if (timer >= 150 && m_gyro.getAngle() > -15 && timer < 255) { //(timer >= 150 && timer < 193)
-            if(vRotational > -1)
-                vRotational -= Constants.kSpeedCurve;
+            driveCurve(vTranslational, -1);
         } else if (timer >= 255 && m_gyro.getAngle() < -30 && timer < 300){ //(timer >= 255 && timer < 277)
-            if(vRotational < 1)
-                vRotational += Constants.kSpeedCurve;
+            driveCurve(vTranslational, 1);
         } else {
-            if(vRotational > 0)
-                vRotational -= Constants.kSpeedCurve;
-            if(vRotational < 0)
-                vRotational += Constants.kSpeedCurve;
+            driveCurve(vTranslational, 0);
         }
         */
 
         //GALACTIC SEARCH LAYOUT PATH B - RED
-        if(timer < 120){
-            if(vTranslational < 1)
-                vTranslational += Constants.kSpeedCurve;
+        if (timer < 120) {
+            driveCurve(1, vRotational);
         } else if (timer < 370) {
-            if(vTranslational < 0.75)
-                vTranslational += Constants.kSpeedCurve;
-            if(vTranslational > 0.75)
-                vTranslational -= Constants.kSpeedCurve;
+            driveCurve(0.75, vRotational);
         } else if (timer < 410) {
-            if(vTranslational < 1)
-                vTranslational += Constants.kSpeedCurve;
+            driveCurve(1, vRotational);
         } else {
-            if(vTranslational > 0)
-                vTranslational -= Constants.kSpeedCurve;
-            if(vTranslational < 0)
-                vTranslational += Constants.kSpeedCurve;
+            driveCurve(0,vRotational);
         }
 
         //rotation instructions
-        if(timer >= 130 && m_gyro.getAngle() > -15 && timer < 180){ //(timer >= 63 && timer < 80)
-            if(vRotational > -1)
-                vRotational -= Constants.kSpeedCurve;
+        if (timer >= 130 && m_gyro.getAngle() > -15 && timer < 180){ //(timer >= 63 && timer < 80)
+            driveCurve(vTranslational, -1);
         } else if (timer >= 240 && m_gyro.getAngle() < 15 && timer < 300) { //(timer >= 150 && timer < 193)
-            if(vRotational < 1)
-                vRotational += Constants.kSpeedCurve;
+            driveCurve(vTranslational, 1);
         } else if (timer >= 340 && m_gyro.getAngle() > 30 && timer < 380){ //(timer >= 255 && timer < 277)
-            if(vRotational > -1)
-                vRotational -= Constants.kSpeedCurve;
+            driveCurve(vTranslational, -1);
         } else {
-            if(vRotational > 0)
-                vRotational -= Constants.kSpeedCurve;
-            if(vRotational < 0)
-                vRotational += Constants.kSpeedCurve;
+            driveCurve(vTranslational, 0);
         }
 
         //Galactic Search Drive
         m_drive.arcadeDrive(-vRotational, -vTranslational, false);
-
-
-        /* Normal autonomous code that we won't be using :(
-        timer++;
-        m_index.mainMethod();
-        m_shooter.standardShooting();
-        if (timer <= 220)
-            m_drive.arcadeDrive(0, 0);
-
-        switch (autoStrategy) {
-            case "Veneno":
-                if (timer > 640) {
-                    limelight_Shooting();
-                    if (aligned) {
-                        m_shooter.standardShooting();
-                        m_index.setEjecting(m_shooter.getEjecting());
-                    }
-                    break;
-                }
-            case "Aventador":
-                if (timer > 440) {
-                    if (timer > 610) {
-                        m_drive.arcadeDrive(0.6, 0);
-                    } else if (m_gyro.getAngle() < 190) {
-                        m_drive.arcadeDrive(-0.7, 0);
-                    } else {
-                        m_drive.arcadeDrive(0, -0.5);
-                        m_intake.setIntake(true);
-                    }
-                    break;
-                }
-            case "Diablo":
-                if (timer > 220 && timer < 440) {
-                    if ((m_gyro.getAngle()) < 180) {
-                        m_drive.arcadeDrive(-0.7, 0);
-                    } else {
-                        m_drive.arcadeDrive(0, -1.0);
-                    }
-                } else {
-                    m_drive.arcadeDrive(0, 0);
-                }
-                break;
-            case "Urus":
-            default:
-                if (timer > 220 && timer < 350)
-                    m_drive.arcadeDrive(0, -0.7);
-                else
-                    m_drive.arcadeDrive(0, 0);
-                break;
-        }*/
     } 
     
     @Override
     public void teleopInit() {
         m_intake.setIntake(true);
         drivingStatus = "Driving";
+        aligned = false;
         m_limelight.setLED(false);
         m_index.setEjecting(false);
     }
 
     @Override
     public void teleopPeriodic() {
-        System.out.println(controllerShooter.getRawAxis(0));
-        //System.out.println(m_limelight.hasValidTarget());
+        // System.out.println(m_limelight.hasValidTarget());
         m_index.mainMethod();
         m_wheel.mainMethod();
         m_climber.mainMethod();
 
         // CONTROLS
-        if (drivingStatus.equals("Driving")) {//Incramental Acceleration to prevent falling over
-            if(vTranslational < controllerDriver.getRawAxis(1))
-                vTranslational += Constants.kSpeedCurve;
-            if(vTranslational > controllerDriver.getRawAxis(1))
-                vTranslational -= Constants.kSpeedCurve;
-            if(vRotational < controllerDriver.getRawAxis(2))
-                vRotational += Constants.kSpeedCurve;
-            if(vRotational > controllerDriver.getRawAxis(2))
-                vRotational -= Constants.kSpeedCurve;
-        } else if (drivingStatus.equals("Manual Shooting")) {
-            if(vRotational < controllerShooter.getRawAxis(0))
-                vRotational += Constants.kSpeedCurve;
-            if(vRotational > controllerShooter.getRawAxis(0))
-                vRotational -= Constants.kSpeedCurve;
+        if (drivingStatus.equals("Driving")) {
+            driveCurve(controllerDriver.getRawAxis(1), controllerDriver.getRawAxis(2));
+        }
+        else if (drivingStatus.equals("Manual Shooting")) {
+            driveCurve(vTranslational, controllerShooter.getRawAxis(0));
             m_screw.setSpeed(-controllerShooter.getRawAxis(1));
             if(controllerShooter.getRawButtonPressed(1))
-                shooting = true;
-            if(shooting){
-                m_shooter.standardShooting();
+                aligned = true;
+            if (aligned) {
+                m_shooter.startShooter(false);
                 m_index.setEjecting(m_shooter.getEjecting());
             }
-        } else if (drivingStatus.equals("Limelight Shooting")) {//Starts autodriving, adjusts screw
+        // auto-drives and auto-screws
+        } else if (drivingStatus.equals("Limelight Shooting") || drivingStatus.equals("Full Shooting")) {
             limelight_Shooting();
             m_screw.setSpeed(-controllerShooter.getRawAxis(1)); // until numbers testing & regression formula
             if (aligned && m_screw.screwAtElevation) {
                 m_limelight.setLED(false);
-                m_shooter.standardShooting();
-                m_index.setEjecting(m_shooter.getEjecting());
-            }
-        }
-        else if (drivingStatus.equals("Full Shooting")) {//Starts autodriving, adjusts screw
-            limelight_Shooting();
-            m_screw.setSpeed(-controllerShooter.getRawAxis(1));
-            if (aligned && m_screw.screwAtElevation) {
-                m_limelight.setLED(false);
-                m_shooter.fullShooting();
+                m_shooter.startShooter(drivingStatus.equals("Full Shooting"));
                 m_index.setEjecting(m_shooter.getEjecting());
             }
         }
@@ -282,22 +184,22 @@ public class Robot extends TimedRobot {
             vTranslational = (controllerShooter.getRawAxis(1)/2);
             vRotational = (controllerShooter.getRawAxis(0)/2);
             if (controllerShooter.getRawButton(6)) {
-                m_climber.extending();//Brings arms up
+                m_climber.extending(); // Brings arms up
             } else if (controllerShooter.getRawButton(7)) {
-                m_climber.contracting();//Pulls arms back down, which pulls the robot up if it is hooked upon the bar
+                m_climber.contracting(); // Pulls arms back down, which pulls the robot up if it is hooked upon the bar
             } else {
                 m_climber.stop();
             }
         }
         else if (drivingStatus.equals("Loading")) {
             System.out.println("You're fired from the drive team");
+            // limelight_Loading();
         }
 
+        // DRIVE SPEED LOGIC
         if (drivingStatus.equals("Driving") || drivingStatus.equals("Climbing"))
             m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);
-        
-        //For manual shooting
-        if (drivingStatus.equals("Manual Shooting"))
+        else if (drivingStatus.equals("Manual Shooting"))
             m_drive.arcadeDrive(-vRotational*0.5, 0, false);
         
         // BUTTONS
@@ -327,53 +229,30 @@ public class Robot extends TimedRobot {
             m_shooter.killShooter();//Stops shooter regardless of status
         }
         
-        // MODE SWITCHING
-        if(controllerShooter.getRawButtonPressed(3)){
-            drivingStatus = "Manual Shooting";
-            m_intake.setIntake(false);
-            m_shooter.resetTimer();
-            shooting = false;
+        // MODE SWITCHING - logic is in teleop-CONTROLS
+        if(controllerShooter.getRawButtonPressed(3)) {
+            setStatus("Manual Shooting", false);
         }
-        /*if (controllerShooter.getRawButtonPressed(5)) { Removed for safety, will re-implement later
-            drivingStatus = "Full Shooting";
-            m_intake.setIntake(false);
-            m_limelight.setLED(true);
-            m_limelight.setPipeline(0);
-            m_shooter.resetTimer();
+        /* Removed for saftey, will re-implement later
+        else if (controllerShooter.getRawButtonPressed(5)) {
+            setStatus("Full Shooting", true);
         }
-        if (controllerShooter.getRawButtonPressed(4)) {
-            drivingStatus = "Automatic Shooting";//Switches to shooting mode, controlled in main method
-            m_intake.setIntake(false);
-            m_limelight.setLED(true);
-            m_limelight.setPipeline(0);
-            m_shooter.resetTimer();
-        } */
-        if (controllerShooter.getRawButton(6) || controllerShooter.getRawButton(7)){
-            drivingStatus = "Climbing";
-            m_intake.setIntake(false);//Stops intake for climbing
-            m_limelight.setLED(false);
+        else if (controllerShooter.getRawButtonPressed(4)) {
+            setStatus("Limelight Shooting", true);
+        }*/
+        else if (controllerShooter.getRawButton(6) || controllerShooter.getRawButton(7)) {
+            setStatus("Climbing", false);
         }
-        if (controllerDriver.getRawButtonPressed(Constants.bDriving)) {
-            drivingStatus = "Driving";
-            m_intake.setIntake(true);
-            m_index.setEjecting(false);
-            m_limelight.setLED(false);
+        else if (controllerDriver.getRawButtonPressed(Constants.bDriving)) {
+            setStatus("Driving", false);
         }
-        if (controllerDriver.getRawButtonPressed(Constants.bLoading)){//Method has not currently been tested
-            drivingStatus = "Loading";
-            m_limelight.setLED(true);
-            limelight_Loading();
-            m_intake.setIntake(true);
-            m_limelight.setPipeline(1); // which means, don't press button or code breaks :-)
-        }
+        /* Untested and liable to break. Kindly don't use.
+        else if (controllerDriver.getRawButtonPressed(Constants.bLoading)) {
+            setStatus("Loading", true);
+        }*/
 
         //limelight LED testing
-        if(controllerDriver.getRawButtonPressed(7)){
-            m_limelight.setLED(true);
-        }
-        if(controllerDriver.getRawButtonPressed(8)){
-            m_limelight.setLED(false);
-        }
+        m_limelight.setLED(controllerDriver.getRawButton(7));
     }
 
     private double getDistance() {//Returns distance from front of the robot to wall
@@ -397,12 +276,35 @@ public class Robot extends TimedRobot {
     private void driveCurve(double speed, double rotation){
         if(vTranslational < speed)
             vTranslational += Constants.kSpeedCurve;
-        if(vTranslational > speed)
+        else if (vTranslational > speed)
             vTranslational -= Constants.kSpeedCurve;
         if(vRotational < rotation)
             vRotational += Constants.kSpeedCurve;
-        if(vRotational > rotation)
+        else if(vRotational > rotation)
             vRotational -= Constants.kSpeedCurve;
+    }
+
+    private void setStatus(String status, boolean limelightLED) {
+        drivingStatus = status;
+        m_limelight.setLED(limelightLED);
+        switch (status) {
+            case "Full Shooting": case "Limelight Shooting":
+                m_limelight.setPipeline(0);
+            case "Manual Shooting":
+                m_shooter.resetTimer();
+                m_intake.setIntake(false);
+                aligned = false;
+                break;
+            case "Loading":
+                m_limelight.setPipeline(1);
+            case "Driving":
+                m_intake.setIntake(true);
+            case "Climbing":
+                m_index.setEjecting(false);
+                break;
+        }
+        if (status.equals("Climbing")) // to prevent intake motor jerking
+            m_intake.setIntake(false);
     }
 
     public double PID(){
@@ -410,7 +312,6 @@ public class Robot extends TimedRobot {
         integral += error*.02;
         derivative = (previousError - error)/.1;
         previousError = error;
-        //FSystem.out.println("Error " + error + " Integral " + integral);
         return (error + integral + derivative);
     }
 

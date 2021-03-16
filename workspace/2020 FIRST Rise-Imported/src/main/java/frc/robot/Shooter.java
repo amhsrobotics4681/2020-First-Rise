@@ -15,19 +15,14 @@ public class Shooter {
         m_shooter = new SpeedControllerGroup(m_shooterLeft, m_shooterRight);
         timer = 0;
     }
-
-    public void standardShooting() { // engages shooting system - IS PERIODIC
+    /**
+     * Period function that sets the shooter motor's speed
+     * @param full Whether or not to do full power shooting
+     */
+    public void startShooter(boolean full) { // engages shooting system - IS PERIODIC
         timer++;
         if (timer > 20 && timer < 200)
-            m_shooter.set(Constants.kShooterSpeed);
-        else
-            m_shooter.set(0);
-    }
-
-    public void fullShooting() {//Same as resetShooter but instead shoots at max capacity
-        timer++;
-        if (timer > 20 && timer < 200)
-            m_shooter.set(1);
+            m_shooter.set(full ? 1 : Constants.kShooterSpeed);
         else
             m_shooter.set(0);
     }
