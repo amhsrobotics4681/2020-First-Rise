@@ -158,11 +158,10 @@ public class Robot extends TimedRobot {
         m_climber.mainMethod();
 
         // CONTROLS
-        if (drivingStatus.equals("Driving")) {
+        if (drivingStatus.equals("Driving")) {//Incramental Acceleration to prevent falling over
             driveCurve(controllerDriver.getRawAxis(1), controllerDriver.getRawAxis(2));
-        }
-        else if (drivingStatus.equals("Manual Shooting")) {
-            driveCurve(vTranslational, controllerShooter.getRawAxis(0));
+        } else if (drivingStatus.equals("Manual Shooting")) {
+            vRotational = controllerShooter.getRawAxis(0);
             m_screw.setSpeed(-controllerShooter.getRawAxis(1));
             if(controllerShooter.getRawButtonPressed(1))
                 aligned = true;
