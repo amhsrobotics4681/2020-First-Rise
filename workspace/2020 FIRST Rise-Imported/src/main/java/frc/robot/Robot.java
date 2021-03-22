@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
     private SendableChooser<String> m_chooser = new SendableChooser<>();
     private int timer;
     private double integral, error,setpoint, derivative, previousError = 0;
-    private boolean aligned;
+    private boolean aligned, currentlyShooting;
 
     private Index m_index;
     private Intake m_intake;
@@ -146,13 +146,14 @@ public class Robot extends TimedRobot {
         m_intake.setIntake(true);
         drivingStatus = "Driving";
         aligned = false;
+        currentlyShooting = false;
         m_limelight.setLED(false);
         m_index.setEjecting(false);
     }
 
     @Override
     public void teleopPeriodic() {
-        // System.out.println(m_limelight.hasValidTarget());
+        System.out.println(m_limelight.hasValidTarget());
         m_index.mainMethod();
         m_wheel.mainMethod();
         m_climber.mainMethod();
@@ -171,10 +172,19 @@ public class Robot extends TimedRobot {
             }
         // auto-drives and auto-screws
         } else if (drivingStatus.equals("Limelight Shooting") || drivingStatus.equals("Full Shooting")) {
+            /*potential issue: if screwAtElevation is too sensitive this condition could be toggled a couple hundred times a second
+            will not cause problems for the time being, but we'll have to keep an eye out if we make screwAtElevation automatic*/
             limelight_Shooting();
             m_screw.setSpeed(-controllerShooter.getRawAxis(1)); // until numbers testing & regression formula
-            if (aligned && m_screw.screwAtElevation) {
-                m_limelight.setLED(false);
+
+            /*for some reason the robot thinks we are always aligned
+            will control manually until fixed
+            if (aligned && m_screw.screwAtElevation) 
+                currentlyShooting = true;*/
+            if(controllerShooter.getRawButtonPressed(1))
+                currentlyShooting = true;
+            if(currentlyShooting){
+                //m_limelight.setLED(false);
                 m_shooter.startShooter(drivingStatus.equals("Full Shooting"));
                 m_index.setEjecting(m_shooter.getEjecting());
             }
@@ -228,6 +238,12 @@ public class Robot extends TimedRobot {
             m_shooter.killShooter();//Stops shooter regardless of status
         }
         
+        //FOR TESTING- limelight toggles
+        if(controllerShooter.getRawButton(8))
+            m_limelight.setLED(false);
+        if(controllerShooter.getRawButton(9))
+            m_limelight.setLED(true);
+
         // MODE SWITCHING - logic is in teleop-CONTROLS
         if(controllerShooter.getRawButtonPressed(3)) {
             setStatus("Manual Shooting", false);
@@ -235,10 +251,10 @@ public class Robot extends TimedRobot {
         /* Removed for saftey, will re-implement later
         else if (controllerShooter.getRawButtonPressed(5)) {
             setStatus("Full Shooting", true);
-        }
+        }*/
         else if (controllerShooter.getRawButtonPressed(4)) {
             setStatus("Limelight Shooting", true);
-        }*/
+        }
         else if (controllerShooter.getRawButton(6) || controllerShooter.getRawButton(7)) {
             setStatus("Climbing", false);
         }
@@ -251,7 +267,7 @@ public class Robot extends TimedRobot {
         }*/
 
         //limelight LED testing
-        m_limelight.setLED(controllerDriver.getRawButton(7));
+        //m_limelight.setLED(controllerDriver.getRawButton(7));
     }
 
     private double getDistance() {//Returns distance from front of the robot to wall
@@ -286,6 +302,7 @@ public class Robot extends TimedRobot {
     private void setStatus(String status, boolean limelightLED) {
         drivingStatus = status;
         m_limelight.setLED(limelightLED);
+        currentlyShooting = false;
         switch (status) {
             case "Full Shooting": case "Limelight Shooting":
                 m_limelight.setPipeline(0);
