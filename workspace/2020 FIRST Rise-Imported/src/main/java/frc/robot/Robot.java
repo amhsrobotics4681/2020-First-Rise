@@ -62,10 +62,8 @@ public class Robot extends TimedRobot {
         counter.setMaxPeriod(1.0);
         counter.setSemiPeriodMode(true);
         counter.reset();
-        m_chooser.setDefaultOption("Shoot, Fd", "Urus");
-        m_chooser.addOption("Shoot, Turn, Fd", "Diablo");
-        m_chooser.addOption("Shoot, Collect", "Aventador");
-        m_chooser.addOption("Shoot, Collect, Shoot", "Veneno");
+        m_chooser.setDefaultOption("Galactic Search B - Red", "BRed");
+        m_chooser.addOption("Galactic Search B - Blue", "BBlue");
         SmartDashboard.putData("Auto Choices", m_chooser);
         CameraServer.getInstance().startAutomaticCapture("Shooting Camera", 0);
         CameraServer.getInstance().startAutomaticCapture("Collecting Camera", 1);
@@ -75,14 +73,11 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         timer = 0;
         aligned = false;
+        m_intake.setIntake(true);
         m_gyro.setYawAxis(IMUAxis.kY);
         m_gyro.reset();
         autoStrategy = m_chooser.getSelected();
         m_drive.setSafetyEnabled(false);
-        //Urus: Shoot 3 balls then drive forward off the line (Works in all positions)
-        //Diablo: Shoot 3 balls, turn around, then drve forwards off the line (works in all positions)
-        //Aventador: Shoot 3 balls, turn around, drive to collect 3 balls in trench (works on right side) (Does not require Limelight)
-        //Veneno: Shoots 3 balls, turns around, drive to collect 3 balls in trench and then shoots (right side) (requires limelight)
     }
 
     @Override
@@ -91,54 +86,60 @@ public class Robot extends TimedRobot {
         //Galactic Search Timer
         timer++;
         System.out.println(m_gyro.getAngle());
+        m_index.mainMethod();
         
-        /*// GALACTIC SEARCH LAYOUT PATH B - RED
-        if(timer >= 2 && timer < 60){
-            driveCurve(1, vRotational);
-        } else if (timer < 265) {
-            driveCurve(0.75, vRotational);
-        } else if (timer < 360) {
-            driveCurve(1, vRotational);
-        } else {
-            driveCurve(0, vRotational);
-        }
+        switch(autoStrategy){
+            case "BRed":
+                // GALACTIC SEARCH LAYOUT PATH B - RED
+                if(timer >= 2 && timer < 60){
+                    driveCurve(1, vRotational);
+                } else if (timer < 265) {
+                    driveCurve(0.75, vRotational);
+                } else if (timer < 360) {
+                    driveCurve(1, vRotational);
+                } else {
+                    driveCurve(0, vRotational);
+                }
 
-        //rotation instructions
-        if(timer >= 63 && m_gyro.getAngle() < 15 && timer < 150){ //(timer >= 63 && timer < 80)
-            driveCurve(vTranslational, 1);
-        } else if (timer >= 150 && m_gyro.getAngle() > -15 && timer < 255) { //(timer >= 150 && timer < 193)
-            driveCurve(vTranslational, -1);
-        } else if (timer >= 255 && m_gyro.getAngle() < -30 && timer < 300){ //(timer >= 255 && timer < 277)
-            driveCurve(vTranslational, 1);
-        } else {
-            driveCurve(vTranslational, 0);
-        }
-        */
+                //rotation instructions
+                if(timer >= 63 && m_gyro.getAngle() < 15 && timer < 150){ //(timer >= 63 && timer < 80)
+                    driveCurve(vTranslational, 1);
+                } else if (timer >= 150 && m_gyro.getAngle() > -15 && timer < 255) { //(timer >= 150 && timer < 193)
+                    driveCurve(vTranslational, -1);
+                } else if (timer >= 255 && m_gyro.getAngle() < -30 && timer < 300){ //(timer >= 255 && timer < 277)
+                    driveCurve(vTranslational, 1);
+                } else {
+                    driveCurve(vTranslational, 0);
+                }
+            break;
 
-        //GALACTIC SEARCH LAYOUT PATH B - RED
-        if (timer < 120) {
-            driveCurve(1, vRotational);
-        } else if (timer < 370) {
-            driveCurve(0.75, vRotational);
-        } else if (timer < 410) {
-            driveCurve(1, vRotational);
-        } else {
-            driveCurve(0,vRotational);
-        }
+            case "BBlue":
+                //GALACTIC SEARCH LAYOUT PATH B - BLUE
+                if (timer < 120) {
+                    driveCurve(1, vRotational);
+                } else if (timer < 370) {
+                    driveCurve(0.75, vRotational);
+                } else if (timer < 450) {
+                    driveCurve(1, vRotational);
+                } else {
+                    driveCurve(0,vRotational);
+                }
 
-        //rotation instructions
-        if (timer >= 130 && m_gyro.getAngle() > -15 && timer < 180){ //(timer >= 63 && timer < 80)
-            driveCurve(vTranslational, -1);
-        } else if (timer >= 240 && m_gyro.getAngle() < 15 && timer < 300) { //(timer >= 150 && timer < 193)
-            driveCurve(vTranslational, 1);
-        } else if (timer >= 340 && m_gyro.getAngle() > 30 && timer < 380){ //(timer >= 255 && timer < 277)
-            driveCurve(vTranslational, -1);
-        } else {
-            driveCurve(vTranslational, 0);
+                //rotation instructions
+                if (timer >= 155 && m_gyro.getAngle() > -15 && timer < 205){ //(timer >= 63 && timer < 80)
+                    driveCurve(vTranslational, -1);
+                } else if (timer >= 240 && m_gyro.getAngle() < 15 && timer < 300) { //(timer >= 150 && timer < 193)
+                    driveCurve(vTranslational, 1);
+                } else if (timer >= 360 && m_gyro.getAngle() > 30 && timer < 400){ //(timer >= 255 && timer < 277)
+                    driveCurve(vTranslational, -1);
+                } else {
+                    driveCurve(vTranslational, 0);
+                }
+            default:
         }
 
         //Galactic Search Drive
-        m_drive.arcadeDrive(-vRotational, -vTranslational, false);
+        m_drive.arcadeDrive(-vRotational + 0.05, -vTranslational, false);
     } 
     
     @Override
@@ -153,7 +154,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        System.out.println(m_limelight.hasValidTarget());
+        //System.out.println(m_limelight.hasValidTarget());
         m_index.mainMethod();
         m_wheel.mainMethod();
         m_climber.mainMethod();
