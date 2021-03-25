@@ -64,6 +64,8 @@ public class Robot extends TimedRobot {
         counter.reset();
         m_chooser.setDefaultOption("Galactic Search B - Red", "BRed");
         m_chooser.addOption("Galactic Search B - Blue", "BBlue");
+        m_chooser.addOption("Galactic Search A - Red (Green)", "ARed");
+        m_chooser.addOption("Galactic Search A - Blue (White)", "ABlue");
         SmartDashboard.putData("Auto Choices", m_chooser);
         CameraServer.getInstance().startAutomaticCapture("Shooting Camera", 0);
         CameraServer.getInstance().startAutomaticCapture("Collecting Camera", 1);
@@ -93,9 +95,9 @@ public class Robot extends TimedRobot {
                 // GALACTIC SEARCH LAYOUT PATH B - RED
                 if(timer >= 2 && timer < 60){
                     driveCurve(1, vRotational);
-                } else if (timer < 265) {
+                } else if (timer < 260) {
                     driveCurve(0.75, vRotational);
-                } else if (timer < 360) {
+                } else if (timer < 370) {
                     driveCurve(1, vRotational);
                 } else {
                     driveCurve(0, vRotational);
@@ -104,7 +106,7 @@ public class Robot extends TimedRobot {
                 //rotation instructions
                 if(timer >= 63 && m_gyro.getAngle() < 15 && timer < 150){ //(timer >= 63 && timer < 80)
                     driveCurve(vTranslational, 1);
-                } else if (timer >= 150 && m_gyro.getAngle() > -15 && timer < 255) { //(timer >= 150 && timer < 193)
+                } else if (timer >= 150 && m_gyro.getAngle() > -14 && timer < 255) { //(timer >= 150 && timer < 193)
                     driveCurve(vTranslational, -1);
                 } else if (timer >= 255 && m_gyro.getAngle() < -30 && timer < 300){ //(timer >= 255 && timer < 277)
                     driveCurve(vTranslational, 1);
@@ -115,18 +117,18 @@ public class Robot extends TimedRobot {
 
             case "BBlue":
                 //GALACTIC SEARCH LAYOUT PATH B - BLUE
-                if (timer < 120) {
+                if (timer < 130) {
                     driveCurve(1, vRotational);
                 } else if (timer < 370) {
                     driveCurve(0.75, vRotational);
-                } else if (timer < 450) {
+                } else if (timer < 420) {
                     driveCurve(1, vRotational);
                 } else {
                     driveCurve(0,vRotational);
                 }
 
                 //rotation instructions
-                if (timer >= 155 && m_gyro.getAngle() > -15 && timer < 205){ //(timer >= 63 && timer < 80)
+                if (timer >= 130 && m_gyro.getAngle() > -15 && timer < 200){ //(timer >= 63 && timer < 80)
                     driveCurve(vTranslational, -1);
                 } else if (timer >= 240 && m_gyro.getAngle() < 15 && timer < 300) { //(timer >= 150 && timer < 193)
                     driveCurve(vTranslational, 1);
@@ -135,11 +137,28 @@ public class Robot extends TimedRobot {
                 } else {
                     driveCurve(vTranslational, 0);
                 }
+            
+            case "ARed":
+                //GALACTIC SEARCH LAYOUT PATH A - RED
+                if (timer < 55) {
+                    driveCurve(1, vRotational);
+                } else if (timer < 135) {
+                    driveCurve(0.75, vRotational);
+                } else {
+                    driveCurve(0,vRotational);
+                }
+
+                //rotation instructions
+                if (timer >= 55 && m_gyro.getAngle() < 4 && timer < 135){ 
+                    driveCurve(vTranslational, 1);
+                } else {
+                    driveCurve(vTranslational, 0);
+                }
             default:
         }
 
         //Galactic Search Drive
-        m_drive.arcadeDrive(-vRotational + 0.05, -vTranslational, false);
+        m_drive.arcadeDrive(-vRotational, -vTranslational, false);
     } 
     
     @Override
@@ -208,7 +227,7 @@ public class Robot extends TimedRobot {
 
         // DRIVE SPEED LOGIC
         if (drivingStatus.equals("Driving") || drivingStatus.equals("Climbing"))
-            m_drive.arcadeDrive(-vRotational*0.8, vTranslational, false);
+            m_drive.arcadeDrive(-vRotational*0.8 + 0.04, vTranslational, false);
         else if (drivingStatus.equals("Manual Shooting"))
             m_drive.arcadeDrive(-vRotational*0.5, 0, false);
         
