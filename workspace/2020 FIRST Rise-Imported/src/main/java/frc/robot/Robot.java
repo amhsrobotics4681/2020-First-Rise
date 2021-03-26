@@ -80,6 +80,7 @@ public class Robot extends TimedRobot {
         m_gyro.reset();
         autoStrategy = m_chooser.getSelected();
         m_drive.setSafetyEnabled(false);
+        m_shooter.killShooter();
     }
 
     @Override
@@ -169,6 +170,7 @@ public class Robot extends TimedRobot {
         currentlyShooting = false;
         m_limelight.setLED(false);
         m_index.setEjecting(false);
+        m_shooter.killShooter();
     }
 
     @Override
@@ -323,6 +325,7 @@ public class Robot extends TimedRobot {
         drivingStatus = status;
         m_limelight.setLED(limelightLED);
         currentlyShooting = false;
+        m_shooter.killShooter();
         switch (status) {
             case "Full Shooting": case "Limelight Shooting":
                 m_limelight.setPipeline(0);
