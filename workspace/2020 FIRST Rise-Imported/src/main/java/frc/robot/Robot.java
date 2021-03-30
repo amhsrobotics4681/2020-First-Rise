@@ -62,7 +62,8 @@ public class Robot extends TimedRobot {
         counter.setMaxPeriod(1.0);
         counter.setSemiPeriodMode(true);
         counter.reset();
-        m_chooser.setDefaultOption("Galactic Search B - Red", "BRed");
+        m_chooser.setDefaultOption("Barrel Racing Path", "Barrel");
+        m_chooser.addOption("Galactic Search B - Red", "BRed");
         m_chooser.addOption("Galactic Search B - Blue", "BBlue");
         m_chooser.addOption("Galactic Search A - Red (Green)", "ARed");
         m_chooser.addOption("Galactic Search A - Blue (White)", "ABlue");
@@ -75,7 +76,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         timer = 0;
         aligned = false;
-        m_intake.setIntake(true);
+        m_intake.setIntake(false);
         m_gyro.setYawAxis(IMUAxis.kY);
         m_gyro.reset();
         autoStrategy = m_chooser.getSelected();
@@ -88,7 +89,7 @@ public class Robot extends TimedRobot {
 
         //Galactic Search Timer
         timer++;
-        System.out.println(m_gyro.getAngle());
+        System.out.println(timer);
         m_index.mainMethod();
         
         switch(autoStrategy){
@@ -152,6 +153,27 @@ public class Robot extends TimedRobot {
                 //rotation instructions
                 if (timer >= 55 && m_gyro.getAngle() < 4 && timer < 135){ 
                     driveCurve(vTranslational, 1);
+                } else {
+                    driveCurve(vTranslational, 0);
+                }
+
+            case "Barrel":
+                //BARREL RACING PATH
+                if (timer < 1000) {
+                    driveCurve(1, vRotational);
+                } else {
+                    driveCurve(0,vRotational);
+                }
+
+                //rotation instructions
+                if (m_gyro.getAngle() > -1 && timer < 50){ 
+                    driveCurve(vTranslational, -0.25);
+                } else if (timer >= 118 && m_gyro.getAngle() < 340 && timer < 415){ 
+                    driveCurve(vTranslational, 0.60);
+                } else if (timer >= 405 && m_gyro.getAngle() > 60 && timer < 685){ 
+                    driveCurve(vTranslational, -0.65);
+                } else if (timer >= 685 && m_gyro.getAngle() > -165 && timer < 1000){ 
+                        driveCurve(vTranslational, -0.65);
                 } else {
                     driveCurve(vTranslational, 0);
                 }
