@@ -17,10 +17,13 @@ public class Limelight {
         LED_status = state ? 3 : 1; // 3 is on, 1 is off
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(LED_status);
     }
+    public boolean getLED() {
+        return LED_status == 3;
+    }
     public void setPipeline(int pipeline) {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
     }
     public boolean isAligned() {
-        return (Math.abs(getX()) < 3.5 || LED_status==1); // within 3.5 deg of target _or_ LED is off
+        return (Math.abs(getX()) < 3.5); // within 3.5 deg of target
     }
 }

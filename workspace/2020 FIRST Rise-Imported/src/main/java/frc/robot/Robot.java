@@ -75,13 +75,12 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         timer = 0;
-        aligned = false;
-        m_intake.setIntake(false);
+        setStatus("Auto", false);
+
         m_gyro.setYawAxis(IMUAxis.kY);
         m_gyro.reset();
         autoStrategy = m_chooser.getSelected();
         m_drive.setSafetyEnabled(false);
-        m_shooter.killShooter();
     }
 
     @Override
@@ -139,7 +138,8 @@ public class Robot extends TimedRobot {
                 } else {
                     driveCurve(vTranslational, 0);
                 }
-            
+                break;
+
             case "ARed":
                 //GALACTIC SEARCH LAYOUT PATH A - RED
                 if (timer < 55) {
@@ -156,6 +156,7 @@ public class Robot extends TimedRobot {
                 } else {
                     driveCurve(vTranslational, 0);
                 }
+                break;
 
             case "Barrel":
                 //BARREL RACING PATH
@@ -177,6 +178,7 @@ public class Robot extends TimedRobot {
                 } else {
                     driveCurve(vTranslational, 0);
                 }
+                
             default:
         }
 
@@ -186,13 +188,7 @@ public class Robot extends TimedRobot {
     
     @Override
     public void teleopInit() {
-        m_intake.setIntake(true);
-        drivingStatus = "Driving";
-        aligned = false;
-        currentlyShooting = false;
-        m_limelight.setLED(false);
-        m_index.setEjecting(false);
-        m_shooter.killShooter();
+        setStatus("Driving", false); // driving mode and turn off LL
     }
 
     @Override
@@ -228,7 +224,6 @@ public class Robot extends TimedRobot {
             if(controllerShooter.getRawButtonPressed(1))
                 currentlyShooting = true;
             if(currentlyShooting){
-                //m_limelight.setLED(false);
                 m_shooter.startShooter(drivingStatus.equals("Full Shooting"));
                 m_index.setEjecting(m_shooter.getEjecting());
             }
@@ -284,9 +279,7 @@ public class Robot extends TimedRobot {
         
         //FOR TESTING- limelight toggles
         if(controllerShooter.getRawButton(8))
-            m_limelight.setLED(false);
-        if(controllerShooter.getRawButton(9))
-            m_limelight.setLED(true);
+            m_limelight.setLED(!m_limelight.getLED());
 
         // MODE SWITCHING - logic is in teleop-CONTROLS
         if(controllerShooter.getRawButtonPressed(3)) {
@@ -325,7 +318,7 @@ public class Robot extends TimedRobot {
         } else {
             m_drive.arcadeDrive(.5,0); // when in doubt, aim right
         }
-        aligned = m_limelight.isAligned();                
+        aligned = aligned || m_limelight.isAligned(); // if we've aligned, we're aligned til status reset
     }
 
     public void limelight_Loading() { // will align us in 2 ft semicircle around vision target
@@ -346,25 +339,23 @@ public class Robot extends TimedRobot {
     private void setStatus(String status, boolean limelightLED) {
         drivingStatus = status;
         m_limelight.setLED(limelightLED);
-        currentlyShooting = false;
-        m_shooter.killShooter();
+        aligned = currentlyShooting = false;
+        m_shooter.resetTimer();
         switch (status) {
             case "Full Shooting": case "Limelight Shooting":
                 m_limelight.setPipeline(0);
             case "Manual Shooting":
-                m_shooter.resetTimer();
                 m_intake.setIntake(false);
-                aligned = false;
                 break;
             case "Loading":
                 m_limelight.setPipeline(1);
             case "Driving":
                 m_intake.setIntake(true);
-            case "Climbing":
+            case "Climbing": case "Auto":
                 m_index.setEjecting(false);
                 break;
         }
-        if (status.equals("Climbing")) // to prevent intake motor jerking
+        if (status.equals("Climbing") || status.equals("Auto")) // to prevent intake motor jerking
             m_intake.setIntake(false);
     }
 

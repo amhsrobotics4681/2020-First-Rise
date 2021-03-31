@@ -29,6 +29,7 @@ public class Shooter {
     
     public void killShooter() {//Shuts off Shooter regardless of current status
         timer = 200;
+        m_shooter.set(0); // in case we kill while not in shooting mode
     }
 
     public void resetTimer() { //to be called when entering status "driving"/"climbing" only
