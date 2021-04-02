@@ -62,8 +62,9 @@ public class Robot extends TimedRobot {
         counter.setMaxPeriod(1.0);
         counter.setSemiPeriodMode(true);
         counter.reset();
-        m_chooser.setDefaultOption("Barrel Racing Path", "Barrel");
+        m_chooser.setDefaultOption("Bounce Path", "Bounce");
         m_chooser.addOption("Slalom path", "Slalom");
+        m_chooser.addOption("Barrel Racing Path", "Barrel");
         m_chooser.addOption("Galactic Search B - Red", "BRed");
         m_chooser.addOption("Galactic Search B - Blue", "BBlue");
         m_chooser.addOption("Galactic Search A - Red (Green)", "ARed");
@@ -170,7 +171,7 @@ public class Robot extends TimedRobot {
                 //rotation instructions
                 if (m_gyro.getAngle() > -1 && timer < 50){ 
                     driveCurve(vTranslational, -0.25);
-                } else if (timer >= 118 && m_gyro.getAngle() < 340 && timer < 415){ 
+                } else if (timer >= 118 && m_gyro.getAngle() < 340 && timer < 405){ 
                     driveCurve(vTranslational, 0.60);
                 } else if (timer >= 405 && m_gyro.getAngle() > 60 && timer < 685){ 
                     driveCurve(vTranslational, -0.65);
@@ -206,8 +207,31 @@ public class Robot extends TimedRobot {
                 } else {
                     driveCurve(vTranslational, 0);
                 }
+                case "Bounce":
+                //BOUNCE RACING PATH
+                if (timer < 125) {
+                    driveCurve(0.75, vRotational);
+                } else if (timer < 505) {
+                    driveCurve(-0.75, vRotational);
+                } else if (timer < 900) {
+                    driveCurve(0.75, vRotational - 0.1); //adjust for drift
+                } else {
+                    driveCurve(0,vRotational);
+                }
 
-            default:
+                //rotation instructions
+                if (timer > 20 && m_gyro.getAngle() > -80 && timer < 120){ 
+                    driveCurve(vTranslational, -0.50);
+                } else if (timer > 155 && m_gyro.getAngle() > -110 && timer < 230){
+                    driveCurve(vTranslational, -0.50);
+                } else if (timer > 265 && m_gyro.getAngle() > -265 && timer < 500){
+                    driveCurve(vTranslational, -0.60);
+                } else if (timer > 610 && m_gyro.getAngle() > -450 && timer < 1000){
+                    driveCurve(vTranslational, -0.4);
+                }  else {
+                    driveCurve(vTranslational, 0);
+                }
+                default:
         }
 
         //Galactic Search Drive
@@ -378,7 +402,7 @@ public class Robot extends TimedRobot {
             case "Loading":
                 m_limelight.setPipeline(1);
             case "Driving":
-                m_intake.setIntake(true);
+                m_intake.setIntake(false); //turned off to not damage intake
             case "Climbing": case "Auto":
                 m_index.setEjecting(false);
                 break;
