@@ -63,6 +63,7 @@ public class Robot extends TimedRobot {
         counter.setSemiPeriodMode(true);
         counter.reset();
         m_chooser.setDefaultOption("Barrel Racing Path", "Barrel");
+        m_chooser.addOption("Slalom path", "Slalom");
         m_chooser.addOption("Galactic Search B - Red", "BRed");
         m_chooser.addOption("Galactic Search B - Blue", "BBlue");
         m_chooser.addOption("Galactic Search A - Red (Green)", "ARed");
@@ -178,7 +179,34 @@ public class Robot extends TimedRobot {
                 } else {
                     driveCurve(vTranslational, 0);
                 }
-                
+                break;
+            case "Slalom":
+                //SLALOM RACING PATH
+                if(timer < 0){
+                    driveCurve(1, vRotational);
+                } else {
+                    driveCurve(0, vRotational);
+                }
+
+                //rotation instructions
+                if (m_gyro.getAngle() > 0 && timer < 0){ 
+                    driveCurve(vTranslational, -0.0);
+                } else if (timer >= 0 && m_gyro.getAngle() < 0 && timer < 0){ 
+                    driveCurve(vTranslational, 0.0);
+                } else if (timer >= 0 && m_gyro.getAngle() < 0 && timer < 0){ 
+                    driveCurve(vTranslational, 0.0);
+                } else if (timer >= 0 && m_gyro.getAngle() > 0 && timer < 0){ 
+                        driveCurve(vTranslational, -0.0);
+                } else if (timer >= 0 && m_gyro.getAngle() < 0 && timer < 0){ 
+                    driveCurve(vTranslational, 0.0);
+                } else if (timer >= 0 && m_gyro.getAngle() < 0 && timer < 0){ 
+                    driveCurve(vTranslational, 0.0);
+                } else if (timer >= 0 && m_gyro.getAngle() > 0 && timer < 0){ 
+                    driveCurve(vTranslational, -0.0);
+                } else {
+                    driveCurve(vTranslational, 0);
+                }
+
             default:
         }
 
