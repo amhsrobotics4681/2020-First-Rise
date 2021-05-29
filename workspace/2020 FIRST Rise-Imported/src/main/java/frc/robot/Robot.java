@@ -78,7 +78,6 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         timer = 0;
         setStatus("Auto", false);
-
         m_gyro.setYawAxis(IMUAxis.kY);
         m_gyro.reset();
         autoStrategy = m_chooser.getSelected();
@@ -90,7 +89,7 @@ public class Robot extends TimedRobot {
 
         //Galactic Search Timer
         timer++;
-        System.out.println(timer);
+        System.out.println("Timer: " + timer + ", gyro: " + m_gyro.getAngle() + ", vRotational: " + vRotational);
         m_index.mainMethod();
         
         switch(autoStrategy){
@@ -162,7 +161,7 @@ public class Robot extends TimedRobot {
 
             case "Barrel":
                 //BARREL RACING PATH
-                if (timer < 1000) {
+                if (timer < 1010) {
                     driveCurve(1, vRotational);
                 } else {
                     driveCurve(0,vRotational);
@@ -175,46 +174,52 @@ public class Robot extends TimedRobot {
                     driveCurve(vTranslational, 0.60);
                 } else if (timer >= 405 && m_gyro.getAngle() > 60 && timer < 685){ 
                     driveCurve(vTranslational, -0.65);
-                } else if (timer >= 685 && m_gyro.getAngle() > -165 && timer < 1000){ 
-                        driveCurve(vTranslational, -0.65);
+                } else if (timer >= 685 && m_gyro.getAngle() > -165 && timer < 1010){ 
+                    driveCurve(vTranslational, -0.65);
+                } else if (timer >= 750 && m_gyro.getAngle() > -180 && timer < 1010){
+                    driveCurve(vTranslational, -0.25);
                 } else {
                     driveCurve(vTranslational, 0);
                 }
                 break;
             case "Slalom":
                 //SLALOM RACING PATH
-                if(timer < 0){
+                if(timer < 750){
                     driveCurve(1, vRotational);
                 } else {
                     driveCurve(0, vRotational);
                 }
 
                 //rotation instructions
-                if (m_gyro.getAngle() > 0 && timer < 0){ 
-                    driveCurve(vTranslational, -0.0);
-                } else if (timer >= 0 && m_gyro.getAngle() < 0 && timer < 0){ 
-                    driveCurve(vTranslational, 0.0);
-                } else if (timer >= 0 && m_gyro.getAngle() < 0 && timer < 0){ 
-                    driveCurve(vTranslational, 0.0);
-                } else if (timer >= 0 && m_gyro.getAngle() > 0 && timer < 0){ 
-                        driveCurve(vTranslational, -0.0);
-                } else if (timer >= 0 && m_gyro.getAngle() < 0 && timer < 0){ 
-                    driveCurve(vTranslational, 0.0);
-                } else if (timer >= 0 && m_gyro.getAngle() < 0 && timer < 0){ 
-                    driveCurve(vTranslational, 0.0);
-                } else if (timer >= 0 && m_gyro.getAngle() > 0 && timer < 0){ 
-                    driveCurve(vTranslational, -0.0);
+                if (timer > 25 && m_gyro.getAngle() > -53 && timer < 90){ 
+                    driveCurve(vTranslational, -1);
+                } else if (timer >= 90 && m_gyro.getAngle() < -46.5 && timer < 200){ 
+                    driveCurve(vTranslational, 1);
+                } else if (timer >= 225 && m_gyro.getAngle() < 45 && timer < 255){ 
+                    driveCurve(vTranslational, 1);
+                } else if (timer >= 257 && m_gyro.getAngle() > -250 && timer < 480){ 
+                    driveCurve(vTranslational, -0.72);
+                } else if (timer >= 480 && m_gyro.getAngle() < -230 && timer < 580){ 
+                    driveCurve(vTranslational, 1);
+                } else if (timer >= 613 && m_gyro.getAngle() < -125 && timer < 650){ 
+                    driveCurve(vTranslational, 1);
+                } else if (timer >= 655 && m_gyro.getAngle() > -150 && timer < 750){ 
+                    driveCurve(vTranslational, -1);
                 } else {
                     driveCurve(vTranslational, 0);
                 }
+            break;
+
                 case "Bounce":
                 //BOUNCE RACING PATH
                 if (timer < 125) {
                     driveCurve(0.75, vRotational);
-                } else if (timer < 505) {
+                } else if (timer < 480) {
                     driveCurve(-0.75, vRotational);
-                } else if (timer < 900) {
-                    driveCurve(0.75, vRotational - 0.1); //adjust for drift
+                } else if (timer < 875) {
+                    driveCurve(0.75, vRotational); //adjust for drift
+                } else if (timer < 1020) {
+                    driveCurve(-0.75, vRotational);
                 } else {
                     driveCurve(0,vRotational);
                 }
@@ -224,11 +229,17 @@ public class Robot extends TimedRobot {
                     driveCurve(vTranslational, -0.50);
                 } else if (timer > 155 && m_gyro.getAngle() > -110 && timer < 230){
                     driveCurve(vTranslational, -0.50);
-                } else if (timer > 265 && m_gyro.getAngle() > -265 && timer < 500){
-                    driveCurve(vTranslational, -0.60);
-                } else if (timer > 610 && m_gyro.getAngle() > -450 && timer < 1000){
-                    driveCurve(vTranslational, -0.4);
-                }  else {
+                } else if (timer > 260 && m_gyro.getAngle() > -258 && timer < 480){
+                    driveCurve(vTranslational, -0.57);
+                } else if (timer > 480 && m_gyro.getAngle() > -265 && timer < 590){
+                    driveCurve(vTranslational, -0.25);
+                } else if (timer > 585 && m_gyro.getAngle() > -350 && timer < 690){
+                    driveCurve(vTranslational, -0.5);
+                } else if (timer > 697 && m_gyro.getAngle() > -440 && timer < 860){
+                    driveCurve(vTranslational, -0.5);
+                } else if (timer > 925 && m_gyro.getAngle() > -530 && timer < 1000){
+                    driveCurve(vTranslational, -0.75);
+                } else {
                     driveCurve(vTranslational, 0);
                 }
                 default:
@@ -335,7 +346,7 @@ public class Robot extends TimedRobot {
 
         // MODE SWITCHING - logic is in teleop-CONTROLS
         if(controllerShooter.getRawButtonPressed(3)) {
-            setStatus("Manual Shooting", false);
+            setStatus("Manual Shooting", true);
         }
         /* Removed for saftey, will re-implement later
         else if (controllerShooter.getRawButtonPressed(5)) {
@@ -444,5 +455,6 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit(){
         m_limelight.setLED(false);
+        timer = 0;
     }
 }
