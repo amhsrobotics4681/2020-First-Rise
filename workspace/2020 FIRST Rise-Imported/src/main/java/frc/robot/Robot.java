@@ -421,7 +421,24 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testPeriodic() {
-        System.out.println(m_gyro.getAngle());
+        m_index.mainMethod(); // allows indexer to assume different values
+
+        m_drive.arcadeDrive(-controllerDriver.getRawAxis(1), controllerDriver.getRawAxis(2));
+        m_screw.setSpeed(-controllerShooter.getRawAxis(1));
+
+        if (controllerShooter.getRawButton(1)) {
+            m_shooter.resetTimer();
+            currentlyShooting = true;
+        }
+        if (currentlyShooting) {
+            m_shooter.startShooter(true);
+            m_index.setEjecting(m_shooter.getEjecting());
+        }
+
+        if (controllerShooter.getRawButton(2)) {
+            m_shooter.killShooter();
+            currentlyShooting = true;
+        }
     }
 
     @Override
