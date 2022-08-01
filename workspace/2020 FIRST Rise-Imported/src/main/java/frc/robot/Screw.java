@@ -1,28 +1,28 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.DigitalInput;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.ControlMode;
+//import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+//import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class Screw {
-    TalonSRX m_screw;
+    //TalonSRX m_screw;
     DigitalInput m_screwStop;
     boolean screwAtElevation = true;
     int encoderTarget;
 
     public Screw(){
-        m_screw = new TalonSRX(Constants.CAN_Screw);
+        //m_screw = new TalonSRX(Constants.CAN_Screw);
         m_screwStop = new DigitalInput(Constants.DIO_ScrewSwitch);//used to determine if screw is all the way back just in case so we dont lock it up
         encoderTarget = 0;
-        m_screw.setSelectedSensorPosition(0);
+        //m_screw.setSelectedSensorPosition(0);
     }
-    public double getPosition() {
-        return m_screw.getSelectedSensorPosition();
-    }
+    //public double getPosition() {
+        //return m_screw.getSelectedSensorPosition();
+    //}
     public void setSpeed(double speed) { // speed E[-1.0, 1.0]
-        m_screw.set(ControlMode.PercentOutput, speed);
+        //m_screw.set(ControlMode.PercentOutput, speed);
     }
     public void resetScrew() {
-        m_screw.setSelectedSensorPosition(0);
+        //m_screw.setSelectedSensorPosition(0);
     }
     public void adjustScrew() {//If too far, go back. If too close, go forward
         /*if (m_screwStop.get()) {

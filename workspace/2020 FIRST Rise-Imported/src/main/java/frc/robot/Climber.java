@@ -8,8 +8,8 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Servo;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+//import com.ctre.phoenix.motorcontrol.ControlMode;
+//import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Climber {
     private Victor m_pulley;
@@ -18,7 +18,7 @@ public class Climber {
     private boolean rotatingServo;
     private int counter;
     //Everything below here is for encoder climber
-    private TalonSRX m_climber;
+    //private TalonSRX m_climber;
     private double targetHeight;
     public int mode;
     public final double maxClimberSpeed = .7;
@@ -32,7 +32,7 @@ public class Climber {
     public Climber() {
         m_pulley = new Victor(Constants.PWM_ClimberPulley); //fill in PWM port
         m_servo = new Servo(Constants.PWM_Servo);
-        m_climber = new TalonSRX(Constants.CAN_Climber);
+        //m_climber = new TalonSRX(Constants.CAN_Climber);
         status="";
         m_servo.setAngle(180);
         rotatingServo = false;
@@ -100,7 +100,7 @@ public class Climber {
     }
     public void startPulling(){
         status = "Pulling";
-        targetHeight = m_climber.getSelectedSensorPosition() - climberPullingIncrement;
+        //targetHeight = m_climber.getSelectedSensorPosition() - climberPullingIncrement;
     }
         /** Benefit of rising method:
          * Person only needs to push one button and it takes you to proper height
@@ -114,10 +114,10 @@ public class Climber {
     public void rising(){
         m_servo.setAngle(135);
         if (counter<25){
-            m_climber.set(ControlMode.PercentOutput, -.5*Constants.kPulleySpeed);
+            //m_climber.set(ControlMode.PercentOutput, -.5*Constants.kPulleySpeed);
         }
         else{
-            difference = (targetHeight - m_climber.getSelectedSensorPosition());
+            //difference = (targetHeight - m_climber.getSelectedSensorPosition());
             if (difference < differenceMargin){
                 currentClimberSpeed = 0;
                 status = "Stopped";
@@ -134,7 +134,7 @@ public class Climber {
                     currentClimberSpeed = maxClimberSpeed;
                 }
             }
-            m_climber.set(ControlMode.PercentOutput, currentClimberSpeed);
+            //m_climber.set(ControlMode.PercentOutput, currentClimberSpeed);
         }
     }
     public void pulling(){
@@ -142,7 +142,7 @@ public class Climber {
         //Maybe make this pull you up 40,000 rotations every time pressed
         //That way, if you are on the bar and the bar lowers to your side, you can pull and rise another 40,000
         m_servo.setAngle(135);
-        difference = m_climber.getSelectedSensorPosition() - targetHeight;
+        //difference = m_climber.getSelectedSensorPosition() - targetHeight;
         if (difference < differenceMargin){
             currentClimberSpeed = 0;
             status = "Stopped";
@@ -159,7 +159,7 @@ public class Climber {
                 currentClimberSpeed = -maxClimberSpeed;
             }
         }
-        m_climber.set(ControlMode.PercentOutput, currentClimberSpeed);
+        //m_climber.set(ControlMode.PercentOutput, currentClimberSpeed);
     }
     public void encoderMainMethod(){//Disengages ratchet at any moving point for safety of oscilation
         if (status.equals("Rising")){
